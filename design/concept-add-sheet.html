@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Snapcost — концепт "Додати транзакцію" v3</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: #05090b; color: #eaf2f0;
+    display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 32px 16px; }
+  .ic { fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+
+  .phone { position: relative; width: 384px; height: 832px; border-radius: 46px; overflow: hidden;
+    background: radial-gradient(85% 45% at 50% 4%, rgba(74,222,180,0.12) 0%, rgba(74,222,180,0) 55%), linear-gradient(180deg, #0c1a1d 0%, #091316 55%, #05090b 100%);
+    box-shadow: 0 40px 100px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.04); }
+  /* легке затемнення — контент позаду трохи видно */
+  .dim { position: absolute; inset: 0; background: rgba(0,0,0,0.28); }
+
+  .sheet { position: absolute; left: 0; right: 0; bottom: 0; background: #0e1a1d; border-top: 1px solid rgba(255,255,255,0.08); border-radius: 28px 28px 0 0; padding: 10px 16px 22px; }
+  .grab { width: 40px; height: 4px; border-radius: 999px; background: rgba(255,255,255,0.18); margin: 0 auto 12px; }
+  .head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .head b { font-size: 17px; font-weight: 600; }
+  .x { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.7); }
+  .x svg { width: 16px; height: 16px; }
+
+  .seg { display: flex; gap: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 4px; margin-bottom: 16px; }
+  .seg div { flex: 1; text-align: center; padding: 9px 0; border-radius: 10px; font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.5); }
+  .seg .on { background: linear-gradient(135deg,#4ade9f,#3bb4f5); color: #04211a; }
+
+  .amount { position: relative; text-align: center; padding: 8px 0 16px; }
+  .amount .val { font-size: 44px; font-weight: 700; letter-spacing: -2px; }
+  .amount .val .zl { font-size: 22px; font-weight: 600; color: rgba(255,255,255,0.5); margin-left: 6px; }
+  .amount .conv { font-size: 13px; color: rgba(255,255,255,0.45); margin-top: 4px; }
+  .scan { position: absolute; top: 2px; right: 0; display: flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 999px; background: rgba(74,222,180,0.10); border: 1px solid rgba(74,222,180,0.4); color: #6ee7b7; font-size: 12px; font-weight: 600; }
+  .scan svg { width: 15px; height: 15px; }
+
+  .lbl { font-size: 12px; color: rgba(255,255,255,0.5); margin: 0 0 8px 2px; }
+
+  /* категорії — 1 ряд, скрол, згасання справа (не обрізається різко) */
+  .chips { display: grid; grid-auto-flow: column; grid-template-rows: repeat(2, auto); gap: 8px; overflow-x: auto; padding-bottom: 2px; margin-bottom: 16px;
+    -webkit-mask-image: linear-gradient(to right, #000 90%, transparent 100%);
+    mask-image: linear-gradient(to right, #000 90%, transparent 100%); }
+  .chip { flex-shrink: 0; display: flex; align-items: center; gap: 7px; padding: 9px 14px; border-radius: 999px; white-space: nowrap; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.7); }
+  .chip.on { background: rgba(74,222,180,0.10); border-color: rgba(74,222,180,0.45); color: #6ee7b7; }
+
+  .accChips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; margin-bottom: 16px;
+    -webkit-mask-image: linear-gradient(to right, #000 92%, transparent 100%); mask-image: linear-gradient(to right, #000 92%, transparent 100%); }
+  .accChip { flex-shrink: 0; display: flex; align-items: center; gap: 7px; padding: 10px 14px; border-radius: 14px; white-space: nowrap; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.7); }
+  .accChip.on { background: rgba(74,222,180,0.10); border-color: rgba(74,222,180,0.45); color: #6ee7b7; }
+  .accChip.add { color: #6ee7b7; font-size: 17px; font-weight: 600; padding: 10px 15px; }
+
+  .fieldCard { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 13px 14px; margin-bottom: 14px; }
+  .fi { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .fi svg { width: 18px; height: 18px; }
+  .fl { flex: 1; }
+  .fl small { display: block; font-size: 11px; color: rgba(255,255,255,0.45); }
+  .fl b { font-size: 15px; font-weight: 600; }
+  .chev { color: rgba(255,255,255,0.3); }
+  .chev svg { width: 16px; height: 16px; }
+  .fieldCard input { flex: 1; background: none; border: none; outline: none; color: #eaf2f0; font-size: 15px; }
+  .fieldCard input::placeholder { color: rgba(255,255,255,0.35); }
+
+  .days { display: flex; gap: 8px; align-items: stretch; margin-bottom: 18px; }
+  .day { flex: 1; text-align: center; padding: 9px 0; border-radius: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); color: rgba(255,255,255,0.55); }
+  .day b { display: block; font-size: 13px; font-weight: 600; color: #eaf2f0; }
+  .day span { font-size: 11px; }
+  .day.on { background: rgba(74,222,180,0.12); border-color: rgba(74,222,180,0.45); }
+  .day.on b, .day.on { color: #6ee7b7; }
+  .dayCal { flex: 0 0 48px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); color: #6ee7b7; }
+  .dayCal svg { width: 18px; height: 18px; }
+
+  .save { width: 100%; height: 52px; border-radius: 16px; border: none; background: linear-gradient(135deg,#4ade9f,#3bb4f5); color: #04211a; font-size: 16px; font-weight: 600; }
+</style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-x" viewBox="0 0 24 24"><path class="ic" d="M6 6l12 12M18 6L6 18" /></symbol>
+    <symbol id="i-wallet" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M4 5h11a2 2 0 012 2v1h2.2A1.8 1.8 0 0121 9.8V18a2 2 0 01-2 2H4a2 2 0 01-2-2V7a2 2 0 012-2zm14.6 8.1a1.4 1.4 0 100 2.8 1.4 1.4 0 000-2.8z" /></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><path fill="currentColor" d="M8 2v2H6a2 2 0 00-2 2v2h16V6a2 2 0 00-2-2h-2V2h-2v2H10V2zm12 8H4v9a2 2 0 002 2h12a2 2 0 002-2z" /></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path fill="currentColor" d="M3.5 17.1V20a.9.9 0 00.9.9h2.9a.6.6 0 00.43-.18L17.85 10.55l-4.4-4.4L3.68 16.67a.6.6 0 00-.18.43z" /><path fill="currentColor" d="M20.7 6.35l-2.05-2.05a1.4 1.4 0 00-2 0L14.9 5.05l4.4 4.4 1.4-1.4a1.4 1.4 0 000-1.7z" /></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><path fill="currentColor" d="M6.5 9.5h11L12 15z" /></symbol>
+    <symbol id="i-scan" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M9 4l-1.3 1.8H4.5A2.5 2.5 0 002 8.3v9.2A2.5 2.5 0 004.5 20h15a2.5 2.5 0 002.5-2.5V8.3a2.5 2.5 0 00-2.5-2.5h-3.2L15 4zm3 4.6A4.2 4.2 0 1012 17a4.2 4.2 0 000-8.4z" /><circle cx="12" cy="12.8" r="2.3" fill="currentColor" /></symbol>
+  </svg>
+
+  <div class="phone">
+    <div class="dim"></div>
+    <div class="sheet">
+      <div class="grab"></div>
+      <div class="head">
+        <b>Додати транзакцію</b>
+        <div class="x"><svg><use href="#i-x"/></svg></div>
+      </div>
+
+      <div class="seg"><div class="on">Витрата</div><div>Дохід</div></div>
+
+      <div class="amount">
+        <div class="scan"><svg><use href="#i-scan"/></svg>Скан</div>
+        <div class="val">0<span class="zl">zł</span></div>
+        <div class="conv">≈ $0</div>
+      </div>
+
+      <div class="lbl">Категорія</div>
+      <div class="chips">
+        <div class="chip on">🛒 Їжа</div>
+        <div class="chip">☕ Кафе</div>
+        <div class="chip">🚌 Транспорт</div>
+        <div class="chip">🎉 Розваги</div>
+        <div class="chip">💊 Аптека</div>
+        <div class="chip">👕 Одяг</div>
+        <div class="chip">🏠 Комунальні</div>
+        <div class="chip">🎓 Освіта</div>
+        <div class="chip">🎂 День народження</div>
+        <div class="chip">🚕 Таксі</div>
+        <div class="chip">📦 Інше</div>
+      </div>
+
+      <div class="lbl">Рахунок</div>
+      <div class="accChips">
+        <div class="accChip on">👛 Готівка</div>
+        <div class="accChip">💳 Картка</div>
+        <div class="accChip">🏦 Заощадження</div>
+        <div class="accChip add">＋</div>
+      </div>
+
+      <div class="lbl">Дата</div>
+      <div class="days">
+        <div class="day on"><b>Сьогодні</b><span>20.06</span></div>
+        <div class="day"><b>Вчора</b><span>19.06</span></div>
+        <div class="day"><b>Позавчора</b><span>18.06</span></div>
+        <div class="dayCal"><svg><use href="#i-cal"/></svg></div>
+      </div>
+
+      <div class="fieldCard">
+        <div class="fi" style="background:rgba(124,92,255,0.16);color:#b9a8ff"><svg><use href="#i-edit"/></svg></div>
+        <input placeholder="Назва (напр. Biedronka)" />
+      </div>
+
+      <button class="save">Зберегти</button>
+    </div>
+  </div>
+</body>
+</html>

@@ -45,5 +45,84 @@ export async function addTransaction(input: {
   if (error) return { ok: false, error: error.message };
 
   revalidatePath("/dashboard");
+  revalidatePath("/history");
+  return { ok: true };
+}
+
+// Оновлює існуючу транзакцію (RLS гарантує, що тільки свою).
+export async function updateTransaction(
+  id: string,
+  input: {
+    type: "expense" | "income";
+    amountHome: number;
+    category: string;
+    merchant: string;
+    accountId: string;
+    date: string;
+  }
+): Promise<AddTxResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Не авторизовано" };
+  if (!input.amountHome || input.amountHome <= 0) {
+    return { ok: false, error: "Введи суму більше нуля" };
+  }
+
+  const { error } = await supabase
+    .from("transactions")
+    .update({
+      account_id: input.accountId || null,
+      tx_date: input.date,
+      type: input.type,
+      amount_home: input.amountHome,
+      amount_base: input.amountHome * RATE_BASE_PER_HOME,
+      exchange_rate: RATE_BASE_PER_HOME,
+      category: input.category || "Інше",
+      merchant: input.merchant || null,
+    })
+    .eq("id", id);
+
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/dashboard");
+  revalidatePath("/history");
+  return { ok: true };
+}
+
+export async function createAccount(input: {
+  name: string;
+  type: string;
+}): Promise<{ ok: boolean; id?: string; error?: string }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Не авторизовано" };
+  if (!input.name.trim()) return { ok: false, error: "Введи назву рахунку" };
+
+  const { data, error } = await supabase
+    .from("accounts")
+    .insert({ user_id: user.id, name: input.name.trim(), type: input.type || "cash", currency: "PLN" })
+    .select("id")
+    .single();
+
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/dashboard");
+  revalidatePath("/history");
+  return { ok: true, id: data.id as string };
+}
+
+export async function deleteTransaction(id: string): Promise<AddTxResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Не авторизовано" };
+
+  const { error } = await supabase.from("transactions").delete().eq("id", id);
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/dashboard");
+  revalidatePath("/history");
   return { ok: true };
 }

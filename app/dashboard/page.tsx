@@ -19,6 +19,7 @@ type TxRow = {
   category: string | null;
   merchant: string | null;
   tx_date: string;
+  created_at: string;
 };
 
 export default async function DashboardPage() {
@@ -60,17 +61,13 @@ export default async function DashboardPage() {
   // 3. Транзакції
   const { data: txData } = await supabase
     .from("transactions")
-    .select("id, account_id, type, amount_home, category, merchant, tx_date")
+    .select("id, account_id, type, amount_home, category, merchant, tx_date, created_at")
     .eq("user_id", user.id)
     .order("tx_date", { ascending: false })
     .order("created_at", { ascending: false });
   const txs = (txData ?? []) as TxRow[];
 
   // 4. Підрахунки
-  const now = new Date();
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-  const inThisMonth = (d: string) => new Date(d) >= monthStart;
-
   const accountsOut = accs.map((a) => {
     const opening = Number(a.opening_balance ?? 0);
     const delta = txs
@@ -80,20 +77,16 @@ export default async function DashboardPage() {
   });
 
   const totalHome = accountsOut.reduce((s, a) => s + a.balanceHome, 0);
-  const monthExpenseHome = txs
-    .filter((t) => t.type === "expense" && inThisMonth(t.tx_date))
-    .reduce((s, t) => s + t.amount_home, 0);
-  const monthIncomeHome = txs
-    .filter((t) => t.type === "income" && inThisMonth(t.tx_date))
-    .reduce((s, t) => s + t.amount_home, 0);
 
-  const recent = txs.slice(0, 6).map((t) => ({
+  const allTx = txs.map((t) => ({
     id: t.id,
     type: t.type,
-    amountHome: t.amount_home,
-    category: t.category,
-    merchant: t.merchant,
+    amountHome: Number(t.amount_home),
+    category: t.category ?? "Інше",
+    merchant: t.merchant ?? "",
     date: t.tx_date,
+    createdAt: t.created_at,
+    accountId: t.account_id ?? "",
   }));
 
   const name = user.email ? user.email.split("@")[0] : "друже";
@@ -103,10 +96,8 @@ export default async function DashboardPage() {
       name={name}
       accounts={accountsOut}
       totalHome={totalHome}
-      monthExpenseHome={monthExpenseHome}
-      monthIncomeHome={monthIncomeHome}
       budgetHome={settings?.monthly_budget ?? null}
-      recent={recent}
+      txs={allTx}
     />
   );
 }
