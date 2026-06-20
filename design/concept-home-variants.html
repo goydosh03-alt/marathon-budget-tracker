@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Snapcost — варіанти головної</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: #05090b; color: #eaf2f0;
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; min-height: 100vh; padding: 36px 20px; }
+  .col { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .cap { max-width: 360px; text-align: center; }
+  .cap b { font-size: 15px; color: #6ee7b7; }
+  .cap p { font-size: 13px; color: rgba(255,255,255,0.55); margin-top: 4px; line-height: 1.5; }
+  .ic { fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+
+  .phone { position: relative; width: 380px; height: 800px; border-radius: 46px; overflow: hidden;
+    background:
+      radial-gradient(85% 45% at 50% 6%, rgba(74,222,180,0.20) 0%, rgba(74,222,180,0) 55%),
+      radial-gradient(75% 40% at 92% 0%, rgba(78,150,255,0.16) 0%, rgba(78,150,255,0) 60%),
+      radial-gradient(85% 50% at 6% 24%, rgba(120,90,255,0.10) 0%, rgba(120,90,255,0) 60%),
+      linear-gradient(180deg, #0c1a1d 0%, #091316 55%, #05090b 100%);
+    box-shadow: 0 30px 70px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.04); }
+  .screen { position: absolute; inset: 0; display: flex; flex-direction: column; padding: 0 20px; }
+
+  .status { display: flex; justify-content: space-between; align-items: center; padding: 15px 6px 4px; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.85); }
+  .status .right { display: flex; gap: 7px; align-items: center; }
+  .status .right svg { width: 18px; height: 18px; }
+
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 10px 0 4px; }
+  .hi { display: flex; align-items: center; gap: 11px; }
+  .avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg,#4ade9f,#3bb4f5); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; color: #04211a; }
+  .hi small { color: rgba(255,255,255,0.45); font-size: 12px; display: block; }
+  .hi b { font-size: 17px; font-weight: 600; }
+  .top-actions { display: flex; align-items: center; gap: 8px; }
+  .cur-chip { display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 11px; border-radius: 999px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); font-size: 13px; font-weight: 600; }
+  .cur-chip .dollar { width: 19px; height: 19px; border-radius: 50%; background: rgba(110,231,183,0.18); color: #6ee7b7; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+  .cur-chip svg { width: 13px; height: 13px; opacity: 0.55; }
+  .icon-btn { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.85); }
+  .icon-btn svg { width: 19px; height: 19px; }
+
+  /* total balance */
+  .totbal { margin-top: 14px; }
+  .totbal small { font-size: 12px; color: rgba(255,255,255,0.5); }
+  .totbal .big { font-size: 40px; font-weight: 700; letter-spacing: -1.5px; margin-top: 2px; }
+  .totbal .sub { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 3px; }
+
+  /* segmented tabs */
+  .tabs { display: flex; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 4px; gap: 4px; margin-top: 16px; }
+  .tabs div { flex: 1; text-align: center; padding: 9px 0; border-radius: 10px; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.5); }
+  .tabs .on { background: linear-gradient(135deg,#4ade9f,#3bb4f5); color: #04211a; }
+
+  /* spend banner */
+  .banner { margin-top: 16px; padding: 16px 18px; border-radius: 20px; position: relative; overflow: hidden;
+    background: linear-gradient(150deg, rgba(74,222,180,0.18), rgba(59,180,245,0.12) 60%, rgba(124,92,255,0.08));
+    border: 1px solid rgba(255,255,255,0.09); }
+  .banner .lbl { font-size: 12px; color: rgba(255,255,255,0.6); }
+  .banner .amt { font-size: 30px; font-weight: 700; letter-spacing: -1px; margin: 3px 0 12px; }
+  .bar { height: 8px; border-radius: 999px; background: rgba(255,255,255,0.08); overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 70%; border-radius: 999px; background: linear-gradient(90deg,#3bb4f5,#4ade9f,#86efac); }
+  .barmeta { display: flex; justify-content: space-between; font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 7px; }
+
+  /* account cards row */
+  .acc-row { display: flex; gap: 10px; margin-top: 14px; }
+  .acc { flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 13px; }
+  .acc .top { display: flex; align-items: center; gap: 8px; }
+  .acc .ai { width: 30px; height: 30px; border-radius: 9px; display: flex; align-items: center; justify-content: center; }
+  .acc .ai svg { width: 17px; height: 17px; }
+  .acc .top small { font-size: 12px; color: rgba(255,255,255,0.55); }
+  .acc b { display: block; font-size: 17px; font-weight: 700; margin-top: 8px; letter-spacing: -0.4px; }
+  .acc .cur { font-size: 10px; color: rgba(255,255,255,0.4); }
+  .acc.add { display: flex; align-items: center; justify-content: center; flex: 0 0 52px; color: #6ee7b7; }
+  .acc.add svg { width: 22px; height: 22px; }
+
+  .sec { display: flex; justify-content: space-between; align-items: center; margin: 18px 0 8px; }
+  .sec h3 { font-size: 15px; font-weight: 600; }
+  .sec a { font-size: 12px; color: #6ee7b7; text-decoration: none; }
+
+  .tx { display: flex; align-items: center; gap: 12px; padding: 10px 2px; }
+  .tx + .tx { border-top: 1px solid rgba(255,255,255,0.05); }
+  .tx .ico { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .tx .ico svg { width: 21px; height: 21px; }
+  .tx .info b { font-size: 14px; font-weight: 600; display: block; }
+  .tx .info small { font-size: 12px; color: rgba(255,255,255,0.4); }
+  .tx .amt { margin-left: auto; text-align: right; }
+  .tx .amt b { font-size: 14px; font-weight: 600; display: block; }
+  .tx .amt.inc b { color: #6ee7b7; }
+  .tx .amt small { font-size: 11px; color: rgba(255,255,255,0.35); }
+
+  /* fixed clean nav */
+  .nav { position: absolute; left: 16px; right: 16px; bottom: 16px; height: 66px; border-radius: 24px;
+    background: rgba(14,24,26,0.94); border: 1px solid rgba(255,255,255,0.07);
+    display: flex; align-items: center; justify-content: space-between; padding: 0 22px; }
+  .nav a { display: flex; flex-direction: column; align-items: center; gap: 4px; color: rgba(255,255,255,0.4); font-size: 10px; text-decoration: none; width: 52px; }
+  .nav a.on { color: #fff; }
+  .nav a svg { width: 22px; height: 22px; }
+  .nav .cam { width: 50px; height: 50px; border-radius: 16px; color: #04211a;
+    background: linear-gradient(145deg,#4ade9f,#3bb4f5); display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 18px -5px rgba(74,222,180,0.6); }
+  .nav .cam svg { width: 25px; height: 25px; }
+</style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-bell" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.2a5.8 5.8 0 00-5.8 5.8c0 3.4-1 5-1.7 5.9-.5.7 0 1.6.8 1.6h13.4c.8 0 1.3-.9.8-1.6-.7-.9-1.7-2.5-1.7-5.9A5.8 5.8 0 0012 2.2z"/><path fill="currentColor" d="M9.6 18.6a2.4 2.4 0 004.8 0z"/></symbol>
+    <symbol id="i-cart" viewBox="0 0 24 24"><path fill="currentColor" d="M7 19.5a2.2 2.2 0 100 4.4 2.2 2.2 0 000-4.4zm10 0a2.2 2.2 0 100 4.4 2.2 2.2 0 000-4.4zM2.5 3a1.1 1.1 0 000 2.2h1.3l2.4 9.7A2.2 2.2 0 008.5 16.6h8.7a2.2 2.2 0 002.1-1.6L21.6 8A1 1 0 0020.6 6.7H6.2l-.5-2.1A1.6 1.6 0 004.2 3z"/></symbol>
+    <symbol id="i-cafe" viewBox="0 0 24 24"><path fill="currentColor" d="M3.5 7.5h13.5v6a5 5 0 01-5 5h-3.5a5 5 0 01-5-5z"/><path fill="currentColor" d="M17 9h1.6a3 3 0 010 6H17z"/></symbol>
+    <symbol id="i-wallet" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M4 5h11a2 2 0 012 2v1h2.2A1.8 1.8 0 0121 9.8V18a2 2 0 01-2 2H4a2 2 0 01-2-2V7a2 2 0 012-2zm14.6 8.1a1.4 1.4 0 100 2.8 1.4 1.4 0 000-2.8z"/></symbol>
+    <symbol id="i-card" viewBox="0 0 24 24"><path fill="currentColor" d="M5 4h14a2 2 0 012 2v1H3V6a2 2 0 012-2z"/><path fill="currentColor" fill-rule="evenodd" d="M3 9h18v9a2 2 0 01-2 2H5a2 2 0 01-2-2zm3 6.2h6v1.8H6z"/></symbol>
+    <symbol id="i-salary" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M3 6h18a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V7a1 1 0 011-1zm9 3.4a2.6 2.6 0 100 5.2 2.6 2.6 0 000-5.2z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path class="ic" d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M11.3 3.3a1 1 0 011.4 0l8.4 7.6a1 1 0 01-.67 1.74H19.5V20a1 1 0 01-1 1h-4v-5.2a2.5 2.5 0 00-5 0V21h-4a1 1 0 01-1-1v-7.36H3.57a1 1 0 01-.67-1.74z"/></symbol>
+    <symbol id="i-receipt" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5 2.2l1.5 1 1.5-1 1.5 1 1.5-1 1.5 1 1.5-1 1.5 1 1.5-1V21.8l-1.5-1-1.5 1-1.5-1-1.5 1-1.5-1-1.5 1-1.5-1-1.5 1zm3.5 5.8h7v1.6h-7zm0 4h7v1.6h-7z"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path fill="currentColor" d="M13 2.5a9.5 9.5 0 019.5 9H13z"/><path fill="currentColor" d="M11 4.6A9.5 9.5 0 1020.4 13.5H11z"/></symbol>
+    <symbol id="i-person" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4.2" fill="currentColor"/><path fill="currentColor" d="M3.6 20.5c0-3.6 3.8-5.8 8.4-5.8s8.4 2.2 8.4 5.8v1H3.6z"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M9 3l-1.4 2H4a2 2 0 00-2 2v11a2 2 0 002 2h16a2 2 0 002-2V7a2 2 0 00-2-2h-3.6L15 3H9zm3 5.2a4.3 4.3 0 100 8.6 4.3 4.3 0 000-8.6z"/><circle cx="12" cy="12.5" r="2.2" fill="currentColor"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><path class="ic" d="M6 9.5l6 6 6-6"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 24 24"><path class="ic" d="M5 12.5a10 10 0 0114 0"/><path class="ic" d="M8.5 15.5a5 5 0 017 0"/><circle cx="12" cy="18.6" r="1" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-battery" viewBox="0 0 24 24"><rect class="ic" x="2" y="7" width="17" height="10" rx="2.5"/><rect x="4" y="9" width="11" height="6" rx="1" fill="currentColor" stroke="none"/><path class="ic" d="M21 10.5v3"/></symbol>
+  </svg>
+
+  <!-- ===== VARIANT A ===== -->
+  <div class="col">
+    <div class="phone">
+      <div class="screen">
+        <div class="status"><span>9:41</span><span class="right"><svg><use href="#i-wifi"/></svg><svg><use href="#i-battery"/></svg></span></div>
+        <div class="topbar">
+          <div class="hi"><div class="avatar">S</div><div><small>Привіт 👋</small><b>Sandora</b></div></div>
+          <div class="top-actions"><div class="cur-chip"><span class="dollar">$</span>USD<svg><use href="#i-chev"/></svg></div><div class="icon-btn"><svg><use href="#i-bell"/></svg></div></div>
+        </div>
+
+        <div class="totbal">
+          <small>Загальний баланс</small>
+          <div class="big">$1,580</div>
+          <div class="sub">Готівка $340 · Картка $1,240</div>
+        </div>
+
+        <div class="tabs"><div class="on">Витрати</div><div>Дохід</div></div>
+
+        <div class="banner">
+          <div class="lbl">Витрачено · червень</div>
+          <div class="amt">$420</div>
+          <div class="bar"><i></i></div>
+          <div class="barmeta"><span>70% бюджету</span><span>ліміт $600</span></div>
+        </div>
+
+        <div class="sec"><h3>Останні витрати</h3><a href="#">Всі →</a></div>
+        <div>
+          <div class="tx"><div class="ico" style="background:rgba(124,92,255,0.16);color:#b9a8ff"><svg><use href="#i-cart"/></svg></div><div class="info"><b>Biedronka</b><small>Їжа · Сьогодні</small></div><div class="amt"><b>−$21.10</b><small>84,30 zł</small></div></div>
+          <div class="tx"><div class="ico" style="background:rgba(74,222,180,0.16);color:#6ee7b7"><svg><use href="#i-cafe"/></svg></div><div class="info"><b>Starbucks</b><small>Кафе · Вчора</small></div><div class="amt"><b>−$5.75</b><small>23,00 zł</small></div></div>
+        </div>
+
+        <div class="nav">
+          <a class="on"><svg><use href="#i-home"/></svg>Головна</a>
+          <a><svg><use href="#i-receipt"/></svg>Історія</a>
+          <a><div class="cam"><svg><use href="#i-camera"/></svg></div></a>
+          <a><svg><use href="#i-chart"/></svg>Звіти</a>
+          <a><svg><use href="#i-person"/></svg>Профіль</a>
+        </div>
+      </div>
+    </div>
+    <div class="cap"><b>Варіант A — Баланс зверху + таби</b><p>Загальний баланс на самому верху, під ним таби Витрати/Дохід. Таб перемикає що показано нижче (зараз — Витрати + бюджет).</p></div>
+  </div>
+
+  <!-- ===== VARIANT B ===== -->
+  <div class="col">
+    <div class="phone">
+      <div class="screen">
+        <div class="status"><span>9:41</span><span class="right"><svg><use href="#i-wifi"/></svg><svg><use href="#i-battery"/></svg></span></div>
+        <div class="topbar">
+          <div class="hi"><div class="avatar">S</div><div><small>Привіт 👋</small><b>Sandora</b></div></div>
+          <div class="top-actions"><div class="cur-chip"><span class="dollar">$</span>USD<svg><use href="#i-chev"/></svg></div><div class="icon-btn"><svg><use href="#i-bell"/></svg></div></div>
+        </div>
+
+        <div class="totbal">
+          <small>Загальний баланс</small>
+          <div class="big">$1,580</div>
+        </div>
+
+        <div class="acc-row">
+          <div class="acc"><div class="top"><div class="ai" style="background:rgba(74,222,180,0.16);color:#6ee7b7"><svg><use href="#i-wallet"/></svg></div><small>Готівка</small></div><b>$340</b><span class="cur">≈ 1 360 zł</span></div>
+          <div class="acc"><div class="top"><div class="ai" style="background:rgba(59,180,245,0.16);color:#7cc8f5"><svg><use href="#i-card"/></svg></div><small>Картка</small></div><b>$1,240</b><span class="cur">≈ 4 960 zł</span></div>
+          <div class="acc add"><svg><use href="#i-plus"/></svg></div>
+        </div>
+
+        <div class="tabs"><div class="on">Витрати</div><div>Дохід</div></div>
+
+        <div class="sec"><h3>Цього місяця</h3><a href="#">Всі →</a></div>
+        <div>
+          <div class="tx"><div class="ico" style="background:rgba(110,231,183,0.16);color:#6ee7b7"><svg><use href="#i-salary"/></svg></div><div class="info"><b>Зарплата</b><small>Дохід · 1 чер</small></div><div class="amt inc"><b>+$2,000</b><small>8 000 zł</small></div></div>
+          <div class="tx"><div class="ico" style="background:rgba(124,92,255,0.16);color:#b9a8ff"><svg><use href="#i-cart"/></svg></div><div class="info"><b>Biedronka</b><small>Їжа · Сьогодні</small></div><div class="amt"><b>−$21.10</b><small>84,30 zł</small></div></div>
+          <div class="tx"><div class="ico" style="background:rgba(74,222,180,0.16);color:#6ee7b7"><svg><use href="#i-cafe"/></svg></div><div class="info"><b>Starbucks</b><small>Кафе · Вчора</small></div><div class="amt"><b>−$5.75</b><small>23,00 zł</small></div></div>
+        </div>
+
+        <div class="nav">
+          <a class="on"><svg><use href="#i-home"/></svg>Головна</a>
+          <a><svg><use href="#i-receipt"/></svg>Історія</a>
+          <a><div class="cam"><svg><use href="#i-camera"/></svg></div></a>
+          <a><svg><use href="#i-chart"/></svg>Звіти</a>
+          <a><svg><use href="#i-person"/></svg>Профіль</a>
+        </div>
+      </div>
+    </div>
+    <div class="cap"><b>Варіант B — Баланс + рахунки картками</b><p>Загальний баланс, під ним рахунки (Готівка/Картка/＋) рівним рядком як у bunq. Далі таби й транзакції разом (дохід+витрати).</p></div>
+  </div>
+</body>
+</html>

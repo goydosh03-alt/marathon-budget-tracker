@@ -1,34 +1,112 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import Dashboard from "@/components/Dashboard";
+
+export const dynamic = "force-dynamic";
+
+type AccountRow = {
+  id: string;
+  name: string;
+  type: string;
+  currency: string;
+  opening_balance: number | null;
+};
+type TxRow = {
+  id: string;
+  account_id: string | null;
+  type: string;
+  amount_home: number;
+  category: string | null;
+  merchant: string | null;
+  tx_date: string;
+};
 
 export default async function DashboardPage() {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
   if (!user) redirect("/login");
 
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-6 bg-gray-50 p-8 text-center">
-      <div className="rounded-2xl bg-white p-8 shadow-sm">
-        <h1 className="mb-2 text-2xl font-bold text-brand">Ти всередині! 🎉</h1>
-        <p className="text-gray-600">
-          Залогінений як <b>{user.email}</b>
-        </p>
-        <p className="mt-2 text-sm text-gray-400">
-          Тут далі буде дашборд із витратами і графіками.
-        </p>
+  // 1. Налаштування — створюємо дефолтні, якщо нема
+  let { data: settings } = await supabase
+    .from("user_settings")
+    .select("*")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (!settings) {
+    await supabase.from("user_settings").insert({ user_id: user.id });
+    settings = { base_currency: "USD", home_currency: "PLN", monthly_budget: null };
+  }
 
-        <form action="/auth/signout" method="post" className="mt-6">
-          <button
-            type="submit"
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 transition hover:bg-gray-100"
-          >
-            Вийти
-          </button>
-        </form>
-      </div>
-    </main>
+  // 2. Рахунки — авто-створення "Готівка" при першому вході
+  let { data: accounts } = await supabase
+    .from("accounts")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: true });
+  if (!accounts || accounts.length === 0) {
+    await supabase
+      .from("accounts")
+      .insert({ user_id: user.id, name: "Готівка", type: "cash", currency: "PLN" });
+    ({ data: accounts } = await supabase
+      .from("accounts")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: true }));
+  }
+  const accs = (accounts ?? []) as AccountRow[];
+
+  // 3. Транзакції
+  const { data: txData } = await supabase
+    .from("transactions")
+    .select("id, account_id, type, amount_home, category, merchant, tx_date")
+    .eq("user_id", user.id)
+    .order("tx_date", { ascending: false })
+    .order("created_at", { ascending: false });
+  const txs = (txData ?? []) as TxRow[];
+
+  // 4. Підрахунки
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const inThisMonth = (d: string) => new Date(d) >= monthStart;
+
+  const accountsOut = accs.map((a) => {
+    const opening = Number(a.opening_balance ?? 0);
+    const delta = txs
+      .filter((t) => t.account_id === a.id)
+      .reduce((s, t) => s + (t.type === "income" ? t.amount_home : -t.amount_home), 0);
+    return { id: a.id, name: a.name, type: a.type, balanceHome: opening + delta };
+  });
+
+  const totalHome = accountsOut.reduce((s, a) => s + a.balanceHome, 0);
+  const monthExpenseHome = txs
+    .filter((t) => t.type === "expense" && inThisMonth(t.tx_date))
+    .reduce((s, t) => s + t.amount_home, 0);
+  const monthIncomeHome = txs
+    .filter((t) => t.type === "income" && inThisMonth(t.tx_date))
+    .reduce((s, t) => s + t.amount_home, 0);
+
+  const recent = txs.slice(0, 6).map((t) => ({
+    id: t.id,
+    type: t.type,
+    amountHome: t.amount_home,
+    category: t.category,
+    merchant: t.merchant,
+    date: t.tx_date,
+  }));
+
+  const name = user.email ? user.email.split("@")[0] : "друже";
+
+  return (
+    <Dashboard
+      name={name}
+      accounts={accountsOut}
+      totalHome={totalHome}
+      monthExpenseHome={monthExpenseHome}
+      monthIncomeHome={monthIncomeHome}
+      budgetHome={settings?.monthly_budget ?? null}
+      recent={recent}
+    />
   );
 }

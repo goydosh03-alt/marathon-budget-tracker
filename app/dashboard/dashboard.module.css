@@ -1,0 +1,111 @@
+.screen {
+  position: relative;
+  min-height: 100vh;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: max(16px, env(safe-area-inset-top)) 20px 120px;
+  color: #eaf2f0;
+  background:
+    radial-gradient(85% 45% at 50% 4%, rgba(74,222,180,0.20) 0%, rgba(74,222,180,0) 55%),
+    radial-gradient(75% 40% at 92% 0%, rgba(78,150,255,0.16) 0%, rgba(78,150,255,0) 60%),
+    radial-gradient(85% 50% at 6% 22%, rgba(120,90,255,0.10) 0%, rgba(120,90,255,0) 60%),
+    linear-gradient(180deg, #0c1a1d 0%, #091316 55%, #05090b 100%);
+}
+
+.topbar { display: flex; align-items: center; justify-content: space-between; padding: 8px 0 4px; }
+.hi { display: flex; align-items: center; gap: 12px; }
+.avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg,#4ade9f,#3bb4f5); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; color: #04211a; }
+.hiSmall { color: rgba(255,255,255,0.45); font-size: 12px; display: block; }
+.hiName { font-size: 18px; font-weight: 600; }
+.topActions { display: flex; align-items: center; gap: 8px; }
+.curChip { display: flex; align-items: center; gap: 6px; height: 38px; padding: 0 12px; border-radius: 999px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); font-size: 13px; font-weight: 600; color: inherit; cursor: pointer; }
+.dollar { width: 20px; height: 20px; border-radius: 50%; background: rgba(110,231,183,0.18); color: #6ee7b7; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+.curChip svg { width: 13px; height: 13px; opacity: 0.55; }
+.iconBtn { width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.85); cursor: pointer; }
+.iconBtn svg { width: 20px; height: 20px; }
+
+.totbal { margin-top: 14px; }
+.totLabel { font-size: 12px; color: rgba(255,255,255,0.5); }
+.balrow { display: flex; align-items: baseline; gap: 10px; margin-top: 2px; }
+.big { font-size: 40px; font-weight: 700; letter-spacing: -1.5px; line-height: 1; }
+.eq { font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.45); }
+
+.accRow { display: flex; gap: 12px; margin-top: 10px; }
+.acc { flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 12px; }
+.accTop { display: flex; align-items: center; gap: 8px; }
+.ai { width: 30px; height: 30px; border-radius: 9px; display: flex; align-items: center; justify-content: center; }
+.ai svg { width: 17px; height: 17px; }
+.accName { font-size: 12px; color: rgba(255,255,255,0.55); }
+.accBal { display: block; font-size: 18px; font-weight: 700; margin-top: 8px; letter-spacing: -0.4px; line-height: 1.2; }
+.cur { display: block; font-size: 10px; color: rgba(255,255,255,0.4); margin-top: 1px; }
+.accAdd { display: flex; align-items: center; justify-content: center; flex: 0 0 52px; color: #6ee7b7; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; cursor: pointer; }
+.accAdd svg { width: 22px; height: 22px; }
+
+.tabs { display: flex; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 4px; gap: 4px; margin-top: 12px; }
+.tab { flex: 1; text-align: center; padding: 8px 0; border-radius: 12px; font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.5); background: none; border: none; cursor: pointer; }
+.tabOnExp { background: linear-gradient(135deg,#4ade9f,#3bb4f5); color: #04211a; }
+.tabOnInc { background: linear-gradient(135deg,#4ade9f,#3bb4f5); color: #04211a; }
+
+.periodcard { margin-top: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 12px; }
+.pfilter { display: flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.05); border-radius: 12px; padding: 4px; }
+.pf { flex: 1; text-align: center; padding: 6px 0; border-radius: 8px; font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.5); background: none; border: none; cursor: pointer; }
+.pfOn { background: rgba(255,255,255,0.12); color: #fff; }
+.vdiv { flex: 0 0 1px; width: 1px; height: 14px; background: rgba(255,255,255,0.18); border-radius: 1px; margin: 0 3px; }
+.cal { flex: 0 0 30px; padding: 6px 0; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.5); background: none; border: none; cursor: pointer; }
+.cal svg { width: 16px; height: 16px; }
+.psum { margin-top: 10px; }
+.psumLabel { font-size: 12px; color: rgba(255,255,255,0.5); display: block; line-height: 1; margin-bottom: 8px; }
+.psumRow { display: flex; align-items: baseline; gap: 16px; }
+.psumAmt { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; line-height: 1; }
+.pr { font-size: 12px; color: rgba(255,255,255,0.5); }
+.pbar { height: 8px; border-radius: 999px; background: rgba(255,255,255,0.08); margin-top: 10px; overflow: hidden; }
+.pbarFill { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg,#3bb4f5,#4ade9f); }
+.fulldiv { height: 1px; background: rgba(255,255,255,0.08); margin: 12px -12px; }
+.sec { display: flex; justify-content: space-between; align-items: center; margin: 0 0 4px; }
+.secTitle { font-size: 15px; font-weight: 600; }
+.secLink { font-size: 12px; color: #6ee7b7; text-decoration: none; }
+
+.tx { position: relative; display: flex; align-items: center; gap: 12px; padding: 11px 2px; }
+.tx + .tx::before { content: ""; position: absolute; top: 0; left: 54px; right: 0; height: 1px; background: rgba(255,255,255,0.06); }
+.emo { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 21px; }
+.txName { font-size: 14px; font-weight: 600; display: block; line-height: 1.2; }
+.txMeta { display: block; font-size: 12px; color: rgba(255,255,255,0.4); line-height: 1.2; margin-top: 2px; }
+.amt { margin-left: auto; text-align: right; }
+.amtVal { font-size: 14px; font-weight: 600; display: block; line-height: 1.2; }
+.inc { color: #6ee7b7; }
+.amtSub { display: block; font-size: 11px; color: rgba(255,255,255,0.35); line-height: 1.2; margin-top: 2px; }
+
+.dock { position: fixed; left: 50%; transform: translateX(-50%); bottom: 16px; width: min(100% - 32px, 448px); display: flex; align-items: stretch; gap: 10px; z-index: 20; }
+.navbar { flex: 1; display: flex; align-items: stretch; gap: 2px; padding: 6px; background: rgba(18,28,30,0.97); border: 1px solid rgba(255,255,255,0.07); border-radius: 26px; box-shadow: 0 16px 40px rgba(0,0,0,0.5); }
+.navItem { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 7px 0; border-radius: 20px; color: rgba(255,255,255,0.5); font-size: 10px; font-weight: 500; text-decoration: none; background: none; border: none; cursor: pointer; }
+.navOn { background: rgba(255,255,255,0.11); color: #fff; }
+.navItem svg { width: 22px; height: 22px; }
+.cam { flex: 0 0 auto; width: 60px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background: rgba(18,28,30,0.97); border: 1px solid rgba(255,255,255,0.07); color: rgba(255,255,255,0.5); box-shadow: 0 16px 40px rgba(0,0,0,0.5); cursor: pointer; }
+.camOpen { background: rgba(255,255,255,0.16); color: #fff; }
+.cam svg { width: 24px; height: 24px; }
+
+.addmenu { position: fixed; right: max(16px, calc(50% - 224px)); bottom: 94px; width: 248px; padding: 6px; background: rgba(22,32,34,0.98); border: 1px solid rgba(255,255,255,0.09); border-radius: 18px; z-index: 25; }
+.addItem { display: flex; align-items: center; gap: 12px; padding: 5px 8px; border-radius: 12px; color: #eaf2f0; font-size: 14px; font-weight: 500; width: 100%; background: none; border: none; cursor: pointer; text-align: left; }
+.mi { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.mi svg { width: 18px; height: 18px; }
+.menuDiv { height: 1px; background: rgba(255,255,255,0.09); margin: 5px -6px; }
+.backdrop { position: fixed; inset: 0; z-index: 15; }
+
+/* add transaction sheet */
+.sheetWrap { position: fixed; inset: 0; z-index: 40; display: flex; align-items: flex-end; justify-content: center; }
+.sheetBack { position: absolute; inset: 0; background: rgba(0,0,0,0.5); }
+.sheet { position: relative; width: 100%; max-width: 480px; background: #0e1a1d; border: 1px solid rgba(255,255,255,0.08); border-radius: 24px 24px 0 0; padding: 20px 20px calc(20px + env(safe-area-inset-bottom)); z-index: 1; }
+.sheetTitle { font-size: 17px; font-weight: 600; margin-bottom: 16px; }
+.segType { display: flex; gap: 8px; margin-bottom: 16px; }
+.segType button { flex: 1; padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.6); font-weight: 600; font-size: 14px; cursor: pointer; }
+.segOn { background: linear-gradient(135deg,#4ade9f,#3bb4f5) !important; color: #04211a !important; border-color: transparent !important; }
+.field { margin-bottom: 12px; }
+.fieldLabel { display: block; font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 6px; }
+.input, .select { width: 100%; height: 44px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #eaf2f0; padding: 0 12px; font-size: 15px; outline: none; }
+.amountInput { height: 56px; font-size: 26px; font-weight: 700; }
+.sheetActions { display: flex; gap: 10px; margin-top: 16px; }
+.btnPrimary { flex: 1; height: 48px; border-radius: 14px; border: none; background: linear-gradient(135deg,#4ade9f,#3bb4f5); color: #04211a; font-weight: 600; font-size: 15px; cursor: pointer; }
+.btnPrimary:disabled { opacity: 0.5; }
+.btnGhost { flex: 0 0 auto; height: 48px; padding: 0 18px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.12); background: none; color: #eaf2f0; font-weight: 500; cursor: pointer; }
+.errMsg { color: #ff8a8a; font-size: 13px; margin-top: 8px; }
+.empty { text-align: center; color: rgba(255,255,255,0.4); font-size: 13px; padding: 18px 0; }
