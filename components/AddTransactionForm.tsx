@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { addTransaction, updateTransaction, deleteTransaction, createAccount } from "@/app/dashboard/actions";
@@ -73,6 +73,15 @@ export default function AddTransactionForm({
   const yest = isoOffset(1);
   const dayBefore = isoOffset(2);
 
+  // блокуємо скрол фону, поки відкрита форма
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, []);
+
   function switchType(t: "expense" | "income") {
     setType(t);
     if (!isEdit) setCategory(t === "income" ? "Зарплата" : "Їжа");
@@ -132,6 +141,7 @@ export default function AddTransactionForm({
     <div className={styles.sheetWrap}>
       <div className={styles.sheetBack} onClick={onClose} />
       <div className={styles.sheet}>
+        <div className={styles.sheetBody}>
         <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <span>{isEdit ? "Редагувати транзакцію" : "Додати транзакцію"}</span>
           <button className={styles.iconBtn} onClick={onClose} aria-label="Закрити">
@@ -257,6 +267,7 @@ export default function AddTransactionForm({
         </div>
 
         {error && <div className={styles.errMsg}>{error}</div>}
+        </div>
 
         <div className={styles.sheetActions}>
           {isEdit && (
