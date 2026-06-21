@@ -3,7 +3,7 @@
 import { useState, useTransition, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import styles from "@/app/dashboard/dashboard.module.css";
-import { addTransaction, updateTransaction, deleteTransaction, createAccount } from "@/app/dashboard/actions";
+import { addTransaction, updateTransaction, deleteTransaction } from "@/app/dashboard/actions";
 import { Icon } from "@/components/IconSprite";
 import { usd } from "@/lib/currency";
 import { catEmoji } from "@/lib/txui";
@@ -12,11 +12,6 @@ const EXPENSE_CATS = ["Їжа", "Кафе", "Транспорт", "Розваг�
 const INCOME_CATS = ["Зарплата", "Фриланс", "Подарунок", "Інше"];
 
 const ACC_EMOJI: Record<string, string> = { cash: "👛", card: "💳", savings: "🏦", bank: "🏦" };
-const ACC_TYPES = [
-  { id: "cash", label: "Готівка" },
-  { id: "card", label: "Картка" },
-  { id: "savings", label: "Заощадження" },
-];
 
 export type EditTx = {
   id: string;
@@ -61,9 +56,6 @@ export default function AddTransactionForm({
   const [date, setDate] = useState(editTx?.date ?? isoOffset(0));
   const [error, setError] = useState("");
   const [pending, startTransition] = useTransition();
-  const [showCreateAcc, setShowCreateAcc] = useState(false);
-  const [newAccName, setNewAccName] = useState("");
-  const [newAccType, setNewAccType] = useState("cash");
   const [scanning, setScanning] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -146,25 +138,6 @@ export default function AddTransactionForm({
       setScanning(false);
       e.target.value = "";
     }
-  }
-
-  function createAcc() {
-    setError("");
-    if (!newAccName.trim()) {
-      setError("Введи назву рахунку");
-      return;
-    }
-    startTransition(async () => {
-      const res = await createAccount({ name: newAccName, type: newAccType });
-      if (!res.ok) {
-        setError(res.error ?? "Помилка створення рахунку");
-        return;
-      }
-      if (res.id) setAccountId(res.id);
-      setNewAccName("");
-      setShowCreateAcc(false);
-      router.refresh();
-    });
   }
 
   function remove() {
@@ -260,40 +233,7 @@ export default function AddTransactionForm({
               {ACC_EMOJI[a.type] ?? "👛"} {a.name}
             </button>
           ))}
-          <button
-            className={`${styles.accChip} ${styles.accAddChip}`}
-            onClick={() => setShowCreateAcc((v) => !v)}
-            aria-label="Додати рахунок"
-          >
-            ＋
-          </button>
         </div>
-
-        {showCreateAcc && (
-          <div className={styles.createAcc}>
-            <input
-              placeholder="Назва рахунку (напр. Картка)"
-              value={newAccName}
-              onChange={(e) => setNewAccName(e.target.value)}
-            />
-            <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
-              {ACC_TYPES.map((t) => (
-                <button
-                  key={t.id}
-                  className={`${styles.accChip} ${newAccType === t.id ? styles.accChipOn : ""}`}
-                  onClick={() => setNewAccType(t.id)}
-                >
-                  {ACC_EMOJI[t.id]} {t.label}
-                </button>
-              ))}
-            </div>
-            <div className={styles.createAccRow}>
-              <button className={styles.btnPrimary} onClick={createAcc} disabled={pending}>
-                Створити рахунок
-              </button>
-            </div>
-          </div>
-        )}
 
         <div className={styles.fieldLabel}>Дата</div>
         <div className={styles.daysRow}>

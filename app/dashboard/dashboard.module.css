@@ -87,7 +87,7 @@
 .camOpen { background: rgba(255,255,255,0.16); color: #fff; }
 .cam svg { width: 24px; height: 24px; }
 
-.addmenu { position: fixed; right: max(16px, calc(50% - 224px)); bottom: 94px; width: 248px; padding: 6px; background: rgba(22,32,34,0.98); border: 1px solid rgba(255,255,255,0.09); border-radius: 18px; z-index: 25; }
+.addmenu { position: fixed; right: max(16px, calc(50% - 224px)); bottom: calc(86px + env(safe-area-inset-bottom)); width: 248px; padding: 6px; background: rgba(22,32,34,0.98); border: 1px solid rgba(255,255,255,0.09); border-radius: 18px; z-index: 25; box-shadow: 0 18px 44px rgba(0,0,0,0.55); }
 .addItem { display: flex; align-items: center; gap: 12px; padding: 5px 8px; border-radius: 12px; color: #eaf2f0; font-size: 14px; font-weight: 500; width: 100%; background: none; border: none; cursor: pointer; text-align: left; }
 .mi { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .mi svg { width: 18px; height: 18px; }
@@ -107,9 +107,9 @@
 .amtConv { font-size: 13px; color: rgba(255,255,255,0.45); margin-top: 4px; }
 .scanBtn { position: absolute; top: 12px; right: 0; display: flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 999px; background: rgba(74,222,180,0.10); border: 1px solid rgba(74,222,180,0.4); color: #6ee7b7; font-size: 12px; font-weight: 600; cursor: pointer; }
 .scanBtn svg { width: 15px; height: 15px; }
-.chips2 { display: grid; grid-auto-flow: column; grid-template-rows: repeat(2, auto); gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 14px;
-  -webkit-mask-image: linear-gradient(to right, #000 90%, transparent 100%); mask-image: linear-gradient(to right, #000 90%, transparent 100%); }
-.chip2 { display: flex; align-items: center; gap: 7px; padding: 9px 14px; border-radius: 999px; white-space: nowrap; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.7); cursor: pointer; }
+.chips2 { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 14px;
+  -webkit-mask-image: linear-gradient(to right, #000 92%, transparent 100%); mask-image: linear-gradient(to right, #000 92%, transparent 100%); }
+.chip2 { flex-shrink: 0; display: flex; align-items: center; gap: 7px; padding: 9px 12px; border-radius: 999px; white-space: nowrap; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.7); cursor: pointer; }
 .chip2On { background: rgba(74,222,180,0.10); border-color: rgba(74,222,180,0.45); color: #6ee7b7; }
 .fcard { position: relative; display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 13px 14px; margin-bottom: 14px; }
 .fcIcon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
