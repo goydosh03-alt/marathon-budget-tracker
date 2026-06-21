@@ -6,6 +6,7 @@ import { usd, pln } from "@/lib/currency";
 import { Icon, IconSprite } from "@/components/IconSprite";
 import BottomNav from "@/components/BottomNav";
 import TopBar from "@/components/TopBar";
+import TransactionViewer from "@/components/TransactionViewer";
 import { periods, PERIOD_LABEL, inPeriod, catEmoji, catBg, fmtDate } from "@/lib/txui";
 
 type Account = { id: string; name: string; type: string; balanceHome: number };
@@ -42,6 +43,7 @@ export default function Dashboard({
 }) {
   const [tab, setTab] = useState<"expenses" | "income">("expenses");
   const [period, setPeriod] = useState("month");
+  const [viewId, setViewId] = useState<string | null>(null);
 
   const isExpenses = tab === "expenses";
   const filtered = txs.filter(
@@ -152,7 +154,7 @@ export default function Dashboard({
           <div className={styles.empty}>Немає транзакцій за цей період. Додай через «+»</div>
         ) : (
           list.map((t) => (
-            <div className={styles.tx} key={t.id}>
+            <div className={`${styles.tx} ${styles.clickable}`} key={t.id} onClick={() => setViewId(t.id)}>
               <div className={styles.emo} style={{ background: catBg(t.category) }}>
                 {catEmoji(t.category, t.type === "income")}
               </div>
@@ -172,6 +174,10 @@ export default function Dashboard({
       </section>
 
       <BottomNav active="home" accounts={accountsForForm} />
+
+      {viewId && (
+        <TransactionViewer id={viewId} accounts={accountsForForm} onClose={() => setViewId(null)} />
+      )}
     </div>
   );
 }

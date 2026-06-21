@@ -57,6 +57,7 @@ export default function AddTransactionForm({
   const [error, setError] = useState("");
   const [pending, startTransition] = useTransition();
   const [scanning, setScanning] = useState(false);
+  const [scannedItems, setScannedItems] = useState<{ name: string; price: number }[] | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const isIncome = type === "income";
@@ -89,7 +90,9 @@ export default function AddTransactionForm({
     }
     startTransition(async () => {
       const payload = { type, amountHome: parsed, category, merchant, accountId, date };
-      const res = editTx ? await updateTransaction(editTx.id, payload) : await addTransaction(payload);
+      const res = editTx
+        ? await updateTransaction(editTx.id, payload)
+        : await addTransaction({ ...payload, items: scannedItems ?? undefined });
       if (!res.ok) {
         setError(res.error ?? "Помилка збереження");
         return;
@@ -132,6 +135,7 @@ export default function AddTransactionForm({
       if (d.merchant) setMerchant(d.merchant);
       if (d.category) setCategory(d.category);
       if (d.date) setDate(d.date);
+      if (Array.isArray(d.items) && d.items.length) setScannedItems(d.items);
     } catch {
       setError("Не вдалося прочитати чек");
     } finally {

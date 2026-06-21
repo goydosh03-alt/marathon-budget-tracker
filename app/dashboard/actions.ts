@@ -15,6 +15,7 @@ export async function addTransaction(input: {
   accountId: string;
   date: string; // YYYY-MM-DD
   note?: string;
+  items?: { name: string; price: number }[];
 }): Promise<AddTxResult> {
   const supabase = await createClient();
   const {
@@ -39,6 +40,7 @@ export async function addTransaction(input: {
     category: input.category || "Інше",
     merchant: input.merchant || null,
     note: input.note || null,
+    items: input.items && input.items.length ? input.items : null,
     is_confirmed: true,
   });
 
@@ -111,6 +113,16 @@ export async function createAccount(input: {
   revalidatePath("/dashboard");
   revalidatePath("/history");
   return { ok: true, id: data.id as string };
+}
+
+export async function getTransaction(id: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
+  const { data } = await supabase.from("transactions").select("*").eq("id", id).single();
+  return data;
 }
 
 export async function deleteTransaction(id: string): Promise<AddTxResult> {

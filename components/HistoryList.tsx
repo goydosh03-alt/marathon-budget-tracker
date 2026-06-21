@@ -6,7 +6,7 @@ import { usd, pln } from "@/lib/currency";
 import { Icon, IconSprite } from "@/components/IconSprite";
 import BottomNav from "@/components/BottomNav";
 import TopBar from "@/components/TopBar";
-import AddTransactionForm, { EditTx } from "@/components/AddTransactionForm";
+import TransactionViewer from "@/components/TransactionViewer";
 import { periods, PERIOD_LABEL, inPeriod, catEmoji, catBg, fmtDate, pluralOps } from "@/lib/txui";
 
 type Tx = {
@@ -30,7 +30,7 @@ export default function HistoryList({
   const [tab, setTab] = useState<"expenses" | "income">("expenses");
   const [period, setPeriod] = useState("month");
   const [open, setOpen] = useState<Set<string>>(new Set());
-  const [editTx, setEditTx] = useState<EditTx | null>(null);
+  const [viewId, setViewId] = useState<string | null>(null);
 
   const isExpenses = tab === "expenses";
   const filtered = txs.filter(
@@ -146,17 +146,7 @@ export default function HistoryList({
                         <div
                           className={`${styles.treeItem} ${idx === items.length - 1 ? styles.treeLast : ""}`}
                           key={t.id}
-                          onClick={() =>
-                            setEditTx({
-                              id: t.id,
-                              type: t.type === "income" ? "income" : "expense",
-                              amountHome: t.amountHome,
-                              category: t.category,
-                              merchant: t.merchant,
-                              accountId: t.accountId,
-                              date: t.date,
-                            })
-                          }
+                          onClick={() => setViewId(t.id)}
                         >
                           <div className={styles.treeMid}>
                             <span className={styles.treeName}>{t.merchant || t.category}</span>
@@ -182,13 +172,8 @@ export default function HistoryList({
 
       <BottomNav active="history" accounts={accounts} />
 
-      {editTx && (
-        <AddTransactionForm
-          initialType={editTx.type}
-          accounts={accounts}
-          editTx={editTx}
-          onClose={() => setEditTx(null)}
-        />
+      {viewId && (
+        <TransactionViewer id={viewId} accounts={accounts} onClose={() => setViewId(null)} />
       )}
     </div>
   );

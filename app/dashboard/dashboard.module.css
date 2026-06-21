@@ -159,6 +159,20 @@
 .errMsg { color: #ff8a8a; font-size: 13px; margin-top: 8px; }
 .empty { text-align: center; color: rgba(255,255,255,0.4); font-size: 13px; padding: 18px 0; }
 
+/* transaction detail */
+.detAmt { text-align: center; font-size: 38px; font-weight: 700; letter-spacing: -1.5px; padding: 10px 0 2px; }
+.detAmt.inc { color: #6ee7b7; }
+.detSub { text-align: center; font-size: 13px; color: rgba(255,255,255,0.45); margin-bottom: 16px; }
+.detRow { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 13px 2px; }
+.detRow + .detRow { border-top: 1px solid rgba(255,255,255,0.05); }
+.detK { font-size: 13px; color: rgba(255,255,255,0.5); flex-shrink: 0; }
+.detV { font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 8px; text-align: right; }
+.detPhoto { width: 100%; border-radius: 16px; margin-top: 14px; border: 1px solid rgba(255,255,255,0.08); }
+.detItems { margin-top: 6px; }
+.detItem { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; padding: 7px 2px; color: rgba(255,255,255,0.85); }
+.detItem + .detItem { border-top: 1px solid rgba(255,255,255,0.05); }
+.detItem span:last-child { color: rgba(255,255,255,0.55); flex-shrink: 0; }
+
 /* history page */
 .pageTitle { font-size: 22px; font-weight: 700; padding: 8px 0 4px; }
 .barTitle { font-size: 22px; font-weight: 700; }

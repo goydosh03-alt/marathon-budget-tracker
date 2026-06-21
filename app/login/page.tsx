@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import styles from "./login.module.css";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -9,55 +10,83 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  async function handleGoogle() {
+    setError("");
+    const supabase = createClient();
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${location.origin}/auth/callback`,
+        skipBrowserRedirect: true,
+      },
+    });
+    if (error) {
+      setError(error.message);
+      return;
+    }
+    if (data?.url) {
+      window.location.href = data.url;
+    } else {
+      setError("Не вдалося отримати посилання Google");
+    }
+  }
+
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError("");
-
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: { emailRedirectTo: `${location.origin}/auth/callback` },
     });
-
     setLoading(false);
     if (error) setError(error.message);
     else setSent(true);
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
-      <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-sm">
-        <h1 className="mb-1 text-2xl font-bold text-brand">Snapcost</h1>
-        <p className="mb-6 text-sm text-gray-500">
-          Увійди, щоб бачити свої витрати
-        </p>
+    <main className={styles.wrap}>
+      <div className={styles.card}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/icon-192.png" alt="Snapcost" className={styles.logo} />
+        <h1 className={styles.title}>Snapcost</h1>
+        <p className={styles.sub}>Клац чек — бачиш витрати у своїй валюті</p>
+
+        <button onClick={handleGoogle} className={styles.google}>
+          <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
+            <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.4 29.3 35.5 24 35.5c-6.3 0-11.5-5.1-11.5-11.5S17.7 12.5 24 12.5c2.9 0 5.6 1.1 7.6 2.9l5.7-5.7C33.6 6.1 29.1 4.5 24 4.5 13.2 4.5 4.5 13.2 4.5 24S13.2 43.5 24 43.5 43.5 34.8 43.5 24c0-1.2-.1-2.4-.4-3.5z" />
+            <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16 19 12.5 24 12.5c2.9 0 5.6 1.1 7.6 2.9l5.7-5.7C33.6 6.1 29.1 4.5 24 4.5 16.3 4.5 9.7 8.9 6.3 14.7z" />
+            <path fill="#4CAF50" d="M24 43.5c5.2 0 9.6-1.7 12.9-4.6l-6.2-5.1c-1.9 1.4-4.3 2.2-6.7 2.2-5.3 0-9.7-3.4-11.3-8l-6.5 5c3.3 5.9 9.9 10.5 17.8 10.5z" />
+            <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4-4 5.3l6.2 5.1c-.4.4 6.8-4.9 6.8-14.4 0-1.2-.1-2.4-.4-3.5z" />
+          </svg>
+          Увійти через Google
+        </button>
+
+        <div className={styles.divider}>
+          <span />або поштою<span />
+        </div>
 
         {sent ? (
-          <div className="rounded-lg bg-green-50 p-4 text-sm text-green-800">
-            ✉️ Лист із посиланням для входу надіслано на <b>{email}</b>.
-            Відкрий пошту і натисни на посилання.
+          <div className={styles.sentBox}>
+            ✉️ Лист із посиланням надіслано на <b>{email}</b>. Відкрий пошту і натисни на посилання.
           </div>
         ) : (
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleLogin}>
             <input
+              className={styles.input}
               type="email"
               required
               placeholder="твій@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm outline-none focus:border-brand"
             />
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-lg bg-brand py-3 text-sm font-medium text-white transition hover:bg-brand-dark disabled:opacity-50"
-            >
-              {loading ? "Надсилаю..." : "Надіслати посилання для входу"}
+            <button className={styles.submit} type="submit" disabled={loading}>
+              {loading ? "Надсилаю…" : "Надіслати посилання"}
             </button>
-            {error && <p className="text-sm text-red-600">{error}</p>}
           </form>
         )}
+        {error && <p className={styles.err}>{error}</p>}
       </div>
     </main>
   );
