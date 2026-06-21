@@ -1,0 +1,69 @@
+// Розпізнавання чека через Claude vision. ВИКЛИКАЄТЬСЯ ТІЛЬКИ НА СЕРВЕРІ.
+
+const CATS = ["Їжа", "Кафе", "Транспорт", "Розваги", "Аптека", "Одяг", "Комунальні", "Інше"];
+
+export type ParsedReceipt = {
+  merchant: string | null;
+  date: string | null; // YYYY-MM-DD
+  total: number | null;
+  category: string;
+};
+
+export async function parseReceipt(imageBase64: string, mediaType: string): Promise<ParsedReceipt> {
+  const prompt = `Це фото чека. Витягни дані і поверни ТІЛЬКИ JSON без жодного тексту навколо:
+{
+  "merchant": "назва магазину або null",
+  "date": "YYYY-MM-DD або null",
+  "total": число (фінальна сума до сплати) або null,
+  "category": одне з [${CATS.map((c) => `"${c}"`).join(", ")}]
+}
+Якщо не можеш прочитати поле — постав null. Категорію обери найближчу за змістом покупки.`;
+
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "x-api-key": process.env.ANTHROPIC_API_KEY!,
+      "anthropic-version": "2023-06-01",
+    },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-6",
+      max_tokens: 400,
+      messages: [
+        {
+          role: "user",
+          content: [
+            { type: "image", source: { type: "base64", media_type: mediaType, data: imageBase64 } },
+            { type: "text", text: prompt },
+          ],
+        },
+      ],
+    }),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Claude API ${res.status}`);
+  }
+
+  const data = await res.json();
+  const raw: string = data?.content?.[0]?.text ?? "";
+  const parsed = extractJson(raw);
+
+  // нормалізуємо
+  const category = CATS.includes(parsed.category) ? parsed.category : "Інше";
+  const total =
+    typeof parsed.total === "number" ? parsed.total : parseFloat(String(parsed.total).replace(",", ".")) || null;
+
+  return {
+    merchant: parsed.merchant ?? null,
+    date: parsed.date ?? null,
+    total,
+    category,
+  };
+}
+
+function extractJson(text: string): any {
+  const match = text.match(/\{[\s\S]*\}/);
+  if (!match) throw new Error("У відповіді немає JSON");
+  return JSON.parse(match[0]);
+}

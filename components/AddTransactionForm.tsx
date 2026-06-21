@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useEffect } from "react";
+import { useState, useTransition, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { addTransaction, updateTransaction, deleteTransaction, createAccount } from "@/app/dashboard/actions";
@@ -64,6 +64,8 @@ export default function AddTransactionForm({
   const [showCreateAcc, setShowCreateAcc] = useState(false);
   const [newAccName, setNewAccName] = useState("");
   const [newAccType, setNewAccType] = useState("cash");
+  const [scanning, setScanning] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const isIncome = type === "income";
   const cats = isIncome ? INCOME_CATS : EXPENSE_CATS;
@@ -103,6 +105,47 @@ export default function AddTransactionForm({
       router.refresh();
       onClose();
     });
+  }
+
+  function readAsDataURL(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => resolve(r.result as string);
+      r.onerror = reject;
+      r.readAsDataURL(file);
+    });
+  }
+
+  async function handleScan(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setError("");
+    setScanning(true);
+    try {
+      const dataUrl = await readAsDataURL(file);
+      const base64 = dataUrl.split(",")[1];
+      const res = await fetch("/api/parse-receipt", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ image: base64, mediaType: file.type || "image/jpeg" }),
+      });
+      const json = await res.json();
+      if (!json.ok) {
+        setError(json.error ?? "Не вдалося прочитати чек");
+        return;
+      }
+      const d = json.data;
+      setType("expense");
+      if (d.total) setAmount(String(d.total));
+      if (d.merchant) setMerchant(d.merchant);
+      if (d.category) setCategory(d.category);
+      if (d.date) setDate(d.date);
+    } catch {
+      setError("Не вдалося прочитати чек");
+    } finally {
+      setScanning(false);
+      e.target.value = "";
+    }
   }
 
   function createAcc() {
@@ -160,9 +203,24 @@ export default function AddTransactionForm({
 
         <div className={styles.amtWrap}>
           {!isIncome && (
-            <button className={styles.scanBtn} type="button" title="Скоро">
-              <Icon id="i-scan" /> Скан
-            </button>
+            <>
+              <button
+                className={styles.scanBtn}
+                type="button"
+                onClick={() => fileRef.current?.click()}
+                disabled={scanning}
+              >
+                <Icon id="i-scan" /> {scanning ? "Читаю…" : "Скан"}
+              </button>
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/*"
+                capture="environment"
+                onChange={handleScan}
+                style={{ display: "none" }}
+              />
+            </>
           )}
           <div className={styles.amtRow}>
             <input
