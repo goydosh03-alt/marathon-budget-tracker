@@ -216,7 +216,6 @@ export default function AddTransactionForm({
                 ref={fileRef}
                 type="file"
                 accept="image/*"
-                capture="environment"
                 onChange={handleScan}
                 style={{ display: "none" }}
               />

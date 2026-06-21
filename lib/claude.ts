@@ -42,7 +42,8 @@ export async function parseReceipt(imageBase64: string, mediaType: string): Prom
   });
 
   if (!res.ok) {
-    throw new Error(`Claude API ${res.status}`);
+    const body = await res.text().catch(() => "");
+    throw new Error(`Claude API ${res.status}: ${body.slice(0, 200)}`);
   }
 
   const data = await res.json();

@@ -31,9 +31,7 @@ export async function POST(req: Request) {
     return Response.json({ ok: true, data });
   } catch (e) {
     console.error("parse-receipt error:", e);
-    return Response.json(
-      { ok: false, error: "Не вдалося прочитати чек. Спробуй ще раз або введи вручну." },
-      { status: 500 }
-    );
+    const detail = e instanceof Error ? e.message : String(e);
+    return Response.json({ ok: false, error: `Помилка: ${detail}` }, { status: 500 });
   }
 }
