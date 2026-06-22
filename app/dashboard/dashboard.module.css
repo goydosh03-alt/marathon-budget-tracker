@@ -95,7 +95,7 @@
 .backdrop { position: fixed; inset: 0; z-index: 15; }
 
 /* add transaction sheet */
-.sheetWrap { position: fixed; inset: 0; z-index: 40; display: flex; align-items: flex-end; justify-content: center; }
+.sheetWrap { position: fixed; inset: 0; z-index: 40; display: flex; align-items: flex-end; justify-content: center; padding: 0 12px calc(12px + env(safe-area-inset-bottom)); touch-action: none; }
 .sheetBack { position: absolute; inset: 0; background: rgba(0,0,0,0.18); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
 
 /* add/edit sheet v2 */
@@ -140,9 +140,9 @@
 .dayCalBtn { position: relative; flex: 0 0 48px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); color: #6ee7b7; cursor: pointer; }
 .dayCalBtn svg { width: 18px; height: 18px; }
 .dayCalBtn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-.sheet { position: relative; width: 100%; max-width: 480px; background: #0e1a1d; border: 1px solid rgba(255,255,255,0.08); border-radius: 24px 24px 0 0; padding: 16px 16px calc(12px + env(safe-area-inset-bottom)); z-index: 1; max-height: 90vh; display: flex; flex-direction: column; }
+.sheet { position: relative; width: 100%; max-width: 480px; background: #0e1a1d; border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 16px; z-index: 1; max-height: 86vh; display: flex; flex-direction: column; }
 .sheet :focus { outline: none; }
-.sheetBody { overflow-y: auto; overflow-x: hidden; flex: 1 1 auto; min-height: 0; }
+.sheetBody { overflow-y: auto; overflow-x: hidden; flex: 1 1 auto; min-height: 0; overscroll-behavior: contain; touch-action: pan-y; }
 .sheetBody::-webkit-scrollbar { width: 0; }
 .sheetTitle { font-size: 17px; font-weight: 600; margin-bottom: 16px; }
 .segType { display: flex; gap: 8px; margin-bottom: 16px; }
@@ -190,11 +190,13 @@
 .itemRow { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 10px 12px; font-size: 14px; }
 .itemName { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .itemPrice { color: rgba(255,255,255,0.6); font-variant-numeric: tabular-nums; }
-.itemDel { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; border: none; background: rgba(255,120,120,0.10); color: #ff9090; cursor: pointer; flex-shrink: 0; }
+.itemDel { display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 8px; border: none; background: rgba(255,120,120,0.10); color: #ff9090; cursor: pointer; flex-shrink: 0; }
+.itemDel svg { width: 16px; height: 16px; }
 .itemDel:active { background: rgba(255,120,120,0.20); }
 
 /* red secondary delete button (detail sheet) */
-.btnDanger { flex: 1; height: 52px; border-radius: 14px; border: 1px solid rgba(255,90,90,0.35); background: rgba(255,90,90,0.10); color: #ff8a8a; font-size: 15px; font-weight: 600; cursor: pointer; }
+.btnDanger { flex: 0 0 auto; width: 48px; height: 48px; padding: 0; border-radius: 14px; border: 1px solid rgba(255,90,90,0.35); background: rgba(255,90,90,0.10); color: #ff8a8a; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.btnDanger svg { width: 20px; height: 20px; }
 .btnDanger:active { background: rgba(255,90,90,0.18); }
 
 /* trash icon on history row */

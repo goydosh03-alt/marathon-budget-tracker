@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useEffect, useTransition } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { getTransaction, deleteTransaction } from "@/app/dashboard/actions";
 import TransactionDetail from "@/components/TransactionDetail";
 import AddTransactionForm from "@/components/AddTransactionForm";
+import { Icon } from "@/components/IconSprite";
+import styles from "@/app/dashboard/dashboard.module.css";
 
 type Account = { id: string; name: string; type: string };
 
@@ -19,17 +21,9 @@ export default function TransactionViewer({
 }) {
   const [tx, setTx] = useState<Record<string, unknown> | null>(null);
   const [editing, setEditing] = useState(false);
-  const [, startDelete] = useTransition();
+  const [pendingDel, setPendingDel] = useState<{ name: string } | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const router = useRouter();
-
-  function handleDelete() {
-    if (!tx) return;
-    startDelete(async () => {
-      await deleteTransaction(String(tx.id));
-      router.refresh();
-      onClose();
-    });
-  }
 
   useEffect(() => {
     let active = true;
@@ -40,6 +34,44 @@ export default function TransactionViewer({
       active = false;
     };
   }, [id]);
+
+  // якщо попап закрили/розмонтували під час відліку — прибираємо таймер
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
+
+  function handleDelete() {
+    if (!tx) return;
+    const name = (tx.merchant as string) || (tx.category as string) || "запис";
+    setPendingDel({ name });
+    timerRef.current = setTimeout(() => {
+      deleteTransaction(String(tx.id)).then(() => router.refresh());
+      timerRef.current = null;
+      onClose();
+    }, 5000);
+  }
+
+  function undoDelete() {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = null;
+    setPendingDel(null);
+    onClose();
+  }
+
+  // показуємо тільки тост «Повернути» поки йде відлік 5с
+  if (pendingDel) {
+    return (
+      <div className={styles.toast}>
+        <Icon id="i-trash" />
+        <span className={styles.toastTxt}>Видалено «{pendingDel.name}»</span>
+        <button className={styles.toastUndo} onClick={undoDelete}>
+          Повернути
+        </button>
+      </div>
+    );
+  }
 
   if (!tx) return null;
 

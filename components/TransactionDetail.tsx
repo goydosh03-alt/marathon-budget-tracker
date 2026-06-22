@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon } from "@/components/IconSprite";
 import { usd, pln } from "@/lib/currency";
@@ -44,6 +44,15 @@ export default function TransactionDetail({
   const [items, setItems] = useState<Item[]>(Array.isArray(tx.items) ? tx.items : []);
   const [amount, setAmount] = useState(Number(tx.amount_home));
   const [pending, startTransition] = useTransition();
+
+  // блокуємо скрол фону, поки відкритий попап
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, []);
 
   function removeItem(idx: number) {
     const removed = items[idx];
@@ -142,7 +151,9 @@ export default function TransactionDetail({
         </div>
 
         <div className={styles.sheetActions}>
-          <button className={styles.btnDanger} onClick={onDelete}>Видалити</button>
+          <button className={styles.btnDanger} onClick={onDelete} aria-label="Видалити">
+            <Icon id="i-trash" />
+          </button>
           <button className={styles.btnPrimary} onClick={onEdit}>Редагувати</button>
         </div>
       </div>
