@@ -38,7 +38,7 @@ export async function parseReceipt(imageBase64: string, mediaType: string): Prom
     },
     body: JSON.stringify({
       model: "claude-sonnet-4-6",
-      max_tokens: 400,
+      max_tokens: 1500,
       messages: [
         {
           role: "user",

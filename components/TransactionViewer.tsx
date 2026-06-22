@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { getTransaction } from "@/app/dashboard/actions";
+import { useState, useEffect, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { getTransaction, deleteTransaction } from "@/app/dashboard/actions";
 import TransactionDetail from "@/components/TransactionDetail";
 import AddTransactionForm from "@/components/AddTransactionForm";
 
@@ -18,6 +19,17 @@ export default function TransactionViewer({
 }) {
   const [tx, setTx] = useState<Record<string, unknown> | null>(null);
   const [editing, setEditing] = useState(false);
+  const [, startDelete] = useTransition();
+  const router = useRouter();
+
+  function handleDelete() {
+    if (!tx) return;
+    startDelete(async () => {
+      await deleteTransaction(String(tx.id));
+      router.refresh();
+      onClose();
+    });
+  }
 
   useEffect(() => {
     let active = true;
@@ -62,6 +74,7 @@ export default function TransactionViewer({
       photoUrl={null}
       onClose={onClose}
       onEdit={() => setEditing(true)}
+      onDelete={handleDelete}
     />
   );
 }

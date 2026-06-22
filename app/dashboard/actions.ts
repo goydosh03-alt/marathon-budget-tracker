@@ -115,6 +115,33 @@ export async function createAccount(input: {
   return { ok: true, id: data.id as string };
 }
 
+// Оновлює позиції чека + суму (коли видаляєш позицію в деталі транзакції).
+export async function updateTransactionItems(
+  id: string,
+  items: { name: string; price: number }[],
+  amountHome: number
+): Promise<AddTxResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Не авторизовано" };
+
+  const { error } = await supabase
+    .from("transactions")
+    .update({
+      items: items.length ? items : null,
+      amount_home: amountHome,
+      amount_base: amountHome * RATE_BASE_PER_HOME,
+    })
+    .eq("id", id);
+
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/dashboard");
+  revalidatePath("/history");
+  return { ok: true };
+}
+
 export async function getTransaction(id: string) {
   const supabase = await createClient();
   const {

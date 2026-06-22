@@ -102,6 +102,18 @@ export default function AddTransactionForm({
     });
   }
 
+  function removeItem(idx: number) {
+    setScannedItems((prev) => {
+      if (!prev) return prev;
+      const next = prev.filter((_, i) => i !== idx);
+      const removed = prev[idx];
+      // авто-перерахунок суми: віднімаємо ціну видаленої позиції
+      const newAmount = Math.max(0, parsed - (removed?.price ?? 0));
+      setAmount(newAmount ? String(Number(newAmount.toFixed(2))) : "");
+      return next.length ? next : null;
+    });
+  }
+
   function readAsDataURL(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
       const r = new FileReader();
@@ -111,18 +123,52 @@ export default function AddTransactionForm({
     });
   }
 
+  function loadImage(src: string): Promise<HTMLImageElement> {
+    return new Promise((resolve, reject) => {
+      const im = new Image();
+      im.onload = () => resolve(im);
+      im.onerror = reject;
+      im.src = src;
+    });
+  }
+
+  // Стискаємо фото в браузері до ~1600px JPEG: вирішує великі фото з телефона,
+  // HEIC (iPhone) та ліміти Claude/Vercel. Якщо щось пішло не так — шлемо оригінал.
+  async function fileToScaledJpeg(
+    file: File
+  ): Promise<{ base64: string; mediaType: string }> {
+    try {
+      const dataUrl = await readAsDataURL(file);
+      const img = await loadImage(dataUrl);
+      const maxDim = 1600;
+      const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+      const w = Math.max(1, Math.round(img.width * scale));
+      const h = Math.max(1, Math.round(img.height * scale));
+      const canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return { base64: dataUrl.split(",")[1], mediaType: file.type || "image/jpeg" };
+      ctx.drawImage(img, 0, 0, w, h);
+      const out = canvas.toDataURL("image/jpeg", 0.82);
+      return { base64: out.split(",")[1], mediaType: "image/jpeg" };
+    } catch {
+      const dataUrl = await readAsDataURL(file);
+      return { base64: dataUrl.split(",")[1], mediaType: file.type || "image/jpeg" };
+    }
+  }
+
   async function handleScan(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
     setError("");
     setScanning(true);
     try {
-      const dataUrl = await readAsDataURL(file);
-      const base64 = dataUrl.split(",")[1];
+      const { base64, mediaType } = await fileToScaledJpeg(file);
       const res = await fetch("/api/parse-receipt", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ image: base64, mediaType: file.type || "image/jpeg" }),
+        body: JSON.stringify({ image: base64, mediaType }),
       });
       const json = await res.json();
       if (!json.ok) {
@@ -212,6 +258,28 @@ export default function AddTransactionForm({
           </div>
           <div className={styles.amtConv}>≈ {usd(parsed, 2)}</div>
         </div>
+
+        {scannedItems && scannedItems.length > 0 && (
+          <>
+            <div className={styles.fieldLabel}>Позиції з чека</div>
+            <div className={styles.itemsEdit}>
+              {scannedItems.map((it, i) => (
+                <div className={styles.itemRow} key={i}>
+                  <span className={styles.itemName}>{it.name}</span>
+                  <span className={styles.itemPrice}>{it.price.toFixed(2)} zł</span>
+                  <button
+                    className={styles.itemDel}
+                    type="button"
+                    onClick={() => removeItem(i)}
+                    aria-label="Видалити позицію"
+                  >
+                    <Icon id="i-trash" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
 
         <div className={styles.fieldLabel}>Категорія</div>
         <div className={styles.chips2}>

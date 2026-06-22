@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { usd, pln } from "@/lib/currency";
 import { Icon, IconSprite } from "@/components/IconSprite";
 import BottomNav from "@/components/BottomNav";
 import TopBar from "@/components/TopBar";
 import TransactionViewer from "@/components/TransactionViewer";
+import { deleteTransaction } from "@/app/dashboard/actions";
 import { periods, PERIOD_LABEL, inPeriod, catEmoji, catBg, fmtDate, pluralOps } from "@/lib/txui";
 
 type Tx = {
@@ -31,10 +33,50 @@ export default function HistoryList({
   const [period, setPeriod] = useState("month");
   const [open, setOpen] = useState<Set<string>>(new Set());
   const [viewId, setViewId] = useState<string | null>(null);
+  const [hiddenIds, setHiddenIds] = useState<Set<string>>(new Set());
+  const [toast, setToast] = useState<{ id: string; name: string } | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const router = useRouter();
+
+  function commitDelete(id: string) {
+    deleteTransaction(id).then(() => router.refresh());
+  }
+
+  function askDelete(e: React.MouseEvent, t: Tx) {
+    e.stopPropagation();
+    // якщо вже є відкладене видалення — фіналізуємо його одразу
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      if (toast) commitDelete(toast.id);
+    }
+    setHiddenIds((prev) => new Set(prev).add(t.id));
+    setToast({ id: t.id, name: t.merchant || t.category });
+    timerRef.current = setTimeout(() => {
+      commitDelete(t.id);
+      setToast(null);
+      timerRef.current = null;
+    }, 5000);
+  }
+
+  function undo() {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = null;
+    if (toast) {
+      setHiddenIds((prev) => {
+        const n = new Set(prev);
+        n.delete(toast.id);
+        return n;
+      });
+    }
+    setToast(null);
+  }
 
   const isExpenses = tab === "expenses";
   const filtered = txs.filter(
-    (t) => (isExpenses ? t.type === "expense" : t.type === "income") && inPeriod(t.date, period)
+    (t) =>
+      !hiddenIds.has(t.id) &&
+      (isExpenses ? t.type === "expense" : t.type === "income") &&
+      inPeriod(t.date, period)
   );
   const total = filtered.reduce((s, t) => s + t.amountHome, 0);
 
@@ -158,6 +200,13 @@ export default function HistoryList({
                             </span>
                             <span className={styles.treeSub}>{pln(t.amountHome, 2)}</span>
                           </div>
+                          <button
+                            className={styles.treeDel}
+                            onClick={(e) => askDelete(e, t)}
+                            aria-label="Видалити"
+                          >
+                            <Icon id="i-trash" />
+                          </button>
                         </div>
                       ))}
                     </div>
@@ -169,6 +218,14 @@ export default function HistoryList({
           </>
         )}
       </section>
+
+      {toast && (
+        <div className={styles.toast}>
+          <Icon id="i-trash" />
+          <span className={styles.toastTxt}>Видалено «{toast.name}»</span>
+          <button className={styles.toastUndo} onClick={undo}>Повернути</button>
+        </div>
+      )}
 
       <BottomNav active="history" accounts={accounts} />
 
