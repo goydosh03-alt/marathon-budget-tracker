@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useTransition, useEffect } from "react";
+import { useEffect } from "react";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon } from "@/components/IconSprite";
 import { usd, pln } from "@/lib/currency";
 import { catEmoji, catBg, fmtDate } from "@/lib/txui";
-import { updateTransactionItems } from "@/app/dashboard/actions";
 
 type Item = { name: string; price: number };
 
@@ -40,10 +39,8 @@ export default function TransactionDetail({
 }) {
   const isIncome = tx.type === "income";
   const cat = tx.category ?? "Інше";
-
-  const [items, setItems] = useState<Item[]>(Array.isArray(tx.items) ? tx.items : []);
-  const [amount, setAmount] = useState(Number(tx.amount_home));
-  const [pending, startTransition] = useTransition();
+  const amount = Number(tx.amount_home);
+  const items = Array.isArray(tx.items) ? tx.items : [];
 
   // блокуємо скрол фону, поки відкритий попап
   useEffect(() => {
@@ -53,23 +50,6 @@ export default function TransactionDetail({
       document.body.style.overflow = prev;
     };
   }, []);
-
-  function removeItem(idx: number) {
-    const removed = items[idx];
-    const next = items.filter((_, i) => i !== idx);
-    const newAmount = Math.max(0, Number((amount - (removed?.price ?? 0)).toFixed(2)));
-    // оптимістично оновлюємо UI
-    setItems(next);
-    setAmount(newAmount);
-    startTransition(async () => {
-      const res = await updateTransactionItems(tx.id, next, newAmount);
-      if (!res.ok) {
-        // відкат при помилці
-        setItems(items);
-        setAmount(amount);
-      }
-    });
-  }
 
   return (
     <div className={styles.sheetWrap}>
@@ -126,15 +106,6 @@ export default function TransactionDetail({
                   <div className={styles.itemRow} key={i}>
                     <span className={styles.itemName}>{it.name}</span>
                     <span className={styles.itemPrice}>{it.price.toFixed(2)} zł</span>
-                    <button
-                      className={styles.itemDel}
-                      type="button"
-                      onClick={() => removeItem(i)}
-                      disabled={pending}
-                      aria-label="Видалити позицію"
-                    >
-                      <Icon id="i-trash" />
-                    </button>
                   </div>
                 ))}
               </div>

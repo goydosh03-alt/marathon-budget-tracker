@@ -3,7 +3,7 @@
 import { useState, useTransition, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import styles from "@/app/dashboard/dashboard.module.css";
-import { addTransaction, updateTransaction, deleteTransaction } from "@/app/dashboard/actions";
+import { addTransaction, updateTransaction, deleteTransaction, createAccount } from "@/app/dashboard/actions";
 import { Icon } from "@/components/IconSprite";
 import { usd } from "@/lib/currency";
 import { catEmoji } from "@/lib/txui";
@@ -12,6 +12,14 @@ const EXPENSE_CATS = ["Їжа", "Кафе", "Транспорт", "Розваг�
 const INCOME_CATS = ["Зарплата", "Фриланс", "Подарунок", "Інше"];
 
 const ACC_EMOJI: Record<string, string> = { cash: "👛", card: "💳", savings: "🏦", bank: "🏦" };
+const ACC_TYPES = [
+  { id: "cash", emoji: "👛", label: "Готівка" },
+  { id: "card", emoji: "💳", label: "Картка" },
+  { id: "savings", emoji: "🏦", label: "Заощадження" },
+];
+
+type Item = { name: string; price: number };
+type Account = { id: string; name: string; type: string };
 
 export type EditTx = {
   id: string;
@@ -21,6 +29,7 @@ export type EditTx = {
   merchant: string;
   accountId: string;
   date: string;
+  items?: Item[];
 };
 
 function isoOffset(days: number): string {
@@ -52,13 +61,26 @@ export default function AddTransactionForm({
     editTx?.category ?? (initialType === "income" ? "Зарплата" : "Їжа")
   );
   const [merchant, setMerchant] = useState(editTx?.merchant ?? "");
+  const [accountList, setAccountList] = useState<Account[]>(accounts);
   const [accountId, setAccountId] = useState(editTx?.accountId ?? accounts[0]?.id ?? "");
   const [date, setDate] = useState(editTx?.date ?? isoOffset(0));
   const [error, setError] = useState("");
   const [pending, startTransition] = useTransition();
   const [scanning, setScanning] = useState(false);
-  const [scannedItems, setScannedItems] = useState<{ name: string; price: number }[] | null>(null);
+  const [scannedItems, setScannedItems] = useState<Item[] | null>(
+    editTx?.items && editTx.items.length ? editTx.items : null
+  );
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // створення рахунку
+  const [showCreateAcc, setShowCreateAcc] = useState(false);
+  const [newAccName, setNewAccName] = useState("");
+  const [newAccType, setNewAccType] = useState("cash");
+  const [creatingAcc, setCreatingAcc] = useState(false);
+
+  // undo для видалення позиції
+  const [itemUndo, setItemUndo] = useState<{ items: Item[]; amount: string } | null>(null);
+  const itemTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const isIncome = type === "income";
   const cats = isIncome ? INCOME_CATS : EXPENSE_CATS;
@@ -68,12 +90,24 @@ export default function AddTransactionForm({
   const yest = isoOffset(1);
   const dayBefore = isoOffset(2);
 
+  // дата зі скану/календаря, якщо вона не сьогодні/вчора/позавчора — виходить першим чипом
+  const dayPresets = [
+    { key: today, label: "Сьогодні" },
+    { key: yest, label: "Вчора" },
+    { key: dayBefore, label: "Позавчора" },
+  ];
+  const isPresetDate = dayPresets.some((p) => p.key === date);
+  const dayOptions = isPresetDate
+    ? dayPresets
+    : [{ key: date, label: "Обрано" }, dayPresets[0], dayPresets[1]];
+
   // блокуємо скрол фону, поки відкрита форма
   useEffect(() => {
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = prev;
+      if (itemTimer.current) clearTimeout(itemTimer.current);
     };
   }, []);
 
@@ -91,7 +125,7 @@ export default function AddTransactionForm({
     startTransition(async () => {
       const payload = { type, amountHome: parsed, category, merchant, accountId, date };
       const res = editTx
-        ? await updateTransaction(editTx.id, payload)
+        ? await updateTransaction(editTx.id, { ...payload, items: scannedItems ?? [] })
         : await addTransaction({ ...payload, items: scannedItems ?? undefined });
       if (!res.ok) {
         setError(res.error ?? "Помилка збереження");
@@ -103,14 +137,49 @@ export default function AddTransactionForm({
   }
 
   function removeItem(idx: number) {
-    setScannedItems((prev) => {
-      if (!prev) return prev;
-      const next = prev.filter((_, i) => i !== idx);
-      const removed = prev[idx];
-      // авто-перерахунок суми: віднімаємо ціну видаленої позиції
-      const newAmount = Math.max(0, parsed - (removed?.price ?? 0));
-      setAmount(newAmount ? String(Number(newAmount.toFixed(2))) : "");
-      return next.length ? next : null;
+    if (!scannedItems) return;
+    const snapshot = { items: scannedItems, amount };
+    const removed = scannedItems[idx];
+    const next = scannedItems.filter((_, i) => i !== idx);
+    // авто-перерахунок суми: віднімаємо ціну видаленої позиції
+    const newAmount = Math.max(0, parsed - (removed?.price ?? 0));
+    setScannedItems(next.length ? next : null);
+    setAmount(newAmount ? String(Number(newAmount.toFixed(2))) : "");
+    // даємо 5с на відкат
+    if (itemTimer.current) clearTimeout(itemTimer.current);
+    setItemUndo(snapshot);
+    itemTimer.current = setTimeout(() => {
+      setItemUndo(null);
+      itemTimer.current = null;
+    }, 5000);
+  }
+
+  function undoItem() {
+    if (itemTimer.current) clearTimeout(itemTimer.current);
+    itemTimer.current = null;
+    if (itemUndo) {
+      setScannedItems(itemUndo.items);
+      setAmount(itemUndo.amount);
+    }
+    setItemUndo(null);
+  }
+
+  function createAcc() {
+    if (!newAccName.trim()) return;
+    setError("");
+    setCreatingAcc(true);
+    startTransition(async () => {
+      const res = await createAccount({ name: newAccName.trim(), type: newAccType });
+      setCreatingAcc(false);
+      if (!res.ok || !res.id) {
+        setError(res.error ?? "Не вдалося створити рахунок");
+        return;
+      }
+      const acc: Account = { id: res.id, name: newAccName.trim(), type: newAccType };
+      setAccountList((p) => [...p, acc]);
+      setAccountId(res.id);
+      setNewAccName("");
+      setShowCreateAcc(false);
     });
   }
 
@@ -296,28 +365,68 @@ export default function AddTransactionForm({
 
         <div className={styles.fieldLabel}>Рахунок</div>
         <div className={styles.accChips}>
-          {accounts.map((a) => (
+          {accountList.map((a) => (
             <button
               key={a.id}
+              type="button"
               className={`${styles.accChip} ${accountId === a.id ? styles.accChipOn : ""}`}
               onClick={() => setAccountId(a.id)}
             >
               {ACC_EMOJI[a.type] ?? "👛"} {a.name}
             </button>
           ))}
+          <button
+            type="button"
+            className={`${styles.accChip} ${styles.accAddChip}`}
+            onClick={() => setShowCreateAcc((v) => !v)}
+            aria-label="Додати рахунок"
+          >
+            +
+          </button>
         </div>
+
+        {showCreateAcc && (
+          <div className={styles.createAcc}>
+            <input
+              placeholder="Назва рахунку (напр. Картка mBank)"
+              value={newAccName}
+              onChange={(e) => setNewAccName(e.target.value)}
+            />
+            <div className={styles.chips2}>
+              {ACC_TYPES.map((t) => (
+                <button
+                  key={t.id}
+                  type="button"
+                  className={`${styles.chip2} ${newAccType === t.id ? styles.chip2On : ""}`}
+                  onClick={() => setNewAccType(t.id)}
+                >
+                  {t.emoji} {t.label}
+                </button>
+              ))}
+            </div>
+            <div className={styles.createAccRow}>
+              <button className={styles.btnGhost} type="button" onClick={() => setShowCreateAcc(false)}>
+                Скасувати
+              </button>
+              <button className={styles.btnPrimary} type="button" onClick={createAcc} disabled={creatingAcc}>
+                {creatingAcc ? "..." : "Додати"}
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className={styles.fieldLabel}>Дата</div>
         <div className={styles.daysRow}>
-          <button className={`${styles.dayBtn} ${date === today ? styles.dayBtnOn : ""}`} onClick={() => setDate(today)}>
-            <b>Сьогодні</b><span>{dm(today)}</span>
-          </button>
-          <button className={`${styles.dayBtn} ${date === yest ? styles.dayBtnOn : ""}`} onClick={() => setDate(yest)}>
-            <b>Вчора</b><span>{dm(yest)}</span>
-          </button>
-          <button className={`${styles.dayBtn} ${date === dayBefore ? styles.dayBtnOn : ""}`} onClick={() => setDate(dayBefore)}>
-            <b>Позавчора</b><span>{dm(dayBefore)}</span>
-          </button>
+          {dayOptions.map((o) => (
+            <button
+              key={o.label}
+              type="button"
+              className={`${styles.dayBtn} ${date === o.key ? styles.dayBtnOn : ""}`}
+              onClick={() => setDate(o.key)}
+            >
+              <b>{o.label}</b><span>{dm(o.key)}</span>
+            </button>
+          ))}
           <label className={styles.dayCalBtn}>
             <Icon id="i-cal" />
             <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
@@ -347,6 +456,14 @@ export default function AddTransactionForm({
           </button>
         </div>
       </div>
+
+      {itemUndo && (
+        <div className={styles.toast}>
+          <Icon id="i-trash" />
+          <span className={styles.toastTxt}>Позицію видалено</span>
+          <button className={styles.toastUndo} onClick={undoItem}>Повернути</button>
+        </div>
+      )}
     </div>
   );
 }

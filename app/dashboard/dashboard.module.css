@@ -122,7 +122,7 @@
 .fcard input { flex: 1; background: none; border: none; outline: none; color: #eaf2f0; font-size: 15px; }
 .fcard input::placeholder { color: rgba(255,255,255,0.35); }
 .acctSelect { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-.daysRow { display: flex; gap: 8px; align-items: stretch; margin-bottom: 14px; }
+.daysRow { display: flex; gap: 4px; align-items: stretch; margin-bottom: 14px; }
 .dayBtn { flex: 1; text-align: center; padding: 9px 0; border-radius: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); color: rgba(255,255,255,0.55); cursor: pointer; }
 .dayBtn b { display: block; font-size: 13px; font-weight: 600; color: #eaf2f0; line-height: 1; margin-bottom: 4px; }
 .dayBtn span { font-size: 11px; line-height: 1; }
@@ -184,6 +184,35 @@
 .profEmail { font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 4px; }
 .logoutBtn { width: 100%; height: 52px; border-radius: 14px; margin-top: 16px; border: 1px solid rgba(255,120,120,0.3); background: rgba(255,120,120,0.08); color: #ff9090; font-size: 15px; font-weight: 600; cursor: pointer; }
 .logoutBtn:active { background: rgba(255,120,120,0.14); }
+
+/* menu hub */
+.menuGroupLabel { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.5px; margin: 22px 4px 10px; }
+.menuList { display: flex; flex-direction: column; gap: 10px; }
+.menuItem { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 15px; color: #eaf2f0; text-decoration: none; cursor: pointer; }
+.menuItem:active { background: rgba(255,255,255,0.07); }
+.menuIco { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.menuIco svg { width: 20px; height: 20px; }
+.menuMid { flex: 1; min-width: 0; }
+.menuName { font-size: 15px; font-weight: 600; }
+.menuSub { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 2px; }
+.menuChev { color: rgba(255,255,255,0.28); flex-shrink: 0; }
+.menuChev svg { width: 18px; height: 18px; transform: rotate(-90deg); }
+.menuSoon { font-size: 10.5px; font-weight: 700; color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.06); border-radius: 999px; padding: 4px 9px; flex-shrink: 0; }
+.menuItemOff { opacity: 0.5; cursor: default; }
+
+/* settings */
+.setCard { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 8px; }
+.setAccRow { display: flex; align-items: center; gap: 10px; padding: 10px 8px; }
+.setAccRow + .setAccRow { border-top: 1px solid rgba(255,255,255,0.05); }
+.setAccEmoji { font-size: 20px; flex-shrink: 0; }
+.setAccInput { flex: 1; min-width: 0; background: none; border: none; outline: none; color: #eaf2f0; font-size: 15px; font-weight: 500; }
+.setAccBtn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; border: none; background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); cursor: pointer; flex-shrink: 0; }
+.setAccBtn svg { width: 15px; height: 15px; }
+.setAccBtn:active { background: rgba(255,255,255,0.1); }
+.setAccDel { color: #ff9090; background: rgba(255,120,120,0.10); }
+.dangerBtn { width: 100%; height: 50px; border-radius: 14px; margin-top: 12px; border: 1px solid rgba(255,90,90,0.35); background: rgba(255,90,90,0.10); color: #ff8a8a; font-size: 14px; font-weight: 600; cursor: pointer; }
+.dangerBtn:active { background: rgba(255,90,90,0.18); }
+.setHint { font-size: 12px; color: rgba(255,255,255,0.4); margin: 6px 4px 0; line-height: 1.4; }
 
 /* editable receipt items (scan form + detail) */
 .itemsEdit { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }

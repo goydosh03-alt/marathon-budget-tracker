@@ -61,6 +61,7 @@ export async function updateTransaction(
     merchant: string;
     accountId: string;
     date: string;
+    items?: { name: string; price: number }[];
   }
 ): Promise<AddTxResult> {
   const supabase = await createClient();
@@ -72,19 +73,22 @@ export async function updateTransaction(
     return { ok: false, error: "Введи суму більше нуля" };
   }
 
-  const { error } = await supabase
-    .from("transactions")
-    .update({
-      account_id: input.accountId || null,
-      tx_date: input.date,
-      type: input.type,
-      amount_home: input.amountHome,
-      amount_base: input.amountHome * RATE_BASE_PER_HOME,
-      exchange_rate: RATE_BASE_PER_HOME,
-      category: input.category || "Інше",
-      merchant: input.merchant || null,
-    })
-    .eq("id", id);
+  const patch: Record<string, unknown> = {
+    account_id: input.accountId || null,
+    tx_date: input.date,
+    type: input.type,
+    amount_home: input.amountHome,
+    amount_base: input.amountHome * RATE_BASE_PER_HOME,
+    exchange_rate: RATE_BASE_PER_HOME,
+    category: input.category || "Інше",
+    merchant: input.merchant || null,
+  };
+  // позиції оновлюємо лише якщо їх передали (щоб не затирати наявні)
+  if (input.items !== undefined) {
+    patch.items = input.items.length ? input.items : null;
+  }
+
+  const { error } = await supabase.from("transactions").update(patch).eq("id", id);
 
   if (error) return { ok: false, error: error.message };
   revalidatePath("/dashboard");
@@ -160,6 +164,58 @@ export async function deleteTransaction(id: string): Promise<AddTxResult> {
   if (!user) return { ok: false, error: "Не авторизовано" };
 
   const { error } = await supabase.from("transactions").delete().eq("id", id);
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/dashboard");
+  revalidatePath("/history");
+  return { ok: true };
+}
+
+export async function renameAccount(id: string, name: string): Promise<AddTxResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Не авторизовано" };
+  if (!name.trim()) return { ok: false, error: "Введи назву" };
+
+  const { error } = await supabase
+    .from("accounts")
+    .update({ name: name.trim() })
+    .eq("id", id)
+    .eq("user_id", user.id);
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/dashboard");
+  revalidatePath("/history");
+  revalidatePath("/settings");
+  return { ok: true };
+}
+
+export async function deleteAccount(id: string): Promise<AddTxResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Не авторизовано" };
+
+  // відвʼязуємо транзакції від рахунку, щоб не впертись у FK
+  await supabase.from("transactions").update({ account_id: null }).eq("account_id", id);
+  const { error } = await supabase.from("accounts").delete().eq("id", id).eq("user_id", user.id);
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/dashboard");
+  revalidatePath("/history");
+  revalidatePath("/settings");
+  return { ok: true };
+}
+
+// Небезпечна зона: видаляє ВСІ транзакції користувача.
+export async function deleteAllTransactions(): Promise<AddTxResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Не авторизовано" };
+
+  const { error } = await supabase.from("transactions").delete().eq("user_id", user.id);
   if (error) return { ok: false, error: error.message };
   revalidatePath("/dashboard");
   revalidatePath("/history");

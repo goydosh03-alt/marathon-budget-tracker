@@ -90,6 +90,7 @@ export default function TransactionViewer({
           merchant: (tx.merchant as string) ?? "",
           accountId: (tx.account_id as string) ?? "",
           date: String(tx.tx_date),
+          items: Array.isArray(tx.items) ? (tx.items as { name: string; price: number }[]) : undefined,
         }}
         onClose={onClose}
       />

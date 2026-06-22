@@ -61,8 +61,8 @@ export default function BottomNav({
           <Link href="/dashboard" className={`${styles.navItem} ${active === "reports" ? styles.navOn : ""}`}>
             <Icon id="i-bars" />Звіти
           </Link>
-          <Link href="/profile" className={`${styles.navItem} ${active === "profile" ? styles.navOn : ""}`}>
-            <Icon id="i-person" />Профіль
+          <Link href="/menu" className={`${styles.navItem} ${active === "profile" ? styles.navOn : ""}`}>
+            <Icon id="i-person" />Меню
           </Link>
         </div>
         <button
