@@ -77,8 +77,7 @@ export default function CalendarSheet({
   for (let i = 0; i < firstWeekday; i++) cells.push(null);
   for (let d = 1; d <= daysInMonth; d++) cells.push(iso(year, month, d));
 
-  const label =
-    from && to ? `${dm(from)} – ${dm(to)}` : from ? `${dm(from)} – …` : "Обери діапазон дат";
+  const label = from && to ? `${dm(from)} – ${dm(to)}` : from ? `${dm(from)} – …` : "";
 
   return (
     <div className={styles.sheetWrap}>
@@ -92,7 +91,7 @@ export default function CalendarSheet({
             </button>
           </div>
 
-          <div className={styles.calHint}>{label}</div>
+          {label && <div className={styles.calHint}>{label}</div>}
 
           <div className={styles.calSheetHead}>
             <button className={styles.calNav} onClick={prevMonth} aria-label="Попередній місяць">
@@ -137,7 +136,7 @@ export default function CalendarSheet({
               onReset();
             }}
           >
-            <Icon id="i-trash" /> Скинути
+            <Icon id="i-refresh" /> Скинути
           </button>
           <button
             className={styles.btnPrimary}

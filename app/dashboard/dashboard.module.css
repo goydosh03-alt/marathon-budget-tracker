@@ -31,7 +31,11 @@
 .eq { font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.45); }
 
 .accRow { display: flex; gap: 12px; margin-top: 10px; }
-.acc { flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 12px; }
+/* 3+ рахунків: горизонтальний скрол із маскою, щоб не ламало сторінку */
+.accRowScroll { overflow-x: auto; padding-bottom: 4px; -webkit-mask-image: linear-gradient(to right, #000 88%, transparent 100%); mask-image: linear-gradient(to right, #000 88%, transparent 100%); }
+.accRowScroll::-webkit-scrollbar { height: 0; }
+.accRowScroll .acc { flex: 0 0 46%; }
+.acc { flex: 1; min-width: 0; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 12px; }
 .accTop { display: flex; align-items: center; gap: 8px; }
 .ai { width: 30px; height: 30px; border-radius: 9px; display: flex; align-items: center; justify-content: center; }
 .ai svg { width: 17px; height: 17px; }
@@ -200,8 +204,8 @@
 .menuIco { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .menuIco svg { width: 20px; height: 20px; }
 .menuMid { flex: 1; min-width: 0; }
-.menuName { font-size: 15px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.menuSub { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.menuName { display: block; font-size: 15px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.menuSub { display: block; font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .menuChev { color: rgba(255,255,255,0.28); flex-shrink: 0; }
 .menuChev svg { width: 18px; height: 18px; transform: rotate(-90deg); }
 .menuSoon { font-size: 10.5px; font-weight: 700; color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.06); border-radius: 999px; padding: 4px 9px; flex-shrink: 0; }

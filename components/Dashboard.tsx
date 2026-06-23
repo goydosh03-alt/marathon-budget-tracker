@@ -7,7 +7,13 @@ import { Icon, IconSprite } from "@/components/IconSprite";
 import BottomNav from "@/components/BottomNav";
 import TopBar from "@/components/TopBar";
 import TransactionViewer from "@/components/TransactionViewer";
+import CalendarSheet from "@/components/CalendarSheet";
 import { periods, PERIOD_LABEL, inPeriod, catEmoji, catBg, fmtDate } from "@/lib/txui";
+
+function dmShort(isoStr: string): string {
+  const [, m, d] = isoStr.split("-");
+  return `${d}.${m}`;
+}
 
 type Account = { id: string; name: string; type: string; balanceHome: number };
 type Tx = {
@@ -44,15 +50,19 @@ export default function Dashboard({
   const [tab, setTab] = useState<"expenses" | "income">("expenses");
   const [period, setPeriod] = useState("month");
   const [viewId, setViewId] = useState<string | null>(null);
+  const [range, setRange] = useState<{ from: string; to: string } | null>(null);
+  const [calOpen, setCalOpen] = useState(false);
 
   const isExpenses = tab === "expenses";
-  const filtered = txs.filter(
-    (t) => (isExpenses ? t.type === "expense" : t.type === "income") && inPeriod(t.date, period)
-  );
+  const filtered = txs.filter((t) => {
+    if (isExpenses ? t.type !== "expense" : t.type !== "income") return false;
+    return range ? t.date >= range.from && t.date <= range.to : inPeriod(t.date, period);
+  });
   const total = filtered.reduce((s, t) => s + t.amountHome, 0);
   const list = filtered.slice(0, 5);
+  const periodText = range ? `${dmShort(range.from)} – ${dmShort(range.to)}` : PERIOD_LABEL[period];
 
-  const showBudget = isExpenses && budgetHome && period === "month";
+  const showBudget = isExpenses && budgetHome && period === "month" && !range;
   const pct = showBudget ? Math.min(100, (total / budgetHome!) * 100) : null;
 
   const accountsForForm = accounts.map((a) => ({ id: a.id, name: a.name, type: a.type }));
@@ -79,7 +89,7 @@ export default function Dashboard({
         </div>
       </section>
 
-      <section className={styles.accRow}>
+      <section className={`${styles.accRow} ${accounts.length >= 3 ? styles.accRowScroll : ""}`}>
         {accounts.map((a, i) => {
           const st = ACC_STYLE[i % ACC_STYLE.length];
           return (
@@ -111,21 +121,28 @@ export default function Dashboard({
           {periods.map((p) => (
             <button
               key={p.id}
-              className={`${styles.pf} ${period === p.id ? styles.pfOn : ""}`}
-              onClick={() => setPeriod(p.id)}
+              className={`${styles.pf} ${!range && period === p.id ? styles.pfOn : ""}`}
+              onClick={() => {
+                setRange(null);
+                setPeriod(p.id);
+              }}
             >
               {p.label}
             </button>
           ))}
           <span className={styles.vdiv} />
-          <button className={styles.cal} aria-label="Період">
+          <button
+            className={`${styles.cal} ${range ? styles.calActive : ""}`}
+            aria-label="Період"
+            onClick={() => setCalOpen(true)}
+          >
             <Icon id="i-cal" />
           </button>
         </div>
 
         <div className={styles.psum}>
           <span className={styles.psumLabel}>
-            {isExpenses ? "Витрачено" : "Зароблено"} · {PERIOD_LABEL[period]}
+            {isExpenses ? "Витрачено" : "Зароблено"} · {periodText}
           </span>
           <div className={styles.psumRow}>
             <span className={styles.psumAmt}>{usd(total, 0)}</span>
@@ -174,6 +191,22 @@ export default function Dashboard({
 
       {viewId && (
         <TransactionViewer id={viewId} accounts={accountsForForm} onClose={() => setViewId(null)} />
+      )}
+
+      {calOpen && (
+        <CalendarSheet
+          initialFrom={range?.from ?? null}
+          initialTo={range?.to ?? null}
+          onApply={(from, to) => {
+            setRange({ from, to });
+            setCalOpen(false);
+          }}
+          onReset={() => {
+            setRange(null);
+            setCalOpen(false);
+          }}
+          onClose={() => setCalOpen(false)}
+        />
       )}
     </div>
   );
