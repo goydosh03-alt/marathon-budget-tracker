@@ -11,6 +11,22 @@ export async function GET(request: Request) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
+      // новий акаунт: створюємо 2 рахунки за замовчуванням (готівка + картка)
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        const { count } = await supabase
+          .from("accounts")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", user.id);
+        if (!count) {
+          await supabase.from("accounts").insert([
+            { user_id: user.id, name: "Готівка", type: "cash", currency: "PLN" },
+            { user_id: user.id, name: "Картка", type: "card", currency: "PLN" },
+          ]);
+        }
+      }
       return NextResponse.redirect(`${origin}${next}`);
     }
   }

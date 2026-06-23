@@ -95,9 +95,6 @@ export default function Dashboard({
             </div>
           );
         })}
-        <button className={styles.accAdd} aria-label="Додати рахунок" title="Скоро">
-          <Icon id="i-plus" />
-        </button>
       </section>
 
       <div className={styles.tabs}>

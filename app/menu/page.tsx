@@ -21,6 +21,12 @@ export default async function MenuPage() {
     .eq("user_id", user.id)
     .order("created_at", { ascending: true });
 
+  const fullName =
+    (user.user_metadata?.full_name as string | undefined) ||
+    (user.user_metadata?.name as string | undefined) ||
+    (user.email ? user.email.split("@")[0] : "Друже");
+  const initial = fullName.charAt(0).toUpperCase();
+
   return (
     <div className={styles.screen}>
       <IconSprite />
@@ -28,19 +34,15 @@ export default async function MenuPage() {
         <span className={styles.barTitle}>Меню</span>
       </TopBar>
 
-      <div className={styles.menuGroupLabel}>Акаунт</div>
-      <div className={styles.menuList}>
-        <Link href="/profile" className={styles.menuItem}>
-          <span className={styles.menuIco} style={{ background: "rgba(74,222,180,0.14)", color: "#6ee7b7" }}>
-            <Icon id="i-person" />
-          </span>
-          <span className={styles.menuMid}>
-            <span className={styles.menuName}>Профіль</span>
-            <span className={styles.menuSub}>{user.email}</span>
-          </span>
-          <span className={styles.menuChev}><Icon id="i-chev" /></span>
-        </Link>
+      <Link href="/profile" className={styles.profCardLink}>
+        <div className={styles.profAvatar}>{initial}</div>
+        <div className={styles.profName}>{fullName}</div>
+        <div className={styles.profEmail}>{user.email}</div>
+        <span className={styles.profCardChev}><Icon id="i-chev" /></span>
+      </Link>
 
+      <div className={styles.menuGroupLabel}>Керування</div>
+      <div className={styles.menuList}>
         <Link href="/settings" className={styles.menuItem}>
           <span className={styles.menuIco} style={{ background: "rgba(124,92,255,0.16)", color: "#b9a8ff" }}>
             <Icon id="i-cog" />

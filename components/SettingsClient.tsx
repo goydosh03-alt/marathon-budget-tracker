@@ -22,6 +22,9 @@ export default function SettingsClient({
   const [confirmClear, setConfirmClear] = useState(false);
   const [clearing, setClearing] = useState(false);
   const [error, setError] = useState("");
+  const [delTarget, setDelTarget] = useState<Account | null>(null);
+  const [delWord, setDelWord] = useState("");
+  const canDelete = delWord.trim().toLowerCase() === "так";
 
   function editName(id: string, name: string) {
     setList((p) => p.map((a) => (a.id === id ? { ...a, name } : a)));
@@ -35,8 +38,9 @@ export default function SettingsClient({
     });
   }
 
-  function removeAcc(id: string, name: string) {
-    if (!window.confirm(`Видалити рахунок «${name}»? Транзакції залишаться, але без рахунку.`)) return;
+  function confirmDeleteAcc() {
+    if (!delTarget || !canDelete) return;
+    const id = delTarget.id;
     setError("");
     start(async () => {
       const r = await deleteAccount(id);
@@ -45,6 +49,8 @@ export default function SettingsClient({
         return;
       }
       setList((p) => p.filter((a) => a.id !== id));
+      setDelTarget(null);
+      setDelWord("");
     });
   }
 
@@ -81,7 +87,10 @@ export default function SettingsClient({
               />
               <button
                 className={`${styles.setAccBtn} ${styles.setAccDel}`}
-                onClick={() => removeAcc(a.id, a.name)}
+                onClick={() => {
+                  setDelWord("");
+                  setDelTarget(a);
+                }}
                 aria-label="Видалити рахунок"
               >
                 <Icon id="i-trash" />
@@ -125,6 +134,34 @@ export default function SettingsClient({
       )}
 
       {error && <div className={styles.setHint} style={{ color: "#ff9090" }}>{error}</div>}
+
+      {delTarget && (
+        <div className={styles.confirmWrap}>
+          <div className={styles.confirmBack} onClick={() => setDelTarget(null)} />
+          <div className={styles.confirmCard}>
+            <div className={styles.confirmTitle}>Видалити рахунок?</div>
+            <div className={styles.confirmText}>
+              Рахунок «{delTarget.name}» буде видалено. Транзакції залишаться, але без рахунку.
+              Щоб підтвердити, напиши слово <b>так</b>.
+            </div>
+            <input
+              className={styles.confirmInput}
+              placeholder="так"
+              value={delWord}
+              onChange={(e) => setDelWord(e.target.value)}
+              autoFocus
+            />
+            <div className={styles.confirmRow}>
+              <button className={styles.btnGhost} onClick={() => setDelTarget(null)}>
+                Скасувати
+              </button>
+              <button className={styles.confirmDel} onClick={confirmDeleteAcc} disabled={!canDelete}>
+                Видалити
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
