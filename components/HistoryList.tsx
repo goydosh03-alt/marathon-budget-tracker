@@ -25,6 +25,7 @@ type Tx = {
   merchant: string;
   date: string;
   createdAt: string;
+  items?: string[];
 };
 
 export default function HistoryList({
@@ -40,6 +41,21 @@ export default function HistoryList({
   const [viewId, setViewId] = useState<string | null>(null);
   const [range, setRange] = useState<{ from: string; to: string } | null>(null);
   const [calOpen, setCalOpen] = useState(false);
+  const [query, setQuery] = useState("");
+
+  const q = query.trim().toLowerCase();
+  const searching = q.length > 0;
+  const searchResults = searching
+    ? txs
+        .filter((t) => (tab === "expenses" ? t.type === "expense" : t.type === "income"))
+        .filter(
+          (t) =>
+            t.merchant.toLowerCase().includes(q) ||
+            t.category.toLowerCase().includes(q) ||
+            (t.items ?? []).some((n) => n.toLowerCase().includes(q))
+        )
+    : [];
+  const searchTotal = searchResults.reduce((s, t) => s + t.amountHome, 0);
 
   const isExpenses = tab === "expenses";
   const filtered = txs.filter((t) => {
@@ -91,6 +107,57 @@ export default function HistoryList({
         </button>
       </div>
 
+      <div className={styles.searchBar}>
+        <Icon id="i-search" />
+        <input
+          placeholder="Пошук: назва, категорія, позиція…"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+        {query && (
+          <button className={styles.searchClear} onClick={() => setQuery("")} aria-label="Очистити">
+            <Icon id="i-x" />
+          </button>
+        )}
+      </div>
+
+      {searching && (
+        <section className={styles.periodcard}>
+          <div className={styles.searchSum}>
+            <span className={styles.searchSumLabel}>
+              Знайдено {searchResults.length} {pluralOps(searchResults.length)}
+            </span>
+            <span className={styles.searchSumAmt}>{usd(searchTotal, 2)}</span>
+          </div>
+          {searchResults.length === 0 ? (
+            <EmptyState
+              icon="i-search"
+              title="Нічого не знайдено"
+              hint={`За запитом «${query}» транзакцій немає.`}
+            />
+          ) : (
+            searchResults.map((t) => (
+              <div className={`${styles.tx} ${styles.clickable}`} key={t.id} onClick={() => setViewId(t.id)}>
+                <div className={styles.emo} style={{ background: catBg(t.category) }}>
+                  {catEmoji(t.category, !isExpenses)}
+                </div>
+                <div>
+                  <span className={styles.txName}>{t.merchant || t.category}</span>
+                  <span className={styles.txMeta}>{t.category} · {fmtDate(t.date, t.createdAt)}</span>
+                </div>
+                <div className={styles.amt}>
+                  <span className={`${styles.amtVal} ${!isExpenses ? styles.inc : ""}`}>
+                    {isExpenses ? "−" : "+"}{usd(t.amountHome, 2)}
+                  </span>
+                  <span className={styles.amtSub}>{pln(t.amountHome, 2)}</span>
+                </div>
+              </div>
+            ))
+          )}
+        </section>
+      )}
+
+      {!searching && (
       <section className={styles.periodcard}>
         <div className={styles.pfilter}>
           {periods.map((p) => (
@@ -189,6 +256,7 @@ export default function HistoryList({
           </>
         )}
       </section>
+      )}
 
       <BottomNav active="history" accounts={accounts} />
 

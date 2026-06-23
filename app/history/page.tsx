@@ -19,7 +19,7 @@ export default async function HistoryPage() {
 
   const { data: txData } = await supabase
     .from("transactions")
-    .select("id, account_id, type, amount_home, category, merchant, tx_date, created_at")
+    .select("id, account_id, type, amount_home, category, merchant, tx_date, created_at, items")
     .eq("user_id", user.id)
     .order("tx_date", { ascending: false })
     .order("created_at", { ascending: false });
@@ -33,6 +33,9 @@ export default async function HistoryPage() {
     merchant: (t.merchant as string | null) ?? "",
     date: t.tx_date as string,
     createdAt: t.created_at as string,
+    items: Array.isArray(t.items)
+      ? (t.items as { name?: unknown }[]).map((it) => String(it?.name ?? ""))
+      : [],
   }));
 
   return <HistoryList accounts={accounts ?? []} txs={txs} />;
