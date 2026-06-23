@@ -38,7 +38,6 @@ export default async function MenuPage() {
         <div className={styles.profAvatar}>{initial}</div>
         <div className={styles.profName}>{fullName}</div>
         <div className={styles.profEmail}>{user.email}</div>
-        <span className={styles.profCardChev}><Icon id="i-chev" /></span>
       </Link>
 
       <div className={styles.menuGroupLabel}>Керування</div>

@@ -62,7 +62,7 @@ export default function BottomNav({
             <Icon id="i-bars" />Звіти
           </Link>
           <Link href="/menu" className={`${styles.navItem} ${active === "profile" ? styles.navOn : ""}`}>
-            <Icon id="i-person" />Меню
+            <Icon id="i-menu" />Меню
           </Link>
         </div>
         <button

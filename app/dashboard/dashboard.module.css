@@ -53,6 +53,7 @@
 .vdiv { flex: 0 0 1px; width: 1px; height: 14px; background: rgba(255,255,255,0.18); border-radius: 1px; margin: 0 3px; }
 .cal { flex: 0 0 30px; padding: 6px 0; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.5); background: none; border: none; cursor: pointer; }
 .cal svg { width: 16px; height: 16px; }
+.calActive { color: #6ee7b7; }
 .psum { margin-top: 10px; }
 .psumLabel { font-size: 12px; color: rgba(255,255,255,0.5); display: block; line-height: 1; margin-bottom: 8px; }
 .psumRow { display: flex; align-items: baseline; gap: 16px; }
@@ -199,8 +200,8 @@
 .menuIco { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .menuIco svg { width: 20px; height: 20px; }
 .menuMid { flex: 1; min-width: 0; }
-.menuName { font-size: 15px; font-weight: 600; }
-.menuSub { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 2px; }
+.menuName { font-size: 15px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.menuSub { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .menuChev { color: rgba(255,255,255,0.28); flex-shrink: 0; }
 .menuChev svg { width: 18px; height: 18px; transform: rotate(-90deg); }
 .menuSoon { font-size: 10.5px; font-weight: 700; color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.06); border-radius: 999px; padding: 4px 9px; flex-shrink: 0; }
@@ -219,6 +220,25 @@
 .dangerBtn { width: 100%; height: 50px; border-radius: 14px; margin-top: 12px; border: 1px solid rgba(255,90,90,0.35); background: rgba(255,90,90,0.10); color: #ff8a8a; font-size: 14px; font-weight: 600; cursor: pointer; }
 .dangerBtn:active { background: rgba(255,90,90,0.18); }
 .setHint { font-size: 12px; color: rgba(255,255,255,0.4); margin: 6px 4px 0; line-height: 1.4; }
+.addLineBtn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 46px; margin-top: 8px; border-radius: 14px; border: 1px dashed rgba(255,255,255,0.18); background: rgba(255,255,255,0.03); color: #6ee7b7; font-size: 14px; font-weight: 600; cursor: pointer; }
+.addLineBtn svg { width: 16px; height: 16px; }
+.addLineBtn:active { background: rgba(255,255,255,0.06); }
+
+/* calendar sheet */
+.calHint { text-align: center; font-size: 13px; font-weight: 600; color: #6ee7b7; margin-bottom: 14px; }
+.calSheetHead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.calNav { width: 38px; height: 38px; border-radius: 11px; background: rgba(255,255,255,0.05); border: none; color: #eaf2f0; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.calNav svg { width: 18px; height: 18px; }
+.calMonth { font-size: 15px; font-weight: 600; }
+.calWeek { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; margin-bottom: 6px; }
+.calWeek span { text-align: center; font-size: 11px; color: rgba(255,255,255,0.4); }
+.calGrid { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; }
+.calCell { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 14px; border-radius: 10px; background: transparent; border: none; color: #eaf2f0; cursor: pointer; }
+.calCellIn { background: rgba(74,222,180,0.14); border-radius: 6px; }
+.calCellEdge { background: #4ade9f; color: #04211a; font-weight: 700; }
+.calReset { display: flex; align-items: center; gap: 6px; flex: 0 0 auto; height: 48px; padding: 0 16px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: #eaf2f0; font-weight: 500; cursor: pointer; }
+.calReset svg { width: 16px; height: 16px; }
+.calReset:active { background: rgba(255,255,255,0.08); }
 
 /* confirm modal */
 .confirmWrap { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; padding: 24px; }

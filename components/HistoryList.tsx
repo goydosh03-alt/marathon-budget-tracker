@@ -7,7 +7,13 @@ import { Icon, IconSprite } from "@/components/IconSprite";
 import BottomNav from "@/components/BottomNav";
 import TopBar from "@/components/TopBar";
 import TransactionViewer from "@/components/TransactionViewer";
+import CalendarSheet from "@/components/CalendarSheet";
 import { periods, PERIOD_LABEL, inPeriod, catEmoji, catBg, fmtDate, pluralOps } from "@/lib/txui";
+
+function dmShort(isoStr: string): string {
+  const [, m, d] = isoStr.split("-");
+  return `${d}.${m}`;
+}
 
 type Tx = {
   id: string;
@@ -31,11 +37,15 @@ export default function HistoryList({
   const [period, setPeriod] = useState("month");
   const [open, setOpen] = useState<Set<string>>(new Set());
   const [viewId, setViewId] = useState<string | null>(null);
+  const [range, setRange] = useState<{ from: string; to: string } | null>(null);
+  const [calOpen, setCalOpen] = useState(false);
 
   const isExpenses = tab === "expenses";
-  const filtered = txs.filter(
-    (t) => (isExpenses ? t.type === "expense" : t.type === "income") && inPeriod(t.date, period)
-  );
+  const filtered = txs.filter((t) => {
+    if (isExpenses ? t.type !== "expense" : t.type !== "income") return false;
+    return range ? t.date >= range.from && t.date <= range.to : inPeriod(t.date, period);
+  });
+  const periodText = range ? `${dmShort(range.from)} – ${dmShort(range.to)}` : PERIOD_LABEL[period];
   const total = filtered.reduce((s, t) => s + t.amountHome, 0);
 
   const catMap = new Map<string, { sum: number; count: number }>();
@@ -52,6 +62,7 @@ export default function HistoryList({
 
   function reset(setter: () => void) {
     setOpen(new Set());
+    setRange(null);
     setter();
   }
 
@@ -84,21 +95,25 @@ export default function HistoryList({
           {periods.map((p) => (
             <button
               key={p.id}
-              className={`${styles.pf} ${period === p.id ? styles.pfOn : ""}`}
+              className={`${styles.pf} ${!range && period === p.id ? styles.pfOn : ""}`}
               onClick={() => reset(() => setPeriod(p.id))}
             >
               {p.label}
             </button>
           ))}
           <span className={styles.vdiv} />
-          <button className={styles.cal} aria-label="Період">
+          <button
+            className={`${styles.cal} ${range ? styles.calActive : ""}`}
+            aria-label="Період"
+            onClick={() => setCalOpen(true)}
+          >
             <Icon id="i-cal" />
           </button>
         </div>
 
         <div className={styles.psum}>
           <span className={styles.psumLabel}>
-            {isExpenses ? "Витрачено" : "Зароблено"} · {PERIOD_LABEL[period]}
+            {isExpenses ? "Витрачено" : "Зароблено"} · {periodText}
           </span>
           <div className={styles.psumRow}>
             <span className={styles.psumAmt}>{usd(total, 0)}</span>
@@ -174,6 +189,23 @@ export default function HistoryList({
 
       {viewId && (
         <TransactionViewer id={viewId} accounts={accounts} onClose={() => setViewId(null)} />
+      )}
+
+      {calOpen && (
+        <CalendarSheet
+          initialFrom={range?.from ?? null}
+          initialTo={range?.to ?? null}
+          onApply={(from, to) => {
+            setRange({ from, to });
+            setOpen(new Set());
+            setCalOpen(false);
+          }}
+          onReset={() => {
+            setRange(null);
+            setCalOpen(false);
+          }}
+          onClose={() => setCalOpen(false)}
+        />
       )}
     </div>
   );
