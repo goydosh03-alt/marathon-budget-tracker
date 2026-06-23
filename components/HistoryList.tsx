@@ -107,58 +107,58 @@ export default function HistoryList({
         </button>
       </div>
 
-      <div className={styles.searchBar}>
-        <Icon id="i-search" />
-        <input
-          placeholder="Пошук: назва, категорія, позиція…"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        {query && (
-          <button className={styles.searchClear} onClick={() => setQuery("")} aria-label="Очистити">
-            <Icon id="i-x" />
-          </button>
-        )}
-      </div>
-
-      {searching && (
-        <section className={styles.periodcard}>
-          <div className={styles.searchSum}>
-            <span className={styles.searchSumLabel}>
-              Знайдено {searchResults.length} {pluralOps(searchResults.length)}
-            </span>
-            <span className={styles.searchSumAmt}>{usd(searchTotal, 2)}</span>
-          </div>
-          {searchResults.length === 0 ? (
-            <EmptyState
-              icon="i-search"
-              title="Нічого не знайдено"
-              hint={`За запитом «${query}» транзакцій немає.`}
-            />
-          ) : (
-            searchResults.map((t) => (
-              <div className={`${styles.tx} ${styles.clickable}`} key={t.id} onClick={() => setViewId(t.id)}>
-                <div className={styles.emo} style={{ background: catBg(t.category) }}>
-                  {catEmoji(t.category, !isExpenses)}
-                </div>
-                <div>
-                  <span className={styles.txName}>{t.merchant || t.category}</span>
-                  <span className={styles.txMeta}>{t.category} · {fmtDate(t.date, t.createdAt)}</span>
-                </div>
-                <div className={styles.amt}>
-                  <span className={`${styles.amtVal} ${!isExpenses ? styles.inc : ""}`}>
-                    {isExpenses ? "−" : "+"}{usd(t.amountHome, 2)}
-                  </span>
-                  <span className={styles.amtSub}>{pln(t.amountHome, 2)}</span>
-                </div>
-              </div>
-            ))
-          )}
-        </section>
-      )}
-
-      {!searching && (
       <section className={styles.periodcard}>
+        <div className={styles.searchInline}>
+          <Icon id="i-search" />
+          <input
+            placeholder="Пошук: назва, категорія, позиція…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          {query && (
+            <button className={styles.searchClear} onClick={() => setQuery("")} aria-label="Очистити">
+              <Icon id="i-x" />
+            </button>
+          )}
+        </div>
+        <div className={styles.fulldiv} />
+
+        {searching ? (
+          <>
+            <div className={styles.searchSum}>
+              <span className={styles.searchSumLabel}>
+                Знайдено {searchResults.length} {pluralOps(searchResults.length)}
+              </span>
+              <span className={styles.searchSumAmt}>{usd(searchTotal, 2)}</span>
+            </div>
+            {searchResults.length === 0 ? (
+              <EmptyState
+                icon="i-search"
+                title="Нічого не знайдено"
+                hint={`За запитом «${query}» транзакцій немає.`}
+              />
+            ) : (
+              searchResults.map((t) => (
+                <div className={`${styles.tx} ${styles.clickable}`} key={t.id} onClick={() => setViewId(t.id)}>
+                  <div className={styles.emo} style={{ background: catBg(t.category) }}>
+                    {catEmoji(t.category, !isExpenses)}
+                  </div>
+                  <div>
+                    <span className={styles.txName}>{t.merchant || t.category}</span>
+                    <span className={styles.txMeta}>{t.category} · {fmtDate(t.date, t.createdAt)}</span>
+                  </div>
+                  <div className={styles.amt}>
+                    <span className={`${styles.amtVal} ${!isExpenses ? styles.inc : ""}`}>
+                      {isExpenses ? "−" : "+"}{usd(t.amountHome, 2)}
+                    </span>
+                    <span className={styles.amtSub}>{pln(t.amountHome, 2)}</span>
+                  </div>
+                </div>
+              ))
+            )}
+          </>
+        ) : (
+          <>
         <div className={styles.pfilter}>
           {periods.map((p) => (
             <button
@@ -255,8 +255,9 @@ export default function HistoryList({
             })}
           </>
         )}
+          </>
+        )}
       </section>
-      )}
 
       <BottomNav active="history" accounts={accounts} />
 

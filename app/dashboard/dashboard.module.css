@@ -60,7 +60,7 @@
 .calActive { color: #6ee7b7; }
 .psum { margin-top: 10px; }
 .psumLabel { font-size: 12px; color: rgba(255,255,255,0.5); display: block; line-height: 1; margin-bottom: 8px; }
-.psumRow { display: flex; align-items: baseline; gap: 16px; }
+.psumRow { display: flex; align-items: baseline; gap: 8px; }
 .psumAmt { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; line-height: 1; }
 .pr { font-size: 12px; color: rgba(255,255,255,0.5); }
 .pmeta { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 6px; }
@@ -193,6 +193,10 @@
 .logoutBtn:active { background: rgba(255,120,120,0.14); }
 
 /* search (history) */
+.searchInline { display: flex; align-items: center; gap: 10px; padding: 2px 4px 12px; }
+.searchInline > svg { width: 18px; height: 18px; color: rgba(255,255,255,0.4); flex-shrink: 0; }
+.searchInline input { flex: 1; min-width: 0; background: none; border: none; outline: none; color: #eaf2f0; font-size: 15px; }
+.searchInline input::placeholder { color: rgba(255,255,255,0.35); }
 .searchBar { display: flex; align-items: center; gap: 10px; height: 46px; padding: 0 14px; border-radius: 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); margin-bottom: 14px; }
 .searchBar > svg { width: 18px; height: 18px; color: rgba(255,255,255,0.4); flex-shrink: 0; }
 .searchBar input { flex: 1; min-width: 0; background: none; border: none; outline: none; color: #eaf2f0; font-size: 15px; }
