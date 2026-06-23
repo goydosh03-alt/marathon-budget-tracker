@@ -8,6 +8,7 @@ import BottomNav from "@/components/BottomNav";
 import TopBar from "@/components/TopBar";
 import TransactionViewer from "@/components/TransactionViewer";
 import CalendarSheet from "@/components/CalendarSheet";
+import EmptyState from "@/components/EmptyState";
 import { periods, PERIOD_LABEL, inPeriod, catEmoji, catBg, fmtDate, pluralOps } from "@/lib/txui";
 
 function dmShort(isoStr: string): string {
@@ -124,7 +125,11 @@ export default function HistoryList({
         <div className={styles.fulldiv} />
 
         {filtered.length === 0 ? (
-          <div className={styles.empty}>Немає транзакцій за цей період</div>
+          <EmptyState
+            icon="i-cal"
+            title="Нічого за цей період"
+            hint="Спробуй інший період чи діапазон, або додай транзакцію кнопкою + унизу."
+          />
         ) : (
           <>
             <div className={styles.sec}>

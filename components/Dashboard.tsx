@@ -8,6 +8,7 @@ import BottomNav from "@/components/BottomNav";
 import TopBar from "@/components/TopBar";
 import TransactionViewer from "@/components/TransactionViewer";
 import CalendarSheet from "@/components/CalendarSheet";
+import EmptyState from "@/components/EmptyState";
 import { periods, PERIOD_LABEL, inPeriod, catEmoji, catBg, fmtDate } from "@/lib/txui";
 
 function dmShort(isoStr: string): string {
@@ -165,7 +166,15 @@ export default function Dashboard({
           <a className={styles.secLink} href="/history">Всі →</a>
         </div>
         {list.length === 0 ? (
-          <div className={styles.empty}>Немає транзакцій за цей період. Додай через «+»</div>
+          <EmptyState
+            icon={isExpenses ? "i-wallet" : "i-income"}
+            title={isExpenses ? "Поки що порожньо" : "Ще немає доходів"}
+            hint={
+              isExpenses
+                ? "Додай першу витрату кнопкою + унизу або сканни чек"
+                : "Додай дохід кнопкою + унизу"
+            }
+          />
         ) : (
           list.map((t) => (
             <div className={`${styles.tx} ${styles.clickable}`} key={t.id} onClick={() => setViewId(t.id)}>

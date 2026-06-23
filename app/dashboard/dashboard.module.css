@@ -188,9 +188,16 @@
 .profCard { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 26px 20px; text-align: center; margin-top: 16px; }
 .profAvatar { width: 76px; height: 76px; border-radius: 50%; background: linear-gradient(135deg,#4ade9f,#3bb4f5); display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 700; color: #04211a; margin: 0 auto 14px; }
 .profName { font-size: 19px; font-weight: 600; }
-.profEmail { font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+.profEmail { font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 6px; }
 .logoutBtn { width: 100%; height: 52px; border-radius: 14px; margin-top: 16px; border: 1px solid rgba(255,120,120,0.3); background: rgba(255,120,120,0.08); color: #ff9090; font-size: 15px; font-weight: 600; cursor: pointer; }
 .logoutBtn:active { background: rgba(255,120,120,0.14); }
+
+/* empty state */
+.emptyBox { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 30px 20px 24px; }
+.emptyIco { width: 64px; height: 64px; border-radius: 20px; display: flex; align-items: center; justify-content: center; background: rgba(74,222,180,0.10); color: #6ee7b7; margin-bottom: 14px; }
+.emptyIco svg { width: 30px; height: 30px; }
+.emptyTitle { font-size: 15px; font-weight: 600; color: #eaf2f0; }
+.emptyHint { font-size: 13px; color: rgba(255,255,255,0.45); margin-top: 6px; max-width: 240px; line-height: 1.45; }
 
 /* menu hub */
 .profCardLink { position: relative; display: block; text-align: center; text-decoration: none; color: #eaf2f0; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 26px 20px; margin-top: 16px; }
@@ -205,7 +212,7 @@
 .menuIco svg { width: 20px; height: 20px; }
 .menuMid { flex: 1; min-width: 0; }
 .menuName { display: block; font-size: 15px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.menuSub { display: block; font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.menuSub { display: block; font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .menuChev { color: rgba(255,255,255,0.28); flex-shrink: 0; }
 .menuChev svg { width: 18px; height: 18px; transform: rotate(-90deg); }
 .menuSoon { font-size: 10.5px; font-weight: 700; color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.06); border-radius: 999px; padding: 4px 9px; flex-shrink: 0; }
