@@ -83,42 +83,38 @@ export default function ReportsView({
   const now = new Date();
   now.setHours(0, 0, 0, 0);
 
-  function inInstance(dateStr: string): boolean {
-    if (range) return dateStr >= range.from && dateStr <= range.to;
+  // діапазон одного «інстансу» гранулярності за зсувом
+  function rangeOf(off: number): { start: string; end: string; short: string } {
     if (period === "day") {
-      const d = new Date(now);
-      d.setDate(now.getDate() - offset);
-      return dateStr === iso(d);
+      const d = new Date(now); d.setDate(now.getDate() - off);
+      return { start: iso(d), end: iso(d), short: `${d.getDate()}` };
     }
     if (period === "week") {
-      const start = new Date(now);
-      start.setDate(now.getDate() - ((now.getDay() + 6) % 7) - offset * 7);
-      const end = new Date(start);
-      end.setDate(start.getDate() + 6);
-      return dateStr >= iso(start) && dateStr <= iso(end);
+      const s = new Date(now); s.setDate(now.getDate() - ((now.getDay() + 6) % 7) - off * 7);
+      const e = new Date(s); e.setDate(s.getDate() + 6);
+      return { start: iso(s), end: iso(e), short: `${s.getDate()}.${String(s.getMonth() + 1).padStart(2, "0")}` };
     }
     if (period === "month") {
-      const d = new Date(now.getFullYear(), now.getMonth() - offset, 1);
-      return dateStr.startsWith(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`);
+      const d = new Date(now.getFullYear(), now.getMonth() - off, 1);
+      const e = new Date(now.getFullYear(), now.getMonth() - off + 1, 0);
+      return { start: iso(d), end: iso(e), short: MONTHS_SHORT[d.getMonth()] };
     }
-    return dateStr.startsWith(`${now.getFullYear() - offset}`);
+    const y = now.getFullYear() - off;
+    return { start: `${y}-01-01`, end: `${y}-12-31`, short: `${y}` };
   }
 
   function instanceLabel(): string {
     if (range) return `${dmShort(range.from)} – ${dmShort(range.to)}`;
     if (period === "day") {
-      const d = new Date(now);
-      d.setDate(now.getDate() - offset);
+      const d = new Date(now); d.setDate(now.getDate() - offset);
       if (offset === 0) return "Сьогодні";
       if (offset === 1) return "Вчора";
       return `${d.getDate()} ${MONTHS_SHORT[d.getMonth()]}`;
     }
     if (period === "week") {
-      const start = new Date(now);
-      start.setDate(now.getDate() - ((now.getDay() + 6) % 7) - offset * 7);
-      const end = new Date(start);
-      end.setDate(start.getDate() + 6);
-      return `${start.getDate()}–${end.getDate()} ${MONTHS_SHORT[end.getMonth()]}`;
+      const s = new Date(now); s.setDate(now.getDate() - ((now.getDay() + 6) % 7) - offset * 7);
+      const e = new Date(s); e.setDate(s.getDate() + 6);
+      return `${s.getDate()}–${e.getDate()} ${MONTHS_SHORT[e.getMonth()]}`;
     }
     if (period === "month") {
       const d = new Date(now.getFullYear(), now.getMonth() - offset, 1);
@@ -127,27 +123,30 @@ export default function ReportsView({
     return `${now.getFullYear() - offset}`;
   }
 
-  const filtered = ofTab.filter((t) => inInstance(t.date));
+  // --- По категоріях (поточний інстанс) ---
+  const curRange: { start: string; end: string } = range
+    ? { start: range.from, end: range.to }
+    : rangeOf(offset);
+  const filtered = ofTab.filter((t) => t.date >= curRange.start && t.date <= curRange.end);
   const total = filtered.reduce((s, t) => s + t.amountHome, 0);
   const cats = catList(filtered);
 
-  const monthsData = Array.from({ length: 6 }, (_, idx) => {
-    const back = 5 - idx + offset;
-    const d = new Date(now.getFullYear(), now.getMonth() - back, 1);
-    const prefix = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-    const sum = ofTab.filter((t) => t.date.startsWith(prefix)).reduce((s, t) => s + t.amountHome, 0);
-    return { label: MONTHS_SHORT[d.getMonth()], sum, prefix };
+  // --- По періодах (6 інстансів гранулярності) ---
+  const barsData = Array.from({ length: 6 }, (_, idx) => {
+    const r = rangeOf(5 - idx + offset);
+    const sum = ofTab.filter((t) => t.date >= r.start && t.date <= r.end).reduce((s, t) => s + t.amountHome, 0);
+    return { label: r.short, sum, start: r.start, end: r.end };
   });
-  const months6 = ofTab.filter((t) => monthsData.some((md) => t.date.startsWith(md.prefix)));
-  const total6 = monthsData.reduce((s, d) => s + d.sum, 0);
-  const activeMonths = monthsData.filter((d) => d.sum > 0).length || 1;
-  const avg = total6 / activeMonths;
-  const maxBar = Math.max(...monthsData.map((d) => d.sum), 1);
-  const catsMonths = catList(months6);
-  const barsLabel = `${monthsData[0].label}–${monthsData[5].label}`;
+  const all6 = ofTab.filter((t) => t.date >= barsData[0].start && t.date <= barsData[5].end);
+  const total6 = barsData.reduce((s, d) => s + d.sum, 0);
+  const activeBars = barsData.filter((d) => d.sum > 0).length || 1;
+  const avg = total6 / activeBars;
+  const maxBar = Math.max(...barsData.map((d) => d.sum), 1);
+  const catsBars = catList(all6);
+  const barsLabel = `${barsData[0].label}–${barsData[5].label}`;
 
   const big = view === "months" ? total6 : total;
-  const legendCats = view === "months" ? catsMonths : cats;
+  const legendCats = view === "months" ? catsBars : cats;
   const isEmpty = view === "months" ? total6 === 0 : cats.length === 0;
   const canNewer = !range && offset > 0;
   const canOlder = !range && offset < MAX_BACK;
@@ -155,32 +154,12 @@ export default function ReportsView({
   const older = () => canOlder && setOffset((o) => Math.min(MAX_BACK, o + 1));
   const newer = () => canNewer && setOffset((o) => Math.max(0, o - 1));
 
-  function swipeStart(e: React.TouchEvent) {
-    touchX.current = e.touches[0].clientX;
-  }
+  function swipeStart(e: React.TouchEvent) { touchX.current = e.touches[0].clientX; }
   function swipeEnd(e: React.TouchEvent) {
     const dx = e.changedTouches[0].clientX - touchX.current;
-    if (dx < -45) older();
-    else if (dx > 45) newer();
+    if (dx < -45) older(); else if (dx > 45) newer();
   }
-  function changePeriod(id: string) {
-    setRange(null);
-    setOffset(0);
-    setPeriod(id);
-  }
-
-  const Dots = () => (
-    <div className={styles.monthDots}>
-      {Array.from({ length: MAX_BACK + 1 }, (_, i) => (
-        <button
-          key={i}
-          className={`${styles.mDot} ${!range && offset === MAX_BACK - i ? styles.mDotOn : ""}`}
-          onClick={() => { setRange(null); setOffset(MAX_BACK - i); }}
-          aria-label={`Період -${MAX_BACK - i}`}
-        />
-      ))}
-    </div>
-  );
+  function changePeriod(id: string) { setRange(null); setOffset(0); setPeriod(id); }
 
   return (
     <div className={styles.screen}>
@@ -196,38 +175,34 @@ export default function ReportsView({
         </button>
       </div>
 
-      <div className={styles.viewIcons}>
-        <div className={styles.viewIconsSeg}>
-          <button className={`${styles.viewIcon} ${view === "cats" ? styles.viewIconOn : ""}`} onClick={() => setView("cats")} aria-label="Кругова">
-            <Icon id="i-pie" />
-          </button>
-          <button className={`${styles.viewIcon} ${view === "months" ? styles.viewIconOn : ""}`} onClick={() => setView("months")} aria-label="Стовпчики">
-            <Icon id="i-bars" />
+      <section className={styles.periodcard} onTouchStart={swipeStart} onTouchEnd={swipeEnd}>
+        <div className={styles.pfilter}>
+          {periods.map((p) => (
+            <button
+              key={p.id}
+              className={`${styles.pf} ${!range && period === p.id ? styles.pfOn : ""}`}
+              onClick={() => changePeriod(p.id)}
+            >
+              {p.label}
+            </button>
+          ))}
+          <span className={styles.vdiv} />
+          <button className={`${styles.cal} ${range ? styles.calActive : ""}`} aria-label="Період" onClick={() => setCalOpen(true)}>
+            <Icon id="i-cal" />
           </button>
         </div>
-      </div>
 
-      <section className={styles.periodcard} onTouchStart={swipeStart} onTouchEnd={swipeEnd}>
-        {view === "cats" && (
-          <>
-            <div className={styles.pfilter}>
-              {periods.map((p) => (
-                <button
-                  key={p.id}
-                  className={`${styles.pf} ${!range && period === p.id ? styles.pfOn : ""}`}
-                  onClick={() => changePeriod(p.id)}
-                >
-                  {p.label}
-                </button>
-              ))}
-              <span className={styles.vdiv} />
-              <button className={`${styles.cal} ${range ? styles.calActive : ""}`} aria-label="Період" onClick={() => setCalOpen(true)}>
-                <Icon id="i-cal" />
-              </button>
-            </div>
-            {!range && <Dots />}
-          </>
-        )}
+        <div className={styles.repSubRow}>
+          <span className={styles.repDate}>{view === "months" ? barsLabel : instanceLabel()}</span>
+          <div className={styles.viewIconsSeg}>
+            <button className={`${styles.viewIcon} ${view === "cats" ? styles.viewIconOn : ""}`} onClick={() => setView("cats")} aria-label="Кругова">
+              <Icon id="i-pie" />
+            </button>
+            <button className={`${styles.viewIcon} ${view === "months" ? styles.viewIconOn : ""}`} onClick={() => setView("months")} aria-label="Стовпчики">
+              <Icon id="i-bars" />
+            </button>
+          </div>
+        </div>
 
         {isEmpty ? (
           <EmptyState icon="i-bars" title="Немає даних" hint={`За цей період ${isExpenses ? "витрат" : "доходів"} немає.`} />
@@ -248,34 +223,43 @@ export default function ReportsView({
                 <Icon id="i-fwd" />
               </button>
             </div>
-            <div className={styles.donutPeriod}>{instanceLabel()}</div>
+            {!range && (
+              <div className={styles.monthDots}>
+                {Array.from({ length: MAX_BACK + 1 }, (_, i) => (
+                  <button key={i} className={`${styles.mDot} ${offset === MAX_BACK - i ? styles.mDotOn : ""}`} onClick={() => setOffset(MAX_BACK - i)} aria-label={`-${MAX_BACK - i}`} />
+                ))}
+              </div>
+            )}
             <div className={styles.fulldiv} />
           </>
         ) : (
           <>
+            <div className={styles.repBigLine}>{usd(total6, 0)} <span className={styles.repSub}>≈ {pln(total6, 0)} · в сер. {usd(avg, 0)}</span></div>
             <div className={styles.donutRow}>
               <button className={styles.navArrow} onClick={older} disabled={!canOlder} aria-label="Назад">
                 <Icon id="i-back" />
               </button>
-              <div className={styles.repHead}>
-                <span className={styles.repBig}>{usd(total6, 0)}</span>
-                <span className={styles.repSub}>{barsLabel} · в сер. {usd(avg, 0)}/міс</span>
+              <div className={styles.bars}>
+                {barsData.map((d, i) => (
+                  <div className={styles.barCol} key={i}>
+                    <div className={styles.barWrap}>
+                      <div className={styles.barFill} style={{ height: `${(d.sum / maxBar) * 100}%` }} />
+                    </div>
+                    <span className={styles.barLbl}>{d.label}</span>
+                  </div>
+                ))}
               </div>
               <button className={styles.navArrow} onClick={newer} disabled={!canNewer} aria-label="Вперед">
                 <Icon id="i-fwd" />
               </button>
             </div>
-            <div className={styles.bars}>
-              {monthsData.map((d, i) => (
-                <div className={styles.barCol} key={i}>
-                  <div className={styles.barWrap}>
-                    <div className={styles.barFill} style={{ height: `${(d.sum / maxBar) * 100}%` }} />
-                  </div>
-                  <span className={styles.barLbl}>{d.label}</span>
-                </div>
-              ))}
-            </div>
-            <Dots />
+            {!range && (
+              <div className={styles.monthDots}>
+                {Array.from({ length: MAX_BACK + 1 }, (_, i) => (
+                  <button key={i} className={`${styles.mDot} ${offset === MAX_BACK - i ? styles.mDotOn : ""}`} onClick={() => setOffset(MAX_BACK - i)} aria-label={`-${MAX_BACK - i}`} />
+                ))}
+              </div>
+            )}
             <div className={styles.fulldiv} />
           </>
         )}

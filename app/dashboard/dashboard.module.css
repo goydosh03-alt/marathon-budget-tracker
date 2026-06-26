@@ -212,8 +212,11 @@
 .searchSumAmt { font-size: 20px; font-weight: 700; color: #6ee7b7; }
 
 /* reports — icon view switch + bars + month dots */
+.repSubRow { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; }
+.repDate { font-size: 15px; font-weight: 600; color: #eaf2f0; }
+.repBigLine { text-align: center; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; margin-top: 12px; }
 .viewIcons { display: flex; justify-content: flex-end; margin-top: 10px; }
-.viewIconsSeg { display: inline-flex; gap: 2px; background: rgba(255,255,255,0.06); border-radius: 11px; padding: 3px; }
+.viewIconsSeg { display: inline-flex; gap: 2px; background: rgba(255,255,255,0.06); border-radius: 11px; padding: 3px; flex-shrink: 0; }
 .viewIcon { width: 40px; height: 30px; border-radius: 8px; border: none; background: none; color: rgba(255,255,255,0.5); display: flex; align-items: center; justify-content: center; cursor: pointer; }
 .viewIcon svg { width: 18px; height: 18px; }
 .viewIconOn { background: rgba(255,255,255,0.12); color: #eaf2f0; }
