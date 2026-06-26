@@ -12,10 +12,11 @@ import { periods, catEmoji } from "@/lib/txui";
 
 type Tx = { type: string; amountHome: number; category: string; date: string };
 
-const COLORS = ["#4ade9f", "#3bb4f5", "#b9a8ff", "#f5c87c", "#ff8a8a", "#6ee7b7", "#7cc8f5", "#f5a3d0", "#9ad17a", "#c0c0c0"];
+// чітко різні відтінки (без двох зелених/синіх поряд)
+const COLORS = ["#4ade9f", "#3bb4f5", "#b9a8ff", "#f5a86a", "#ff8a8a", "#ffd45a", "#7c6cff", "#f5a3d0", "#5ad1c4", "#a0a0a0"];
 const MONTHS_SHORT = ["січ", "лют", "бер", "кві", "тра", "чер", "лип", "сер", "вер", "жов", "лис", "гру"];
 const MONTHS_FULL = ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"];
-const MAX_BACK = 5;
+const MONTHS_GEN = ["січня", "лютого", "березня", "квітня", "травня", "червня", "липня", "серпня", "вересня", "жовтня", "листопада", "грудня"];
 
 function iso(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -72,7 +73,7 @@ export default function ReportsView({
   const [tab, setTab] = useState<"expenses" | "income">("expenses");
   const [view, setView] = useState<"cats" | "months">("cats");
   const [period, setPeriod] = useState("month");
-  const [offset, setOffset] = useState(0);
+  const [navIdx, setNavIdx] = useState(0);
   const [range, setRange] = useState<{ from: string; to: string } | null>(null);
   const [calOpen, setCalOpen] = useState(false);
   const touchX = useRef(0);
@@ -103,18 +104,28 @@ export default function ReportsView({
     return { start: `${y}-01-01`, end: `${y}-12-31`, short: `${y}` };
   }
 
+  // доступні (непорожні) періоди цієї гранулярності, від найновішого (offset 0)
+  const SCAN = period === "day" ? 60 : period === "week" ? 53 : period === "month" ? 24 : 10;
+  const avail: number[] = [];
+  for (let o = 0; o <= SCAN; o++) {
+    const r = rangeOf(o);
+    if (ofTab.some((t) => t.date >= r.start && t.date <= r.end)) avail.push(o);
+  }
+  const idx = avail.length ? Math.min(navIdx, avail.length - 1) : 0;
+  const offset = avail[idx] ?? 0;
+
   function instanceLabel(): string {
     if (range) return `${dmShort(range.from)} – ${dmShort(range.to)}`;
     if (period === "day") {
       const d = new Date(now); d.setDate(now.getDate() - offset);
       if (offset === 0) return "Сьогодні";
       if (offset === 1) return "Вчора";
-      return `${d.getDate()} ${MONTHS_SHORT[d.getMonth()]}`;
+      return `${d.getDate()} ${MONTHS_GEN[d.getMonth()]}`;
     }
     if (period === "week") {
       const s = new Date(now); s.setDate(now.getDate() - ((now.getDay() + 6) % 7) - offset * 7);
       const e = new Date(s); e.setDate(s.getDate() + 6);
-      return `${s.getDate()}–${e.getDate()} ${MONTHS_SHORT[e.getMonth()]}`;
+      return `${s.getDate()}–${e.getDate()} ${MONTHS_GEN[e.getMonth()]}`;
     }
     if (period === "month") {
       const d = new Date(now.getFullYear(), now.getMonth() - offset, 1);
@@ -148,18 +159,18 @@ export default function ReportsView({
   const big = view === "months" ? total6 : total;
   const legendCats = view === "months" ? catsBars : cats;
   const isEmpty = view === "months" ? total6 === 0 : cats.length === 0;
-  const canNewer = !range && offset > 0;
-  const canOlder = !range && offset < MAX_BACK;
+  const canOlder = !range && idx < avail.length - 1; // є старіший непорожній період
+  const canNewer = !range && idx > 0; // є новіший непорожній період
 
-  const older = () => canOlder && setOffset((o) => Math.min(MAX_BACK, o + 1));
-  const newer = () => canNewer && setOffset((o) => Math.max(0, o - 1));
+  const older = () => canOlder && setNavIdx(idx + 1);
+  const newer = () => canNewer && setNavIdx(idx - 1);
 
   function swipeStart(e: React.TouchEvent) { touchX.current = e.touches[0].clientX; }
   function swipeEnd(e: React.TouchEvent) {
     const dx = e.changedTouches[0].clientX - touchX.current;
     if (dx < -45) older(); else if (dx > 45) newer();
   }
-  function changePeriod(id: string) { setRange(null); setOffset(0); setPeriod(id); }
+  function changePeriod(id: string) { setRange(null); setNavIdx(0); setPeriod(id); }
 
   return (
     <div className={styles.screen}>
@@ -167,10 +178,10 @@ export default function ReportsView({
       <TopBar><span className={styles.barTitle}>Звіти</span></TopBar>
 
       <div className={styles.tabs}>
-        <button className={`${styles.tab} ${isExpenses ? styles.tabOnExp : ""}`} onClick={() => setTab("expenses")}>
+        <button className={`${styles.tab} ${isExpenses ? styles.tabOnExp : ""}`} onClick={() => { setTab("expenses"); setNavIdx(0); }}>
           Витрати
         </button>
-        <button className={`${styles.tab} ${!isExpenses ? styles.tabOnInc : ""}`} onClick={() => setTab("income")}>
+        <button className={`${styles.tab} ${!isExpenses ? styles.tabOnInc : ""}`} onClick={() => { setTab("income"); setNavIdx(0); }}>
           Дохід
         </button>
       </div>
@@ -195,10 +206,10 @@ export default function ReportsView({
         <div className={styles.repSubRow}>
           <span className={styles.repDate}>{view === "months" ? barsLabel : instanceLabel()}</span>
           <div className={styles.viewIconsSeg}>
-            <button className={`${styles.viewIcon} ${view === "cats" ? styles.viewIconOn : ""}`} onClick={() => setView("cats")} aria-label="Кругова">
+            <button className={`${styles.viewIcon} ${view === "cats" ? styles.viewIconOn : ""}`} onClick={() => { setView("cats"); setNavIdx(0); }} aria-label="Кругова">
               <Icon id="i-pie" />
             </button>
-            <button className={`${styles.viewIcon} ${view === "months" ? styles.viewIconOn : ""}`} onClick={() => setView("months")} aria-label="Стовпчики">
+            <button className={`${styles.viewIcon} ${view === "months" ? styles.viewIconOn : ""}`} onClick={() => { setView("months"); setNavIdx(0); }} aria-label="Стовпчики">
               <Icon id="i-bars" />
             </button>
           </div>
@@ -223,11 +234,12 @@ export default function ReportsView({
                 <Icon id="i-fwd" />
               </button>
             </div>
-            {!range && (
+            {!range && avail.length > 1 && avail.length <= 12 && (
               <div className={styles.monthDots}>
-                {Array.from({ length: MAX_BACK + 1 }, (_, i) => (
-                  <button key={i} className={`${styles.mDot} ${offset === MAX_BACK - i ? styles.mDotOn : ""}`} onClick={() => setOffset(MAX_BACK - i)} aria-label={`-${MAX_BACK - i}`} />
-                ))}
+                {avail.map((_, i) => {
+                  const di = avail.length - 1 - i; // праворуч — найновіший (idx 0)
+                  return <button key={i} className={`${styles.mDot} ${idx === di ? styles.mDotOn : ""}`} onClick={() => setNavIdx(di)} aria-label={`період ${di}`} />;
+                })}
               </div>
             )}
             <div className={styles.fulldiv} />
@@ -253,11 +265,12 @@ export default function ReportsView({
                 <Icon id="i-fwd" />
               </button>
             </div>
-            {!range && (
+            {!range && avail.length > 1 && avail.length <= 12 && (
               <div className={styles.monthDots}>
-                {Array.from({ length: MAX_BACK + 1 }, (_, i) => (
-                  <button key={i} className={`${styles.mDot} ${offset === MAX_BACK - i ? styles.mDotOn : ""}`} onClick={() => setOffset(MAX_BACK - i)} aria-label={`-${MAX_BACK - i}`} />
-                ))}
+                {avail.map((_, i) => {
+                  const di = avail.length - 1 - i; // праворуч — найновіший (idx 0)
+                  return <button key={i} className={`${styles.mDot} ${idx === di ? styles.mDotOn : ""}`} onClick={() => setNavIdx(di)} aria-label={`період ${di}`} />;
+                })}
               </div>
             )}
             <div className={styles.fulldiv} />
