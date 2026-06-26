@@ -217,6 +217,10 @@
 .viewIcon { width: 40px; height: 30px; border-radius: 8px; border: none; background: none; color: rgba(255,255,255,0.5); display: flex; align-items: center; justify-content: center; cursor: pointer; }
 .viewIcon svg { width: 18px; height: 18px; }
 .viewIconOn { background: rgba(255,255,255,0.12); color: #eaf2f0; }
+.donutRow { display: flex; align-items: center; justify-content: center; gap: 2px; }
+.navArrow { flex-shrink: 0; width: 38px; height: 38px; border: none; background: none; color: rgba(255,255,255,0.55); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.navArrow svg { width: 22px; height: 22px; }
+.navArrow:disabled { opacity: 0.22; cursor: default; }
 .monthDots { display: flex; justify-content: center; align-items: center; gap: 6px; margin: 12px 0 2px; }
 .mDot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.2); border: none; padding: 0; cursor: pointer; transition: width 0.2s, background 0.2s; }
 .mDotOn { background: #4ade9f; width: 18px; border-radius: 3px; }
@@ -230,11 +234,11 @@
 .barLbl { margin-top: 8px; font-size: 11px; color: rgba(255,255,255,0.45); }
 
 /* reports — donut + legend */
-.donutWrap { position: relative; width: 180px; height: 180px; margin: 18px auto 0; }
-.donutSvg { width: 180px; height: 180px; display: block; }
+.donutWrap { position: relative; width: 176px; height: 176px; margin: 14px 0 0; flex-shrink: 0; }
+.donutSvg { width: 100%; height: 100%; display: block; }
 .donutCenter { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
-.donutSum { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
-.donutLbl { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 2px; }
+.donutSum { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; line-height: 1; }
+.donutLbl { font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1; margin-top: 4px; }
 .donutPeriod { text-align: center; font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 10px; }
 .legend { display: flex; flex-direction: column; gap: 2px; }
 .legRow { display: flex; align-items: center; gap: 10px; padding: 9px 2px; }

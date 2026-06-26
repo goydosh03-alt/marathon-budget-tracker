@@ -6,6 +6,7 @@ import { usd, pln } from "@/lib/currency";
 import { Icon, IconSprite } from "@/components/IconSprite";
 import BottomNav from "@/components/BottomNav";
 import TopBar from "@/components/TopBar";
+import CalendarSheet from "@/components/CalendarSheet";
 import EmptyState from "@/components/EmptyState";
 import { periods, catEmoji } from "@/lib/txui";
 
@@ -14,10 +15,14 @@ type Tx = { type: string; amountHome: number; category: string; date: string };
 const COLORS = ["#4ade9f", "#3bb4f5", "#b9a8ff", "#f5c87c", "#ff8a8a", "#6ee7b7", "#7cc8f5", "#f5a3d0", "#9ad17a", "#c0c0c0"];
 const MONTHS_SHORT = ["січ", "лют", "бер", "кві", "тра", "чер", "лип", "сер", "вер", "жов", "лис", "гру"];
 const MONTHS_FULL = ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"];
-const MAX_BACK = 5; // на скільки періодів назад можна гортати (6 крапок)
+const MAX_BACK = 5;
 
 function iso(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+function dmShort(s: string): string {
+  const [, m, d] = s.split("-");
+  return `${d}.${m}`;
 }
 
 function catList(txs: Tx[]) {
@@ -67,7 +72,9 @@ export default function ReportsView({
   const [tab, setTab] = useState<"expenses" | "income">("expenses");
   const [view, setView] = useState<"cats" | "months">("cats");
   const [period, setPeriod] = useState("month");
-  const [offset, setOffset] = useState(0); // 0 = поточний період, більше = назад
+  const [offset, setOffset] = useState(0);
+  const [range, setRange] = useState<{ from: string; to: string } | null>(null);
+  const [calOpen, setCalOpen] = useState(false);
   const touchX = useRef(0);
 
   const isExpenses = tab === "expenses";
@@ -77,6 +84,7 @@ export default function ReportsView({
   now.setHours(0, 0, 0, 0);
 
   function inInstance(dateStr: string): boolean {
+    if (range) return dateStr >= range.from && dateStr <= range.to;
     if (period === "day") {
       const d = new Date(now);
       d.setDate(now.getDate() - offset);
@@ -93,11 +101,11 @@ export default function ReportsView({
       const d = new Date(now.getFullYear(), now.getMonth() - offset, 1);
       return dateStr.startsWith(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`);
     }
-    // year
     return dateStr.startsWith(`${now.getFullYear() - offset}`);
   }
 
   function instanceLabel(): string {
+    if (range) return `${dmShort(range.from)} – ${dmShort(range.to)}`;
     if (period === "day") {
       const d = new Date(now);
       d.setDate(now.getDate() - offset);
@@ -119,12 +127,10 @@ export default function ReportsView({
     return `${now.getFullYear() - offset}`;
   }
 
-  // --- режим «По категоріях» ---
   const filtered = ofTab.filter((t) => inInstance(t.date));
   const total = filtered.reduce((s, t) => s + t.amountHome, 0);
   const cats = catList(filtered);
 
-  // --- режим «По місяцях» (6 місяців, що закінчуються на обраному) ---
   const monthsData = Array.from({ length: 6 }, (_, idx) => {
     const back = 5 - idx + offset;
     const d = new Date(now.getFullYear(), now.getMonth() - back, 1);
@@ -138,23 +144,43 @@ export default function ReportsView({
   const avg = total6 / activeMonths;
   const maxBar = Math.max(...monthsData.map((d) => d.sum), 1);
   const catsMonths = catList(months6);
+  const barsLabel = `${monthsData[0].label}–${monthsData[5].label}`;
 
   const big = view === "months" ? total6 : total;
   const legendCats = view === "months" ? catsMonths : cats;
   const isEmpty = view === "months" ? total6 === 0 : cats.length === 0;
+  const canNewer = !range && offset > 0;
+  const canOlder = !range && offset < MAX_BACK;
+
+  const older = () => canOlder && setOffset((o) => Math.min(MAX_BACK, o + 1));
+  const newer = () => canNewer && setOffset((o) => Math.max(0, o - 1));
 
   function swipeStart(e: React.TouchEvent) {
     touchX.current = e.touches[0].clientX;
   }
   function swipeEnd(e: React.TouchEvent) {
     const dx = e.changedTouches[0].clientX - touchX.current;
-    if (dx < -45) setOffset((o) => Math.min(MAX_BACK, o + 1)); // вліво → старіше
-    else if (dx > 45) setOffset((o) => Math.max(0, o - 1)); // вправо → новіше
+    if (dx < -45) older();
+    else if (dx > 45) newer();
   }
   function changePeriod(id: string) {
+    setRange(null);
     setOffset(0);
     setPeriod(id);
   }
+
+  const Dots = () => (
+    <div className={styles.monthDots}>
+      {Array.from({ length: MAX_BACK + 1 }, (_, i) => (
+        <button
+          key={i}
+          className={`${styles.mDot} ${!range && offset === MAX_BACK - i ? styles.mDotOn : ""}`}
+          onClick={() => { setRange(null); setOffset(MAX_BACK - i); }}
+          aria-label={`Період -${MAX_BACK - i}`}
+        />
+      ))}
+    </div>
+  );
 
   return (
     <div className={styles.screen}>
@@ -183,48 +209,61 @@ export default function ReportsView({
 
       <section className={styles.periodcard} onTouchStart={swipeStart} onTouchEnd={swipeEnd}>
         {view === "cats" && (
-          <div className={styles.pfilter}>
-            {periods.map((p) => (
-              <button
-                key={p.id}
-                className={`${styles.pf} ${period === p.id ? styles.pfOn : ""}`}
-                onClick={() => changePeriod(p.id)}
-              >
-                {p.label}
+          <>
+            <div className={styles.pfilter}>
+              {periods.map((p) => (
+                <button
+                  key={p.id}
+                  className={`${styles.pf} ${!range && period === p.id ? styles.pfOn : ""}`}
+                  onClick={() => changePeriod(p.id)}
+                >
+                  {p.label}
+                </button>
+              ))}
+              <span className={styles.vdiv} />
+              <button className={`${styles.cal} ${range ? styles.calActive : ""}`} aria-label="Період" onClick={() => setCalOpen(true)}>
+                <Icon id="i-cal" />
               </button>
-            ))}
-          </div>
+            </div>
+            {!range && <Dots />}
+          </>
         )}
 
         {isEmpty ? (
           <EmptyState icon="i-bars" title="Немає даних" hint={`За цей період ${isExpenses ? "витрат" : "доходів"} немає.`} />
         ) : view === "cats" ? (
           <>
-            <div className={styles.donutWrap}>
-              <Donut data={cats} />
-              <div className={styles.donutCenter}>
-                <span className={styles.donutSum}>{usd(big, 0)}</span>
-                <span className={styles.donutLbl}>≈ {pln(big, 0)}</span>
+            <div className={styles.donutRow}>
+              <button className={styles.navArrow} onClick={older} disabled={!canOlder} aria-label="Назад">
+                <Icon id="i-back" />
+              </button>
+              <div className={styles.donutWrap}>
+                <Donut data={cats} />
+                <div className={styles.donutCenter}>
+                  <span className={styles.donutSum}>{usd(big, 0)}</span>
+                  <span className={styles.donutLbl}>≈ {pln(big, 0)}</span>
+                </div>
               </div>
+              <button className={styles.navArrow} onClick={newer} disabled={!canNewer} aria-label="Вперед">
+                <Icon id="i-fwd" />
+              </button>
             </div>
             <div className={styles.donutPeriod}>{instanceLabel()}</div>
-            <div className={styles.monthDots}>
-              {Array.from({ length: MAX_BACK + 1 }, (_, i) => (
-                <button
-                  key={i}
-                  className={`${styles.mDot} ${offset === MAX_BACK - i ? styles.mDotOn : ""}`}
-                  onClick={() => setOffset(MAX_BACK - i)}
-                  aria-label={`Період -${i}`}
-                />
-              ))}
-            </div>
             <div className={styles.fulldiv} />
           </>
         ) : (
           <>
-            <div className={styles.repHead}>
-              <span className={styles.repBig}>{usd(total6, 0)}</span>
-              <span className={styles.repSub}>≈ {pln(total6, 0)} · в середньому {usd(avg, 0)}/міс</span>
+            <div className={styles.donutRow}>
+              <button className={styles.navArrow} onClick={older} disabled={!canOlder} aria-label="Назад">
+                <Icon id="i-back" />
+              </button>
+              <div className={styles.repHead}>
+                <span className={styles.repBig}>{usd(total6, 0)}</span>
+                <span className={styles.repSub}>{barsLabel} · в сер. {usd(avg, 0)}/міс</span>
+              </div>
+              <button className={styles.navArrow} onClick={newer} disabled={!canNewer} aria-label="Вперед">
+                <Icon id="i-fwd" />
+              </button>
             </div>
             <div className={styles.bars}>
               {monthsData.map((d, i) => (
@@ -236,16 +275,7 @@ export default function ReportsView({
                 </div>
               ))}
             </div>
-            <div className={styles.monthDots}>
-              {Array.from({ length: MAX_BACK + 1 }, (_, i) => (
-                <button
-                  key={i}
-                  className={`${styles.mDot} ${offset === MAX_BACK - i ? styles.mDotOn : ""}`}
-                  onClick={() => setOffset(MAX_BACK - i)}
-                  aria-label={`Зсув -${i}`}
-                />
-              ))}
-            </div>
+            <Dots />
             <div className={styles.fulldiv} />
           </>
         )}
@@ -268,6 +298,16 @@ export default function ReportsView({
       </section>
 
       <BottomNav active="reports" accounts={accounts} />
+
+      {calOpen && (
+        <CalendarSheet
+          initialFrom={range?.from ?? null}
+          initialTo={range?.to ?? null}
+          onApply={(from, to) => { setRange({ from, to }); setCalOpen(false); }}
+          onReset={() => { setRange(null); setCalOpen(false); }}
+          onClose={() => setCalOpen(false)}
+        />
+      )}
     </div>
   );
 }
