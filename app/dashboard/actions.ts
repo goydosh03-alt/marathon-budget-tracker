@@ -6,6 +6,19 @@ import { revalidatePath } from "next/cache";
 
 export type AddTxResult = { ok: boolean; error?: string };
 
+// Налаштування користувача зберігаємо в метаданих акаунта (без окремої таблиці).
+export async function setHideCents(value: boolean): Promise<AddTxResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Не авторизовано" };
+  const { error } = await supabase.auth.updateUser({ data: { hide_cents: value } });
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/", "layout");
+  return { ok: true };
+}
+
 // Додає транзакцію (дохід або витрата). Сума вводиться в домашній валюті (zł).
 export async function addTransaction(input: {
   type: "expense" | "income";

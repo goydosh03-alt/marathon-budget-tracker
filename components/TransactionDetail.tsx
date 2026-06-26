@@ -5,6 +5,7 @@ import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon } from "@/components/IconSprite";
 import { usd, pln } from "@/lib/currency";
 import { catEmoji, catBg, fmtDate } from "@/lib/txui";
+import { useDec } from "@/components/SettingsProvider";
 
 type Item = { name: string; price: number };
 
@@ -41,6 +42,7 @@ export default function TransactionDetail({
   const cat = tx.category ?? "Інше";
   const amount = Number(tx.amount_home);
   const items = Array.isArray(tx.items) ? tx.items : [];
+  const dec = useDec();
 
   // блокуємо скрол фону, поки відкритий попап
   useEffect(() => {
@@ -64,9 +66,9 @@ export default function TransactionDetail({
           </div>
 
           <div className={`${styles.detAmt} ${isIncome ? styles.inc : ""}`}>
-            {isIncome ? "+" : "−"}{usd(amount, 2)}
+            {isIncome ? "+" : "−"}{usd(amount, dec)}
           </div>
-          <div className={styles.detSub}>≈ {pln(amount, 2)}</div>
+          <div className={styles.detSub}>≈ {pln(amount, dec)}</div>
 
           <div>
             <div className={styles.detRow}>

@@ -10,6 +10,7 @@ import AmountPad from "@/components/AmountPad";
 import CalendarSheet from "@/components/CalendarSheet";
 import { usd } from "@/lib/currency";
 import { catEmoji } from "@/lib/txui";
+import { useDec } from "@/components/SettingsProvider";
 
 const EXPENSE_CATS = ["Їжа", "Кафе", "Транспорт", "Розваги", "Аптека", "Одяг", "Комунальні", "Інше"];
 const INCOME_CATS = ["Зарплата", "Фриланс", "Подарунок", "Інше"];
@@ -94,6 +95,7 @@ export default function AddTransactionForm({
   const isIncome = type === "income";
   const cats = isIncome ? INCOME_CATS : EXPENSE_CATS;
   const parsed = parseFloat(amount.replace(",", ".")) || 0;
+  const dec = useDec();
 
   const today = isoOffset(0);
   const yest = isoOffset(1);
@@ -326,7 +328,7 @@ export default function AddTransactionForm({
             </button>
             <span className={styles.amtZl}>zł</span>
           </div>
-          <div className={styles.amtConv}>≈ {usd(parsed, 2)}</div>
+          <div className={styles.amtConv}>≈ {usd(parsed, dec)}</div>
         </div>
 
         {scannedItems && scannedItems.length > 0 && (

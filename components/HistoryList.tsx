@@ -10,6 +10,7 @@ import TransactionViewer from "@/components/TransactionViewer";
 import CalendarSheet from "@/components/CalendarSheet";
 import EmptyState from "@/components/EmptyState";
 import { periods, PERIOD_LABEL, inPeriod, catEmoji, catBg, fmtDate, pluralOps } from "@/lib/txui";
+import { useDec } from "@/components/SettingsProvider";
 
 function dmShort(isoStr: string): string {
   const [, m, d] = isoStr.split("-");
@@ -57,6 +58,7 @@ export default function HistoryList({
     : [];
   const searchTotal = searchResults.reduce((s, t) => s + t.amountHome, 0);
 
+  const dec = useDec();
   const isExpenses = tab === "expenses";
   const filtered = txs.filter((t) => {
     if (isExpenses ? t.type !== "expense" : t.type !== "income") return false;
@@ -121,7 +123,6 @@ export default function HistoryList({
             </button>
           )}
         </div>
-        <div className={styles.fulldiv} />
 
         {searching ? (
           <>
@@ -129,7 +130,7 @@ export default function HistoryList({
               <span className={styles.searchSumLabel}>
                 Знайдено {searchResults.length} {pluralOps(searchResults.length)}
               </span>
-              <span className={styles.searchSumAmt}>{usd(searchTotal, 2)}</span>
+              <span className={styles.searchSumAmt}>{usd(searchTotal, dec)}</span>
             </div>
             {searchResults.length === 0 ? (
               <EmptyState
@@ -149,9 +150,9 @@ export default function HistoryList({
                   </div>
                   <div className={styles.amt}>
                     <span className={`${styles.amtVal} ${!isExpenses ? styles.inc : ""}`}>
-                      {isExpenses ? "−" : "+"}{usd(t.amountHome, 2)}
+                      {isExpenses ? "−" : "+"}{usd(t.amountHome, dec)}
                     </span>
-                    <span className={styles.amtSub}>{pln(t.amountHome, 2)}</span>
+                    <span className={styles.amtSub}>{pln(t.amountHome, dec)}</span>
                   </div>
                 </div>
               ))
@@ -241,9 +242,9 @@ export default function HistoryList({
                           </div>
                           <div className={styles.treeAmt}>
                             <span className={`${styles.treeVal} ${!isExpenses ? styles.inc : ""}`}>
-                              {isExpenses ? "−" : "+"}{usd(t.amountHome, 2)}
+                              {isExpenses ? "−" : "+"}{usd(t.amountHome, dec)}
                             </span>
-                            <span className={styles.treeSub}>{pln(t.amountHome, 2)}</span>
+                            <span className={styles.treeSub}>{pln(t.amountHome, dec)}</span>
                           </div>
                         </div>
                       ))}

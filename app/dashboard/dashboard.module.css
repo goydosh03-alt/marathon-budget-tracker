@@ -189,15 +189,15 @@
 .barTitle { font-size: 22px; font-weight: 700; }
 
 /* profile */
-.profCard { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 26px 20px; text-align: center; margin-top: 16px; }
-.profAvatar { width: 76px; height: 76px; border-radius: 50%; background: linear-gradient(135deg,#4ade9f,#3bb4f5); display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 700; color: #04211a; margin: 0 auto 14px; }
+.profCard { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 24px 20px; text-align: center; margin-top: 16px; }
+.profAvatar { width: 76px; height: 76px; border-radius: 50%; background: linear-gradient(135deg,#4ade9f,#3bb4f5); display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 700; color: #04211a; margin: 0 auto 20px; }
 .profName { font-size: 19px; font-weight: 600; }
 .profEmail { font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 6px; }
 .logoutBtn { width: 100%; height: 52px; border-radius: 14px; margin-top: 16px; border: 1px solid rgba(255,120,120,0.3); background: rgba(255,120,120,0.08); color: #ff9090; font-size: 15px; font-weight: 600; cursor: pointer; }
 .logoutBtn:active { background: rgba(255,120,120,0.14); }
 
 /* search (history) */
-.searchInline { display: flex; align-items: center; gap: 10px; padding: 0 4px; }
+.searchInline { display: flex; align-items: center; gap: 10px; padding: 12px 16px; margin: 0 -12px; border-top: 1px solid rgba(255,255,255,0.08); border-bottom: 1px solid rgba(255,255,255,0.08); }
 .searchInline > svg { width: 18px; height: 18px; color: rgba(255,255,255,0.4); flex-shrink: 0; }
 .searchInline input { flex: 1; min-width: 0; background: none; border: none; outline: none; color: #eaf2f0; font-size: 15px; }
 .searchInline input::placeholder { color: rgba(255,255,255,0.35); }
@@ -260,9 +260,9 @@
 .exportBtn { width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%; background: rgba(74,222,180,0.12); border: 1px solid rgba(74,222,180,0.3); color: #6ee7b7; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 .exportBtn svg { width: 18px; height: 18px; }
 .exportBtn:active { background: rgba(74,222,180,0.2); }
-.floatAdd { position: fixed; right: 20px; bottom: calc(24px + env(safe-area-inset-bottom)); z-index: 35; width: 60px; height: 60px; border-radius: 50%; border: none; background: linear-gradient(135deg,#4ade9f,#3bb4f5); color: #04211a; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 12px 30px -6px rgba(74,222,180,0.45); }
-.floatAdd svg { width: 26px; height: 26px; }
-.floatAdd:active { transform: scale(0.95); }
+.floatAdd { position: fixed; right: 16px; bottom: calc(14px + env(safe-area-inset-bottom)); z-index: 35; width: 60px; height: 56px; border-radius: 26px; background: rgba(18,28,30,0.97); border: 1px solid rgba(255,255,255,0.07); color: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 16px 40px rgba(0,0,0,0.5); }
+.floatAdd svg { width: 24px; height: 24px; }
+.floatAdd:active { background: rgba(255,255,255,0.16); color: #fff; }
 .catBoxHead { margin: 2px 0 12px; }
 .catBoxLabel { display: block; font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 8px; }
 .catBoxSum { display: block; font-size: 38px; font-weight: 700; letter-spacing: -1.2px; line-height: 1; }
@@ -285,8 +285,21 @@
 .emptyTitle { font-size: 15px; font-weight: 600; color: #eaf2f0; }
 .emptyHint { font-size: 13px; color: rgba(255,255,255,0.45); margin-top: 6px; max-width: 240px; line-height: 1.45; }
 
+/* menu quick cards */
+.quickCards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+.quickCard { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 14px; text-decoration: none; color: #eaf2f0; }
+.quickTop { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; min-height: 34px; }
+.quickIco { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+.quickIco svg { width: 18px; height: 18px; }
+.quickName { font-size: 14px; font-weight: 600; }
+.quickSub { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 4px; }
+.toggle { width: 42px; height: 24px; border-radius: 999px; background: rgba(255,255,255,0.14); position: relative; cursor: pointer; border: none; flex-shrink: 0; transition: background 0.2s; padding: 0; }
+.toggleOn { background: #4ade9f; }
+.toggleKnob { position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform 0.2s; }
+.toggleOn .toggleKnob { transform: translateX(18px); }
+
 /* menu hub */
-.profCardLink { position: relative; display: block; text-align: center; text-decoration: none; color: #eaf2f0; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 26px 20px; margin-top: 16px; }
+.profCardLink { position: relative; display: block; text-align: center; text-decoration: none; color: #eaf2f0; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 24px 20px; margin-top: 16px; }
 .profCardLink:active { background: rgba(255,255,255,0.07); }
 .profCardChev { position: absolute; top: 50%; right: 16px; transform: translateY(-50%); color: rgba(255,255,255,0.28); }
 .profCardChev svg { width: 18px; height: 18px; transform: rotate(-90deg); }

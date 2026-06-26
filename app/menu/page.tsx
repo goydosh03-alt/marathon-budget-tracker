@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { IconSprite, Icon } from "@/components/IconSprite";
 import TopBar from "@/components/TopBar";
 import BottomNav from "@/components/BottomNav";
+import MenuQuickCards from "@/components/MenuQuickCards";
 import styles from "@/app/dashboard/dashboard.module.css";
 
 export const dynamic = "force-dynamic";
@@ -26,6 +27,7 @@ export default async function MenuPage() {
     (user.user_metadata?.name as string | undefined) ||
     (user.email ? user.email.split("@")[0] : "Друже");
   const initial = fullName.charAt(0).toUpperCase();
+  const hideCents = !!user.user_metadata?.hide_cents;
 
   return (
     <div className={styles.screen}>
@@ -39,6 +41,8 @@ export default async function MenuPage() {
         <div className={styles.profName}>{fullName}</div>
         <div className={styles.profEmail}>{user.email}</div>
       </Link>
+
+      <MenuQuickCards hideCents={hideCents} />
 
       <div className={styles.menuGroupLabel}>Керування</div>
       <div className={styles.menuList}>

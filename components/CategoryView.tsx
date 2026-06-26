@@ -11,6 +11,7 @@ import AddTransactionForm from "@/components/AddTransactionForm";
 import ExportSheet from "@/components/ExportSheet";
 import EmptyState from "@/components/EmptyState";
 import { catEmoji, catBg, fmtDate } from "@/lib/txui";
+import { useDec } from "@/components/SettingsProvider";
 
 type Item = { name: string; price: number };
 type Tx = {
@@ -43,6 +44,7 @@ export default function CategoryView({
   const [showExport, setShowExport] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const router = useRouter();
+  const dec = useDec();
 
   function toggle(id: string) {
     setOpen((prev) => {
@@ -88,8 +90,6 @@ export default function CategoryView({
           </span>
         </div>
 
-        <div className={styles.fulldiv} />
-
         <div className={styles.searchInline}>
           <Icon id="i-search" />
           <input placeholder="Пошук по назві або позиції…" value={query} onChange={(e) => setQuery(e.target.value)} />
@@ -127,9 +127,9 @@ export default function CategoryView({
                   </div>
                   <div className={styles.amt}>
                     <span className={`${styles.amtVal} ${isIncome ? styles.inc : ""}`}>
-                      {isIncome ? "+" : "−"}{usd(t.amountHome, 2)}
+                      {isIncome ? "+" : "−"}{usd(t.amountHome, dec)}
                     </span>
-                    <span className={styles.amtSub}>{pln(t.amountHome, 2)}</span>
+                    <span className={styles.amtSub}>{pln(t.amountHome, dec)}</span>
                   </div>
                   {hasItems && (
                     <button

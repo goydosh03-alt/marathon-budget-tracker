@@ -10,6 +10,7 @@ import TransactionViewer from "@/components/TransactionViewer";
 import CalendarSheet from "@/components/CalendarSheet";
 import EmptyState from "@/components/EmptyState";
 import { periods, PERIOD_LABEL, inPeriod, catEmoji, catBg, fmtDate } from "@/lib/txui";
+import { useDec } from "@/components/SettingsProvider";
 
 function dmShort(isoStr: string): string {
   const [, m, d] = isoStr.split("-");
@@ -53,6 +54,7 @@ export default function Dashboard({
   const [range, setRange] = useState<{ from: string; to: string } | null>(null);
   const [calOpen, setCalOpen] = useState(false);
 
+  const dec = useDec();
   const isExpenses = tab === "expenses";
   const filtered = txs.filter((t) => {
     if (isExpenses ? t.type !== "expense" : t.type !== "income") return false;
@@ -191,9 +193,9 @@ export default function Dashboard({
               </div>
               <div className={styles.amt}>
                 <span className={`${styles.amtVal} ${t.type === "income" ? styles.inc : ""}`}>
-                  {t.type === "income" ? "+" : "−"}{usd(t.amountHome, 2)}
+                  {t.type === "income" ? "+" : "−"}{usd(t.amountHome, dec)}
                 </span>
-                <span className={styles.amtSub}>{pln(t.amountHome, 2)}</span>
+                <span className={styles.amtSub}>{pln(t.amountHome, dec)}</span>
               </div>
             </div>
           ))
