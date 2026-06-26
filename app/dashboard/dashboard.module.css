@@ -54,7 +54,7 @@
 .tabOnExp { background: linear-gradient(135deg,#4ade9f,#3bb4f5); color: #04211a; }
 .tabOnInc { background: linear-gradient(135deg,#4ade9f,#3bb4f5); color: #04211a; }
 
-.periodcard { margin-top: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 12px; }
+.periodcard { margin-top: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 12px; touch-action: pan-y; }
 .pfilter { display: flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.05); border-radius: 12px; padding: 4px; }
 .pf { flex: 1; text-align: center; padding: 6px 0; border-radius: 8px; font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.5); background: none; border: none; cursor: pointer; }
 .pfOn { background: rgba(255,255,255,0.12); color: #fff; }
@@ -246,12 +246,25 @@
 .donutLbl { font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1; margin-top: 4px; }
 .donutPeriod { text-align: center; font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 10px; }
 .legend { display: flex; flex-direction: column; gap: 2px; }
-.legRow { display: flex; align-items: center; gap: 10px; padding: 9px 2px; }
+.legRow { display: flex; align-items: center; gap: 10px; padding: 11px 4px; color: #eaf2f0; text-decoration: none; border-radius: 8px; }
+.legRow:active { background: rgba(255,255,255,0.05); }
 .legRow + .legRow { border-top: 1px solid rgba(255,255,255,0.05); }
+.legChev { color: rgba(255,255,255,0.28); flex-shrink: 0; display: flex; }
+.legChev svg { width: 16px; height: 16px; transform: rotate(-90deg); }
 .legDot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
 .legName { flex: 1; min-width: 0; font-size: 14px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .legPct { font-size: 12px; color: rgba(255,255,255,0.45); flex-shrink: 0; min-width: 34px; text-align: right; }
 .legSum { font-size: 14px; font-weight: 600; flex-shrink: 0; min-width: 56px; text-align: right; }
+
+/* category drill-down */
+.catHead { display: flex; align-items: center; gap: 14px; margin-top: 14px; }
+.catHeadEmoji { width: 52px; height: 52px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0; }
+.catHeadSum { display: block; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; line-height: 1; }
+.catHeadSub { display: block; font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 6px; }
+.viewToggleRow { display: flex; gap: 8px; margin: 14px 0 8px; }
+.sortChip { padding: 8px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 500; cursor: pointer; }
+.sortChipOn { background: rgba(74,222,180,0.10); border-color: rgba(74,222,180,0.4); color: #6ee7b7; }
+.catList { display: flex; flex-direction: column; }
 
 /* empty state */
 .emptyBox { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 30px 20px 24px; }

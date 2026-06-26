@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Link from "next/link";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { usd, pln } from "@/lib/currency";
 import { Icon, IconSprite } from "@/components/IconSprite";
@@ -76,7 +77,7 @@ export default function ReportsView({
   const [navIdx, setNavIdx] = useState(0);
   const [range, setRange] = useState<{ from: string; to: string } | null>(null);
   const [calOpen, setCalOpen] = useState(false);
-  const touchX = useRef(0);
+  const touch = useRef({ x: 0, y: 0 });
 
   const isExpenses = tab === "expenses";
   const ofTab = txs.filter((t) => (isExpenses ? t.type === "expense" : t.type === "income"));
@@ -156,6 +157,8 @@ export default function ReportsView({
 
   const big = view === "months" ? total6 : total;
   const legendCats = view === "months" ? catsBars : cats;
+  const drillFrom = view === "months" ? barsData[0].start : curRange.start;
+  const drillTo = view === "months" ? barsData[5].end : curRange.end;
   const isEmpty = view === "months" ? total6 === 0 : cats.length === 0;
   const canOlder = !range && idx < avail.length - 1; // є старіший непорожній період
   const canNewer = !range && idx > 0; // є новіший непорожній період
@@ -163,10 +166,16 @@ export default function ReportsView({
   const older = () => canOlder && setNavIdx(idx + 1);
   const newer = () => canNewer && setNavIdx(idx - 1);
 
-  function swipeStart(e: React.TouchEvent) { touchX.current = e.touches[0].clientX; }
+  function swipeStart(e: React.TouchEvent) {
+    const t = e.touches[0];
+    touch.current = { x: t.clientX, y: t.clientY };
+  }
   function swipeEnd(e: React.TouchEvent) {
-    const dx = e.changedTouches[0].clientX - touchX.current;
-    if (dx < -45) older(); else if (dx > 45) newer();
+    const t = e.changedTouches[0];
+    const dx = t.clientX - touch.current.x;
+    const dy = t.clientY - touch.current.y;
+    if (Math.abs(dx) < 35 || Math.abs(dx) < Math.abs(dy)) return; // тільки явний горизонтальний свайп
+    if (dx < 0) older(); else newer();
   }
   function changePeriod(id: string) { setRange(null); setNavIdx(0); setPeriod(id); }
 
@@ -267,12 +276,17 @@ export default function ReportsView({
             {legendCats.map((c) => {
               const share = big > 0 ? Math.round((c.sum / big) * 100) : 0;
               return (
-                <div className={styles.legRow} key={c.cat}>
+                <Link
+                  className={styles.legRow}
+                  key={c.cat}
+                  href={`/category?cat=${encodeURIComponent(c.cat)}&from=${drillFrom}&to=${drillTo}&type=${isExpenses ? "expense" : "income"}`}
+                >
                   <span className={styles.legDot} style={{ background: c.color }} />
                   <span className={styles.legName}>{catEmoji(c.cat, !isExpenses)} {c.cat}</span>
                   <span className={styles.legPct}>{share}%</span>
                   <span className={styles.legSum}>{usd(c.sum, 0)}</span>
-                </div>
+                  <span className={styles.legChev}><Icon id="i-chev" /></span>
+                </Link>
               );
             })}
           </div>
