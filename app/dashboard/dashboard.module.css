@@ -211,10 +211,15 @@
 .searchSumLabel { font-size: 13px; color: rgba(255,255,255,0.6); }
 .searchSumAmt { font-size: 20px; font-weight: 700; color: #6ee7b7; }
 
-/* reports — view toggle + bars */
-.viewToggle { display: flex; gap: 4px; background: rgba(255,255,255,0.05); border-radius: 12px; padding: 4px; margin-top: 10px; }
-.viewBtn { flex: 1; padding: 9px 0; border-radius: 9px; border: none; background: none; color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 600; cursor: pointer; }
-.viewBtnOn { background: rgba(255,255,255,0.09); color: #eaf2f0; }
+/* reports — icon view switch + bars + month dots */
+.viewIcons { display: flex; justify-content: flex-end; margin-top: 10px; }
+.viewIconsSeg { display: inline-flex; gap: 2px; background: rgba(255,255,255,0.06); border-radius: 11px; padding: 3px; }
+.viewIcon { width: 40px; height: 30px; border-radius: 8px; border: none; background: none; color: rgba(255,255,255,0.5); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.viewIcon svg { width: 18px; height: 18px; }
+.viewIconOn { background: rgba(255,255,255,0.12); color: #eaf2f0; }
+.monthDots { display: flex; justify-content: center; align-items: center; gap: 6px; margin: 12px 0 2px; }
+.mDot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.2); border: none; padding: 0; cursor: pointer; transition: width 0.2s, background 0.2s; }
+.mDotOn { background: #4ade9f; width: 18px; border-radius: 3px; }
 .repHead { padding: 6px 2px 2px; }
 .repBig { display: block; font-size: 30px; font-weight: 700; letter-spacing: -0.6px; }
 .repSub { display: block; font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 6px; }

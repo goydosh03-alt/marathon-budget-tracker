@@ -1,23 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { usd, pln } from "@/lib/currency";
 import { Icon, IconSprite } from "@/components/IconSprite";
 import BottomNav from "@/components/BottomNav";
 import TopBar from "@/components/TopBar";
-import CalendarSheet from "@/components/CalendarSheet";
 import EmptyState from "@/components/EmptyState";
-import { periods, PERIOD_LABEL, inPeriod, catEmoji } from "@/lib/txui";
+import { periods, catEmoji } from "@/lib/txui";
 
 type Tx = { type: string; amountHome: number; category: string; date: string };
 
 const COLORS = ["#4ade9f", "#3bb4f5", "#b9a8ff", "#f5c87c", "#ff8a8a", "#6ee7b7", "#7cc8f5", "#f5a3d0", "#9ad17a", "#c0c0c0"];
 const MONTHS_SHORT = ["січ", "лют", "бер", "кві", "тра", "чер", "лип", "сер", "вер", "жов", "лис", "гру"];
+const MONTHS_FULL = ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"];
+const MAX_BACK = 5; // на скільки періодів назад можна гортати (6 крапок)
 
-function dmShort(isoStr: string): string {
-  const [, m, d] = isoStr.split("-");
-  return `${d}.${m}`;
+function iso(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
 function catList(txs: Tx[]) {
@@ -67,37 +67,72 @@ export default function ReportsView({
   const [tab, setTab] = useState<"expenses" | "income">("expenses");
   const [view, setView] = useState<"cats" | "months">("cats");
   const [period, setPeriod] = useState("month");
-  const [range, setRange] = useState<{ from: string; to: string } | null>(null);
-  const [calOpen, setCalOpen] = useState(false);
+  const [offset, setOffset] = useState(0); // 0 = поточний період, більше = назад
+  const touchX = useRef(0);
 
   const isExpenses = tab === "expenses";
   const ofTab = txs.filter((t) => (isExpenses ? t.type === "expense" : t.type === "income"));
 
-  // --- режим «За категоріями» (період) ---
-  const filtered = ofTab.filter((t) =>
-    range ? t.date >= range.from && t.date <= range.to : inPeriod(t.date, period)
-  );
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+
+  function inInstance(dateStr: string): boolean {
+    if (period === "day") {
+      const d = new Date(now);
+      d.setDate(now.getDate() - offset);
+      return dateStr === iso(d);
+    }
+    if (period === "week") {
+      const start = new Date(now);
+      start.setDate(now.getDate() - ((now.getDay() + 6) % 7) - offset * 7);
+      const end = new Date(start);
+      end.setDate(start.getDate() + 6);
+      return dateStr >= iso(start) && dateStr <= iso(end);
+    }
+    if (period === "month") {
+      const d = new Date(now.getFullYear(), now.getMonth() - offset, 1);
+      return dateStr.startsWith(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`);
+    }
+    // year
+    return dateStr.startsWith(`${now.getFullYear() - offset}`);
+  }
+
+  function instanceLabel(): string {
+    if (period === "day") {
+      const d = new Date(now);
+      d.setDate(now.getDate() - offset);
+      if (offset === 0) return "Сьогодні";
+      if (offset === 1) return "Вчора";
+      return `${d.getDate()} ${MONTHS_SHORT[d.getMonth()]}`;
+    }
+    if (period === "week") {
+      const start = new Date(now);
+      start.setDate(now.getDate() - ((now.getDay() + 6) % 7) - offset * 7);
+      const end = new Date(start);
+      end.setDate(start.getDate() + 6);
+      return `${start.getDate()}–${end.getDate()} ${MONTHS_SHORT[end.getMonth()]}`;
+    }
+    if (period === "month") {
+      const d = new Date(now.getFullYear(), now.getMonth() - offset, 1);
+      return `${MONTHS_FULL[d.getMonth()]}${d.getFullYear() !== now.getFullYear() ? " " + d.getFullYear() : ""}`;
+    }
+    return `${now.getFullYear() - offset}`;
+  }
+
+  // --- режим «По категоріях» ---
+  const filtered = ofTab.filter((t) => inInstance(t.date));
   const total = filtered.reduce((s, t) => s + t.amountHome, 0);
-  const periodText = range ? `${dmShort(range.from)} – ${dmShort(range.to)}` : PERIOD_LABEL[period];
   const cats = catList(filtered);
 
-  // --- режим «По місяцях» (останні 6) ---
-  const now = new Date();
-  const monthsKeys: { y: number; m: number }[] = [];
-  for (let i = 5; i >= 0; i--) {
-    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    monthsKeys.push({ y: d.getFullYear(), m: d.getMonth() });
-  }
-  const monthsData = monthsKeys.map(({ y, m }) => {
-    const prefix = `${y}-${String(m + 1).padStart(2, "0")}`;
+  // --- режим «По місяцях» (6 місяців, що закінчуються на обраному) ---
+  const monthsData = Array.from({ length: 6 }, (_, idx) => {
+    const back = 5 - idx + offset;
+    const d = new Date(now.getFullYear(), now.getMonth() - back, 1);
+    const prefix = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
     const sum = ofTab.filter((t) => t.date.startsWith(prefix)).reduce((s, t) => s + t.amountHome, 0);
-    return { label: MONTHS_SHORT[m], sum };
+    return { label: MONTHS_SHORT[d.getMonth()], sum, prefix };
   });
-  const months6 = ofTab.filter((t) => {
-    const first = monthsKeys[0];
-    const start = `${first.y}-${String(first.m + 1).padStart(2, "0")}`;
-    return t.date >= `${start}-01`;
-  });
+  const months6 = ofTab.filter((t) => monthsData.some((md) => t.date.startsWith(md.prefix)));
   const total6 = monthsData.reduce((s, d) => s + d.sum, 0);
   const activeMonths = monthsData.filter((d) => d.sum > 0).length || 1;
   const avg = total6 / activeMonths;
@@ -107,6 +142,19 @@ export default function ReportsView({
   const big = view === "months" ? total6 : total;
   const legendCats = view === "months" ? catsMonths : cats;
   const isEmpty = view === "months" ? total6 === 0 : cats.length === 0;
+
+  function swipeStart(e: React.TouchEvent) {
+    touchX.current = e.touches[0].clientX;
+  }
+  function swipeEnd(e: React.TouchEvent) {
+    const dx = e.changedTouches[0].clientX - touchX.current;
+    if (dx < -45) setOffset((o) => Math.min(MAX_BACK, o + 1)); // вліво → старіше
+    else if (dx > 45) setOffset((o) => Math.max(0, o - 1)); // вправо → новіше
+  }
+  function changePeriod(id: string) {
+    setOffset(0);
+    setPeriod(id);
+  }
 
   return (
     <div className={styles.screen}>
@@ -122,31 +170,29 @@ export default function ReportsView({
         </button>
       </div>
 
-      <div className={styles.viewToggle}>
-        <button className={`${styles.viewBtn} ${view === "cats" ? styles.viewBtnOn : ""}`} onClick={() => setView("cats")}>
-          За категоріями
-        </button>
-        <button className={`${styles.viewBtn} ${view === "months" ? styles.viewBtnOn : ""}`} onClick={() => setView("months")}>
-          По місяцях
-        </button>
+      <div className={styles.viewIcons}>
+        <div className={styles.viewIconsSeg}>
+          <button className={`${styles.viewIcon} ${view === "cats" ? styles.viewIconOn : ""}`} onClick={() => setView("cats")} aria-label="Кругова">
+            <Icon id="i-pie" />
+          </button>
+          <button className={`${styles.viewIcon} ${view === "months" ? styles.viewIconOn : ""}`} onClick={() => setView("months")} aria-label="Стовпчики">
+            <Icon id="i-bars" />
+          </button>
+        </div>
       </div>
 
-      <section className={styles.periodcard}>
+      <section className={styles.periodcard} onTouchStart={swipeStart} onTouchEnd={swipeEnd}>
         {view === "cats" && (
           <div className={styles.pfilter}>
             {periods.map((p) => (
               <button
                 key={p.id}
-                className={`${styles.pf} ${!range && period === p.id ? styles.pfOn : ""}`}
-                onClick={() => { setRange(null); setPeriod(p.id); }}
+                className={`${styles.pf} ${period === p.id ? styles.pfOn : ""}`}
+                onClick={() => changePeriod(p.id)}
               >
                 {p.label}
               </button>
             ))}
-            <span className={styles.vdiv} />
-            <button className={`${styles.cal} ${range ? styles.calActive : ""}`} aria-label="Період" onClick={() => setCalOpen(true)}>
-              <Icon id="i-cal" />
-            </button>
           </div>
         )}
 
@@ -161,7 +207,17 @@ export default function ReportsView({
                 <span className={styles.donutLbl}>≈ {pln(big, 0)}</span>
               </div>
             </div>
-            <div className={styles.donutPeriod}>за {periodText}</div>
+            <div className={styles.donutPeriod}>{instanceLabel()}</div>
+            <div className={styles.monthDots}>
+              {Array.from({ length: MAX_BACK + 1 }, (_, i) => (
+                <button
+                  key={i}
+                  className={`${styles.mDot} ${offset === MAX_BACK - i ? styles.mDotOn : ""}`}
+                  onClick={() => setOffset(MAX_BACK - i)}
+                  aria-label={`Період -${i}`}
+                />
+              ))}
+            </div>
             <div className={styles.fulldiv} />
           </>
         ) : (
@@ -178,6 +234,16 @@ export default function ReportsView({
                   </div>
                   <span className={styles.barLbl}>{d.label}</span>
                 </div>
+              ))}
+            </div>
+            <div className={styles.monthDots}>
+              {Array.from({ length: MAX_BACK + 1 }, (_, i) => (
+                <button
+                  key={i}
+                  className={`${styles.mDot} ${offset === MAX_BACK - i ? styles.mDotOn : ""}`}
+                  onClick={() => setOffset(MAX_BACK - i)}
+                  aria-label={`Зсув -${i}`}
+                />
               ))}
             </div>
             <div className={styles.fulldiv} />
@@ -202,16 +268,6 @@ export default function ReportsView({
       </section>
 
       <BottomNav active="reports" accounts={accounts} />
-
-      {calOpen && (
-        <CalendarSheet
-          initialFrom={range?.from ?? null}
-          initialTo={range?.to ?? null}
-          onApply={(from, to) => { setRange({ from, to }); setCalOpen(false); }}
-          onReset={() => { setRange(null); setCalOpen(false); }}
-          onClose={() => setCalOpen(false)}
-        />
-      )}
     </div>
   );
 }
