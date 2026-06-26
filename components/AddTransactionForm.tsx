@@ -126,7 +126,7 @@ export default function AddTransactionForm({
       if (typeof window !== "undefined") {
         window.dispatchEvent(new CustomEvent("snapcost:saved"));
       }
-      setTimeout(onClose, 950);
+      setTimeout(onClose, 1000);
     });
   }
 

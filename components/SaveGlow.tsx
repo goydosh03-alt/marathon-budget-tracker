@@ -14,7 +14,7 @@ export default function SaveGlow() {
       setOn(false);
       requestAnimationFrame(() => setOn(true));
       if (timer.current) clearTimeout(timer.current);
-      timer.current = setTimeout(() => setOn(false), 2300);
+      timer.current = setTimeout(() => setOn(false), 3300);
     }
     window.addEventListener("snapcost:saved", trigger);
     return () => {
