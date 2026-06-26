@@ -6,6 +6,7 @@ import styles from "@/app/dashboard/dashboard.module.css";
 import { addTransaction, updateTransaction, deleteTransaction } from "@/app/dashboard/actions";
 import { Icon } from "@/components/IconSprite";
 import CalcSheet from "@/components/CalcSheet";
+import AmountPad from "@/components/AmountPad";
 import CalendarSheet from "@/components/CalendarSheet";
 import { usd } from "@/lib/currency";
 import { catEmoji } from "@/lib/txui";
@@ -441,16 +442,7 @@ export default function AddTransactionForm({
       )}
 
       {calcAmount && (
-        <CalcSheet
-          title="Сума"
-          initial={parsed}
-          showSplit={false}
-          onApply={(val) => {
-            setAmount(val ? String(val) : "");
-            setCalcAmount(false);
-          }}
-          onClose={() => setCalcAmount(false)}
-        />
+        <AmountPad value={amount} onChange={setAmount} onClose={() => setCalcAmount(false)} />
       )}
 
       {dateCalOpen && (

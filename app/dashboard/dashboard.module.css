@@ -104,7 +104,7 @@
 .backdrop { position: fixed; inset: 0; z-index: 15; }
 
 /* add transaction sheet */
-.sheetWrap { position: fixed; inset: 0; z-index: 40; display: flex; align-items: flex-end; justify-content: center; padding: 0 12px calc(12px + env(safe-area-inset-bottom)); touch-action: none; }
+.sheetWrap { position: fixed; inset: 0; z-index: 40; display: flex; align-items: flex-end; justify-content: center; padding: 0 12px calc(4px + env(safe-area-inset-bottom)); touch-action: none; }
 .sheetBack { position: absolute; inset: 0; background: rgba(0,0,0,0.18); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
 
 /* add/edit sheet v2 */
@@ -132,7 +132,7 @@
 .fcard input::placeholder { color: rgba(255,255,255,0.35); }
 .acctSelect { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
 .daysRow { display: flex; gap: 4px; align-items: stretch; margin-bottom: 14px; }
-.dayBtn { flex: 1; text-align: center; padding: 9px 0; border-radius: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); color: rgba(255,255,255,0.55); cursor: pointer; }
+.dayBtn { flex: 1; text-align: center; padding: 6px 0; border-radius: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); color: rgba(255,255,255,0.55); cursor: pointer; }
 .dayBtn b { display: block; font-size: 13px; font-weight: 600; color: #eaf2f0; line-height: 1; margin-bottom: 4px; }
 .dayBtn span { font-size: 11px; line-height: 1; }
 .accChips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 14px;
@@ -253,6 +253,13 @@
 .addLineBtn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 46px; margin-top: 8px; border-radius: 14px; border: 1px dashed rgba(255,255,255,0.18); background: rgba(255,255,255,0.03); color: #6ee7b7; font-size: 14px; font-weight: 600; cursor: pointer; }
 .addLineBtn svg { width: 16px; height: 16px; }
 .addLineBtn:active { background: rgba(255,255,255,0.06); }
+
+/* amount keyboard (виїзд знизу, без блюра) */
+.kbdWrap { position: fixed; inset: 0; z-index: 50; display: flex; align-items: flex-end; }
+.kbdBack { position: absolute; inset: 0; }
+.kbd { position: relative; z-index: 1; width: 100%; max-width: 480px; margin: 0 auto; background: #0e1a1d; border: 1px solid rgba(255,255,255,0.08); border-bottom: none; border-radius: 22px 22px 0 0; padding: 14px 12px calc(10px + env(safe-area-inset-bottom)); box-shadow: 0 -12px 40px -10px rgba(0,0,0,0.6); animation: kbdUp 0.24s ease; }
+@keyframes kbdUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .kbd { animation: none; } }
 
 /* calculator sheet */
 .calcDisp { text-align: right; padding: 6px 6px 16px; }

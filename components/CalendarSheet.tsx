@@ -102,13 +102,11 @@ export default function CalendarSheet({
       <div className={styles.sheet}>
         <div className={styles.sheetBody}>
           <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span>{title}</span>
+            <span>{title}{label ? ` (${label})` : ""}</span>
             <button className={styles.iconBtn} onClick={onClose} aria-label="Закрити">
               <Icon id="i-x" />
             </button>
           </div>
-
-          {label && <div className={styles.calHint}>{label}</div>}
 
           <div className={styles.calSheetHead}>
             <button className={styles.calNav} onClick={prevMonth} aria-label="Попередній місяць">
