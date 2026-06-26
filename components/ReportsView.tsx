@@ -150,8 +150,6 @@ export default function ReportsView({
   });
   const all6 = ofTab.filter((t) => t.date >= barsData[0].start && t.date <= barsData[5].end);
   const total6 = barsData.reduce((s, d) => s + d.sum, 0);
-  const activeBars = barsData.filter((d) => d.sum > 0).length || 1;
-  const avg = total6 / activeBars;
   const maxBar = Math.max(...barsData.map((d) => d.sum), 1);
   const catsBars = catList(all6);
   const barsLabel = `${barsData[0].label}–${barsData[5].label}`;
@@ -219,20 +217,12 @@ export default function ReportsView({
           <EmptyState icon="i-bars" title="Немає даних" hint={`За цей період ${isExpenses ? "витрат" : "доходів"} немає.`} />
         ) : view === "cats" ? (
           <>
-            <div className={styles.donutRow}>
-              <button className={styles.navArrow} onClick={older} disabled={!canOlder} aria-label="Назад">
-                <Icon id="i-back" />
-              </button>
-              <div className={styles.donutWrap}>
-                <Donut data={cats} />
-                <div className={styles.donutCenter}>
-                  <span className={styles.donutSum}>{usd(big, 0)}</span>
-                  <span className={styles.donutLbl}>≈ {pln(big, 0)}</span>
-                </div>
+            <div className={styles.donutWrap}>
+              <Donut data={cats} />
+              <div className={styles.donutCenter}>
+                <span className={styles.donutSum}>{usd(big, 0)}</span>
+                <span className={styles.donutLbl}>≈ {pln(big, 0)}</span>
               </div>
-              <button className={styles.navArrow} onClick={newer} disabled={!canNewer} aria-label="Вперед">
-                <Icon id="i-fwd" />
-              </button>
             </div>
             {!range && avail.length > 1 && avail.length <= 12 && (
               <div className={styles.monthDots}>
@@ -248,7 +238,7 @@ export default function ReportsView({
           <>
             <div className={styles.repLeft}>
               <span className={styles.repBig2}>{usd(total6, 0)}</span>
-              <span className={styles.repSub}>≈ {pln(total6, 0)} · в сер. {usd(avg, 0)}/міс</span>
+              <span className={styles.repSub}>≈ {pln(total6, 0)}</span>
             </div>
             <div className={styles.bars}>
               {barsData.map((d, i) => (

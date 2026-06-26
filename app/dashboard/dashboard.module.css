@@ -232,14 +232,14 @@
 .repHead { padding: 6px 2px 2px; }
 .repBig { display: block; font-size: 30px; font-weight: 700; letter-spacing: -0.6px; }
 .repSub { display: block; font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 6px; }
-.bars { flex: 1; min-width: 0; display: flex; align-items: stretch; gap: 8px; height: 156px; margin: 6px 0; }
+.bars { display: flex; align-items: stretch; gap: 8px; height: 152px; margin: 2px 0 4px; }
 .barCol { flex: 1; display: flex; flex-direction: column; align-items: center; min-width: 0; }
 .barWrap { flex: 1; width: 100%; display: flex; align-items: flex-end; justify-content: center; }
 .barFill { width: 64%; max-width: 32px; background: linear-gradient(180deg, #4ade9f, #3bb4f5); border-radius: 6px 6px 2px 2px; min-height: 3px; }
 .barLbl { margin-top: 8px; font-size: 11px; color: rgba(255,255,255,0.45); }
 
 /* reports — donut + legend */
-.donutWrap { position: relative; width: 176px; height: 176px; margin: 14px 0 0; flex-shrink: 0; }
+.donutWrap { position: relative; width: 176px; height: 176px; margin: 14px auto 0; }
 .donutSvg { width: 100%; height: 100%; display: block; }
 .donutCenter { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
 .donutSum { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; line-height: 1; }
