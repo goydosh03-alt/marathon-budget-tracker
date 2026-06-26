@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import SaveGlow from "@/components/SaveGlow";
 
 export const metadata: Metadata = {
   title: "Snapcost",
@@ -26,7 +27,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="uk">
-      <body>{children}</body>
+      <body>
+        <SaveGlow />
+        {children}
+      </body>
     </html>
   );
 }

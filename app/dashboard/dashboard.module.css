@@ -14,6 +14,10 @@
 
 .topbar { display: flex; align-items: center; justify-content: space-between; height: 56px; }
 .hi { display: flex; align-items: center; gap: 12px; }
+.brand { display: flex; align-items: center; }
+.brandLogo { height: 32px; width: auto; max-width: 160px; display: block; }
+.brandLogoFallback { height: 34px; width: 34px; border-radius: 9px; }
+.brandName { font-size: 19px; font-weight: 700; letter-spacing: -0.3px; }
 .avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg,#4ade9f,#3bb4f5); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; color: #04211a; }
 .hiSmall { color: rgba(255,255,255,0.45); font-size: 12px; display: block; line-height: 1.1; }
 .hiName { display: block; font-size: 18px; font-weight: 600; line-height: 1.1; margin-top: 4px; }
@@ -302,6 +306,24 @@
 .toast svg { width: 18px; height: 18px; color: #ff9090; flex-shrink: 0; }
 .toastTxt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .toastUndo { background: none; border: none; color: #4ade9f; font-weight: 700; font-size: 14px; cursor: pointer; padding: 4px 6px; flex-shrink: 0; }
+.toastCheck { color: #6ee7b7; font-weight: 800; font-size: 17px; line-height: 1; flex-shrink: 0; }
+
+/* save glow — спалах верхнього градієнта при збереженні (GPU, лише opacity) */
+.saveGlow { position: fixed; left: 0; right: 0; top: 0; height: 46vh; pointer-events: none; z-index: 30; opacity: 0; will-change: opacity;
+  background:
+    radial-gradient(85% 75% at 50% -8%, rgba(74,222,180,0.55) 0%, rgba(74,222,180,0) 60%),
+    radial-gradient(70% 55% at 80% 0%, rgba(59,180,245,0.40) 0%, rgba(59,180,245,0) 60%),
+    radial-gradient(70% 55% at 15% 4%, rgba(120,90,255,0.30) 0%, rgba(120,90,255,0) 60%); }
+.saveGlowOn { animation: saveGlow 2.2s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+@keyframes saveGlow {
+  0% { opacity: 0; }
+  22% { opacity: 1; }
+  55% { opacity: 0.9; }
+  100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .saveGlowOn { animation: none; opacity: 0; }
+}
 @keyframes toastIn { from { opacity: 0; transform: translate(-50%, -12px); } to { opacity: 1; transform: translate(-50%, 0); } }
 .monthHead { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.5); margin: 16px 0 2px; }
 .clickable { cursor: pointer; border-radius: 12px; }

@@ -36,7 +36,6 @@ const ACC_STYLE = [
 ];
 
 export default function Dashboard({
-  name = "друже",
   accounts,
   totalHome,
   budgetHome,
@@ -73,12 +72,17 @@ export default function Dashboard({
       <IconSprite />
 
       <TopBar>
-        <div className={styles.hi}>
-          <div className={styles.avatar}>{name.charAt(0).toUpperCase()}</div>
-          <div>
-            <span className={styles.hiSmall}>Привіт 👋</span>
-            <span className={styles.hiName}>{name}</span>
-          </div>
+        <div className={styles.brand}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo.png"
+            alt="Snapcost"
+            className={styles.brandLogo}
+            onError={(e) => {
+              e.currentTarget.src = "/icon-192.png";
+              e.currentTarget.classList.add(styles.brandLogoFallback);
+            }}
+          />
         </div>
       </TopBar>
 
