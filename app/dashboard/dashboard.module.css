@@ -215,6 +215,8 @@
 .repSubRow { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; }
 .repDate { font-size: 15px; font-weight: 600; color: #eaf2f0; }
 .repBigLine { text-align: center; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; margin-top: 12px; }
+.repLeft { margin-top: 12px; }
+.repBig2 { display: block; font-size: 28px; font-weight: 700; letter-spacing: -0.6px; line-height: 1; }
 .viewIcons { display: flex; justify-content: flex-end; margin-top: 10px; }
 .viewIconsSeg { display: inline-flex; gap: 2px; background: rgba(255,255,255,0.06); border-radius: 11px; padding: 3px; flex-shrink: 0; }
 .viewIcon { width: 40px; height: 30px; border-radius: 8px; border: none; background: none; color: rgba(255,255,255,0.5); display: flex; align-items: center; justify-content: center; cursor: pointer; }

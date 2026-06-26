@@ -246,24 +246,19 @@ export default function ReportsView({
           </>
         ) : (
           <>
-            <div className={styles.repBigLine}>{usd(total6, 0)} <span className={styles.repSub}>≈ {pln(total6, 0)} · в сер. {usd(avg, 0)}</span></div>
-            <div className={styles.donutRow}>
-              <button className={styles.navArrow} onClick={older} disabled={!canOlder} aria-label="Назад">
-                <Icon id="i-back" />
-              </button>
-              <div className={styles.bars}>
-                {barsData.map((d, i) => (
-                  <div className={styles.barCol} key={i}>
-                    <div className={styles.barWrap}>
-                      <div className={styles.barFill} style={{ height: `${(d.sum / maxBar) * 100}%` }} />
-                    </div>
-                    <span className={styles.barLbl}>{d.label}</span>
+            <div className={styles.repLeft}>
+              <span className={styles.repBig2}>{usd(total6, 0)}</span>
+              <span className={styles.repSub}>≈ {pln(total6, 0)} · в сер. {usd(avg, 0)}/міс</span>
+            </div>
+            <div className={styles.bars}>
+              {barsData.map((d, i) => (
+                <div className={styles.barCol} key={i}>
+                  <div className={styles.barWrap}>
+                    <div className={styles.barFill} style={{ height: `${(d.sum / maxBar) * 100}%` }} />
                   </div>
-                ))}
-              </div>
-              <button className={styles.navArrow} onClick={newer} disabled={!canNewer} aria-label="Вперед">
-                <Icon id="i-fwd" />
-              </button>
+                  <span className={styles.barLbl}>{d.label}</span>
+                </div>
+              ))}
             </div>
             {!range && avail.length > 1 && avail.length <= 12 && (
               <div className={styles.monthDots}>
