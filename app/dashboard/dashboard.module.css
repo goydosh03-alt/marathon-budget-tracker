@@ -211,6 +211,21 @@
 .searchSumLabel { font-size: 13px; color: rgba(255,255,255,0.6); }
 .searchSumAmt { font-size: 20px; font-weight: 700; color: #6ee7b7; }
 
+/* reports — donut + legend */
+.donutWrap { position: relative; width: 180px; height: 180px; margin: 18px auto 0; }
+.donutSvg { width: 180px; height: 180px; display: block; }
+.donutCenter { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
+.donutSum { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+.donutLbl { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 2px; }
+.donutPeriod { text-align: center; font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 10px; }
+.legend { display: flex; flex-direction: column; gap: 2px; }
+.legRow { display: flex; align-items: center; gap: 10px; padding: 9px 2px; }
+.legRow + .legRow { border-top: 1px solid rgba(255,255,255,0.05); }
+.legDot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+.legName { flex: 1; min-width: 0; font-size: 14px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.legPct { font-size: 12px; color: rgba(255,255,255,0.45); flex-shrink: 0; min-width: 34px; text-align: right; }
+.legSum { font-size: 14px; font-weight: 600; flex-shrink: 0; min-width: 56px; text-align: right; }
+
 /* empty state */
 .emptyBox { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 30px 20px 24px; }
 .emptyIco { width: 64px; height: 64px; border-radius: 20px; display: flex; align-items: center; justify-content: center; background: rgba(74,222,180,0.10); color: #6ee7b7; margin-bottom: 14px; }

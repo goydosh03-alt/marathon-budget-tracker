@@ -58,7 +58,7 @@ export default function BottomNav({
           <Link href="/history" className={`${styles.navItem} ${active === "history" ? styles.navOn : ""}`}>
             <Icon id="i-list" />Історія
           </Link>
-          <Link href="/dashboard" className={`${styles.navItem} ${active === "reports" ? styles.navOn : ""}`}>
+          <Link href="/reports" className={`${styles.navItem} ${active === "reports" ? styles.navOn : ""}`}>
             <Icon id="i-bars" />Звіти
           </Link>
           <Link href="/menu" className={`${styles.navItem} ${active === "profile" ? styles.navOn : ""}`}>

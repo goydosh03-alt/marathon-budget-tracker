@@ -54,20 +54,23 @@ export default async function MenuPage() {
         </Link>
       </div>
 
-      <div className={styles.menuGroupLabel}>Скоро</div>
+      <div className={styles.menuGroupLabel}>Аналітика</div>
       <div className={styles.menuList}>
-        <div className={`${styles.menuItem} ${styles.menuItemOff}`}>
+        <Link href="/reports" className={styles.menuItem}>
           <span className={styles.menuIco} style={{ background: "rgba(78,150,255,0.14)", color: "#7cc8f5" }}>
             <Icon id="i-bars" />
           </span>
           <span className={styles.menuMid}>
-            <span className={styles.menuName}>Діаграми</span>
+            <span className={styles.menuName}>Звіти й діаграми</span>
             <span className={styles.menuSub}>Аналітика витрат за категоріями</span>
           </span>
-          <span className={styles.menuSoon}>СКОРО</span>
-        </div>
+          <span className={styles.menuChev}><Icon id="i-chev" /></span>
+        </Link>
+      </div>
 
-        <div className={`${styles.menuItem} ${styles.menuItemOff}`}>
+      <div className={styles.menuGroupLabel}>Скоро</div>
+      <div className={styles.menuList}>
+        <Link href="/soon?f=Регулярні платежі" className={styles.menuItem}>
           <span className={styles.menuIco} style={{ background: "rgba(110,231,183,0.14)", color: "#6ee7b7" }}>
             <Icon id="i-repeat" />
           </span>
@@ -76,9 +79,9 @@ export default async function MenuPage() {
             <span className={styles.menuSub}>Підписки й щомісячні рахунки</span>
           </span>
           <span className={styles.menuSoon}>СКОРО</span>
-        </div>
+        </Link>
 
-        <div className={`${styles.menuItem} ${styles.menuItemOff}`}>
+        <Link href="/soon?f=Нагадування" className={styles.menuItem}>
           <span className={styles.menuIco} style={{ background: "rgba(245,180,90,0.16)", color: "#f5c87c" }}>
             <Icon id="i-bell" />
           </span>
@@ -87,9 +90,9 @@ export default async function MenuPage() {
             <span className={styles.menuSub}>Не забути записати витрати</span>
           </span>
           <span className={styles.menuSoon}>СКОРО</span>
-        </div>
+        </Link>
 
-        <div className={`${styles.menuItem} ${styles.menuItemOff}`}>
+        <Link href="/soon?f=Оцінити застосунок" className={styles.menuItem}>
           <span className={styles.menuIco} style={{ background: "rgba(255,205,90,0.16)", color: "#ffd45a" }}>
             <Icon id="i-star" />
           </span>
@@ -98,7 +101,7 @@ export default async function MenuPage() {
             <span className={styles.menuSub}>Підтримати Snapcost</span>
           </span>
           <span className={styles.menuSoon}>СКОРО</span>
-        </div>
+        </Link>
       </div>
 
       <BottomNav active="profile" accounts={accounts ?? []} />
