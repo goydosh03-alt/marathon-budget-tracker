@@ -54,20 +54,6 @@ export default async function MenuPage() {
         </Link>
       </div>
 
-      <div className={styles.menuGroupLabel}>Аналітика</div>
-      <div className={styles.menuList}>
-        <Link href="/reports" className={styles.menuItem}>
-          <span className={styles.menuIco} style={{ background: "rgba(78,150,255,0.14)", color: "#7cc8f5" }}>
-            <Icon id="i-bars" />
-          </span>
-          <span className={styles.menuMid}>
-            <span className={styles.menuName}>Звіти й діаграми</span>
-            <span className={styles.menuSub}>Аналітика витрат за категоріями</span>
-          </span>
-          <span className={styles.menuChev}><Icon id="i-chev" /></span>
-        </Link>
-      </div>
-
       <div className={styles.menuGroupLabel}>Скоро</div>
       <div className={styles.menuList}>
         <Link href="/soon?f=Регулярні платежі" className={styles.menuItem}>

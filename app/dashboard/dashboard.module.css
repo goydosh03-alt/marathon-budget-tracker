@@ -211,6 +211,19 @@
 .searchSumLabel { font-size: 13px; color: rgba(255,255,255,0.6); }
 .searchSumAmt { font-size: 20px; font-weight: 700; color: #6ee7b7; }
 
+/* reports — view toggle + bars */
+.viewToggle { display: flex; gap: 4px; background: rgba(255,255,255,0.05); border-radius: 12px; padding: 4px; margin-top: 10px; }
+.viewBtn { flex: 1; padding: 9px 0; border-radius: 9px; border: none; background: none; color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 600; cursor: pointer; }
+.viewBtnOn { background: rgba(255,255,255,0.09); color: #eaf2f0; }
+.repHead { padding: 6px 2px 2px; }
+.repBig { display: block; font-size: 30px; font-weight: 700; letter-spacing: -0.6px; }
+.repSub { display: block; font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 6px; }
+.bars { display: flex; align-items: stretch; gap: 10px; height: 156px; margin: 14px 0 4px; }
+.barCol { flex: 1; display: flex; flex-direction: column; align-items: center; min-width: 0; }
+.barWrap { flex: 1; width: 100%; display: flex; align-items: flex-end; justify-content: center; }
+.barFill { width: 64%; max-width: 32px; background: linear-gradient(180deg, #4ade9f, #3bb4f5); border-radius: 6px 6px 2px 2px; min-height: 3px; }
+.barLbl { margin-top: 8px; font-size: 11px; color: rgba(255,255,255,0.45); }
+
 /* reports — donut + legend */
 .donutWrap { position: relative; width: 180px; height: 180px; margin: 18px auto 0; }
 .donutSvg { width: 180px; height: 180px; display: block; }
@@ -240,7 +253,7 @@
 .profCardChev svg { width: 18px; height: 18px; transform: rotate(-90deg); }
 .menuGroupLabel { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.5px; margin: 22px 4px 10px; }
 .menuList { display: flex; flex-direction: column; gap: 10px; }
-.menuItem { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 15px; color: #eaf2f0; text-decoration: none; cursor: pointer; }
+.menuItem { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 15px; color: #eaf2f0; text-decoration: none; cursor: pointer; }
 .menuItem:active { background: rgba(255,255,255,0.07); }
 .menuIco { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .menuIco svg { width: 20px; height: 20px; }
