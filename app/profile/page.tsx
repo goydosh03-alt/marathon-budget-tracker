@@ -1,8 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { IconSprite } from "@/components/IconSprite";
-import TopBar from "@/components/TopBar";
-import BottomNav from "@/components/BottomNav";
+import SubHeader from "@/components/SubHeader";
 import styles from "@/app/dashboard/dashboard.module.css";
 
 export const dynamic = "force-dynamic";
@@ -20,18 +19,10 @@ export default async function ProfilePage() {
     (user.email ? user.email.split("@")[0] : "Друже");
   const initial = fullName.charAt(0).toUpperCase();
 
-  const { data: accounts } = await supabase
-    .from("accounts")
-    .select("id, name, type")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: true });
-
   return (
     <div className={styles.screen}>
       <IconSprite />
-      <TopBar>
-        <span className={styles.barTitle}>Профіль</span>
-      </TopBar>
+      <SubHeader title="Профіль" back="/menu" />
 
       <div className={styles.profCard}>
         <div className={styles.profAvatar}>{initial}</div>
@@ -44,8 +35,6 @@ export default async function ProfilePage() {
           Вийти з акаунта
         </button>
       </form>
-
-      <BottomNav active="profile" accounts={accounts ?? []} />
     </div>
   );
 }

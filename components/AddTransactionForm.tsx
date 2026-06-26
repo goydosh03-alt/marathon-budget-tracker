@@ -43,11 +43,13 @@ export default function AddTransactionForm({
   initialType,
   accounts,
   editTx,
+  initialCategory,
   onClose,
 }: {
   initialType: "expense" | "income";
   accounts: { id: string; name: string; type: string }[];
   editTx?: EditTx;
+  initialCategory?: string;
   onClose: () => void;
 }) {
   const router = useRouter();
@@ -55,7 +57,7 @@ export default function AddTransactionForm({
   const [type, setType] = useState<"expense" | "income">(editTx?.type ?? initialType);
   const [amount, setAmount] = useState(editTx ? String(editTx.amountHome) : "");
   const [category, setCategory] = useState(
-    editTx?.category ?? (initialType === "income" ? "Зарплата" : "Їжа")
+    editTx?.category ?? initialCategory ?? (initialType === "income" ? "Зарплата" : "Їжа")
   );
   const [merchant, setMerchant] = useState(editTx?.merchant ?? "");
   const [accountId, setAccountId] = useState(editTx?.accountId ?? accounts[0]?.id ?? "");

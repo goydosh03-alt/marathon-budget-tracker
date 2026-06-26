@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { usd, pln } from "@/lib/currency";
+import { useRouter } from "next/navigation";
 import { Icon, IconSprite } from "@/components/IconSprite";
-import BottomNav from "@/components/BottomNav";
+import SubHeader from "@/components/SubHeader";
 import TransactionViewer from "@/components/TransactionViewer";
+import AddTransactionForm from "@/components/AddTransactionForm";
 import ExportSheet from "@/components/ExportSheet";
 import EmptyState from "@/components/EmptyState";
 import { catEmoji, catBg, fmtDate } from "@/lib/txui";
@@ -40,6 +41,8 @@ export default function CategoryView({
   const [viewId, setViewId] = useState<string | null>(null);
   const [open, setOpen] = useState<Set<string>>(new Set());
   const [showExport, setShowExport] = useState(false);
+  const [addOpen, setAddOpen] = useState(false);
+  const router = useRouter();
 
   function toggle(id: string) {
     setOpen((prev) => {
@@ -66,15 +69,15 @@ export default function CategoryView({
     <div className={styles.screen}>
       <IconSprite />
 
-      <header className={styles.topbar}>
-        <Link href="/reports" className={styles.iconBtn} aria-label="Назад">
-          <Icon id="i-arrow-left" />
-        </Link>
-        <span className={styles.barTitle} style={{ marginLeft: 12, flex: 1 }}>{cat}</span>
-        <button className={styles.exportBtn} onClick={() => setShowExport(true)} aria-label="Експорт">
-          <Icon id="i-download" />
-        </button>
-      </header>
+      <SubHeader
+        title={cat}
+        back="/reports"
+        right={
+          <button className={styles.exportBtn} onClick={() => setShowExport(true)} aria-label="Експорт">
+            <Icon id="i-download" />
+          </button>
+        }
+      />
 
       <section className={styles.periodcard}>
         <div className={styles.catBoxHead}>
@@ -85,7 +88,9 @@ export default function CategoryView({
           </span>
         </div>
 
-        <div className={styles.searchBar}>
+        <div className={styles.fulldiv} />
+
+        <div className={styles.searchInline}>
           <Icon id="i-search" />
           <input placeholder="Пошук по назві або позиції…" value={query} onChange={(e) => setQuery(e.target.value)} />
           {query && (
@@ -103,8 +108,6 @@ export default function CategoryView({
             За сумою
           </button>
         </div>
-
-        <div className={styles.fulldiv} />
 
         {filtered.length === 0 ? (
           <EmptyState icon="i-search" title="Нічого не знайдено" hint="Спробуй інший запит." />
@@ -154,10 +157,24 @@ export default function CategoryView({
         )}
       </section>
 
-      <BottomNav active="reports" accounts={accounts} />
+      <button className={styles.floatAdd} onClick={() => setAddOpen(true)} aria-label="Додати">
+        <Icon id="i-plus" />
+      </button>
 
       {viewId && (
         <TransactionViewer id={viewId} accounts={accounts} onClose={() => setViewId(null)} />
+      )}
+
+      {addOpen && (
+        <AddTransactionForm
+          initialType={isIncome ? "income" : "expense"}
+          initialCategory={cat}
+          accounts={accounts}
+          onClose={() => {
+            setAddOpen(false);
+            router.refresh();
+          }}
+        />
       )}
 
       {showExport && <ExportSheet onClose={() => setShowExport(false)} />}

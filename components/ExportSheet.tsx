@@ -4,16 +4,8 @@ import { useState, useEffect } from "react";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon } from "@/components/IconSprite";
 
-const PERIODS = [
-  { id: "current", label: "Поточний" },
-  { id: "month", label: "Місяць" },
-  { id: "year", label: "Рік" },
-  { id: "all", label: "Весь час" },
-];
-
 export default function ExportSheet({ onClose }: { onClose: () => void }) {
   const [fmt, setFmt] = useState<"pdf" | "excel">("pdf");
-  const [period, setPeriod] = useState("current");
   const [done, setDone] = useState(false);
 
   useEffect(() => {
@@ -44,19 +36,6 @@ export default function ExportSheet({ onClose }: { onClose: () => void }) {
             <button className={`${styles.tab} ${fmt === "excel" ? styles.tabOnExp : ""}`} onClick={() => setFmt("excel")}>
               Excel
             </button>
-          </div>
-
-          <div className={styles.fieldLabel}>Період</div>
-          <div className={styles.chips2}>
-            {PERIODS.map((p) => (
-              <button
-                key={p.id}
-                className={`${styles.chip2} ${period === p.id ? styles.chip2On : ""}`}
-                onClick={() => setPeriod(p.id)}
-              >
-                {p.label}
-              </button>
-            ))}
           </div>
 
           {done && (

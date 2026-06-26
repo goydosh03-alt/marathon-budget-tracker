@@ -1,8 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { IconSprite } from "@/components/IconSprite";
-import TopBar from "@/components/TopBar";
-import BottomNav from "@/components/BottomNav";
+import SubHeader from "@/components/SubHeader";
 import SettingsClient from "@/components/SettingsClient";
 import styles from "@/app/dashboard/dashboard.module.css";
 
@@ -29,13 +28,9 @@ export default async function SettingsPage() {
   return (
     <div className={styles.screen}>
       <IconSprite />
-      <TopBar>
-        <span className={styles.barTitle}>Налаштування</span>
-      </TopBar>
+      <SubHeader title="Налаштування" back="/menu" />
 
       <SettingsClient accounts={accounts ?? []} txCount={count ?? 0} />
-
-      <BottomNav active="profile" accounts={accounts ?? []} />
     </div>
   );
 }
