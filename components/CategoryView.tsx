@@ -7,6 +7,7 @@ import { usd, pln } from "@/lib/currency";
 import { Icon, IconSprite } from "@/components/IconSprite";
 import BottomNav from "@/components/BottomNav";
 import TransactionViewer from "@/components/TransactionViewer";
+import ExportSheet from "@/components/ExportSheet";
 import EmptyState from "@/components/EmptyState";
 import { catEmoji, catBg, fmtDate } from "@/lib/txui";
 
@@ -38,6 +39,7 @@ export default function CategoryView({
   const [sort, setSort] = useState<"date" | "amount">("date");
   const [viewId, setViewId] = useState<string | null>(null);
   const [open, setOpen] = useState<Set<string>>(new Set());
+  const [showExport, setShowExport] = useState(false);
 
   function toggle(id: string) {
     setOpen((prev) => {
@@ -68,7 +70,10 @@ export default function CategoryView({
         <Link href="/reports" className={styles.iconBtn} aria-label="Назад">
           <Icon id="i-arrow-left" />
         </Link>
-        <span className={styles.barTitle} style={{ marginLeft: 12 }}>{cat}</span>
+        <span className={styles.barTitle} style={{ marginLeft: 12, flex: 1 }}>{cat}</span>
+        <button className={styles.exportBtn} onClick={() => setShowExport(true)} aria-label="Експорт">
+          <Icon id="i-download" />
+        </button>
       </header>
 
       <section className={styles.periodcard}>
@@ -154,6 +159,8 @@ export default function CategoryView({
       {viewId && (
         <TransactionViewer id={viewId} accounts={accounts} onClose={() => setViewId(null)} />
       )}
+
+      {showExport && <ExportSheet onClose={() => setShowExport(false)} />}
     </div>
   );
 }

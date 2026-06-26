@@ -25,6 +25,7 @@ export function IconSprite() {
       <symbol id="i-trash" viewBox="0 0 24 24"><path fill="currentColor" d="M9 3h6l1 2h4v2H4V5h4zm-2 6h10l-.8 11.1A2 2 0 0114.2 22H9.8a2 2 0 01-2-1.9z" /></symbol>
       <symbol id="i-back" viewBox="0 0 24 24"><path fill="currentColor" d="M14.5 5.5v13L8 12z" /></symbol>
       <symbol id="i-fwd" viewBox="0 0 24 24"><path fill="currentColor" d="M9.5 5.5v13L16 12z" /></symbol>
+      <symbol id="i-download" viewBox="0 0 24 24"><path fill="currentColor" d="M11 3h2v8.2h3.2L12 16.5 7.8 11.2H11z" /><path fill="currentColor" d="M5 18.5h14V20.5H5z" /></symbol>
       <symbol id="i-arrow-left" viewBox="0 0 24 24"><path className="ic" d="M15 5l-7 7 7 7" /></symbol>
       <symbol id="i-arrow-right" viewBox="0 0 24 24"><path className="ic" d="M9 5l7 7-7 7" /></symbol>
       <symbol id="i-x" viewBox="0 0 24 24"><path className="ic" d="M6 6l12 12M18 6L6 18" /></symbol>
