@@ -24,12 +24,16 @@ export default function CalendarSheet({
   onApply,
   onReset,
   onClose,
+  single = false,
+  title = "Період",
 }: {
   initialFrom: string | null;
   initialTo: string | null;
   onApply: (from: string, to: string) => void;
   onReset: () => void;
   onClose: () => void;
+  single?: boolean;
+  title?: string;
 }) {
   const base = initialFrom ? new Date(initialFrom + "T00:00:00") : new Date();
   const [year, setYear] = useState(base.getFullYear());
@@ -46,6 +50,11 @@ export default function CalendarSheet({
   }, []);
 
   function pick(dateStr: string) {
+    if (single) {
+      setFrom(dateStr);
+      setTo(dateStr);
+      return;
+    }
     if (!from || (from && to)) {
       setFrom(dateStr);
       setTo(null);
@@ -77,7 +86,15 @@ export default function CalendarSheet({
   for (let i = 0; i < firstWeekday; i++) cells.push(null);
   for (let d = 1; d <= daysInMonth; d++) cells.push(iso(year, month, d));
 
-  const label = from && to ? `${dm(from)} – ${dm(to)}` : from ? `${dm(from)} – …` : "";
+  const label = single
+    ? from
+      ? dm(from)
+      : ""
+    : from && to
+      ? `${dm(from)} – ${dm(to)}`
+      : from
+        ? `${dm(from)} – …`
+        : "";
 
   return (
     <div className={styles.sheetWrap}>
@@ -85,7 +102,7 @@ export default function CalendarSheet({
       <div className={styles.sheet}>
         <div className={styles.sheetBody}>
           <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span>Період</span>
+            <span>{title}</span>
             <button className={styles.iconBtn} onClick={onClose} aria-label="Закрити">
               <Icon id="i-x" />
             </button>

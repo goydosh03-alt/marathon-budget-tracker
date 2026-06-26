@@ -43,11 +43,13 @@ export default function CalcSheet({
   initial,
   onApply,
   onClose,
+  showSplit = true,
 }: {
   title: string;
   initial: number;
   onApply: (value: number) => void;
   onClose: () => void;
+  showSplit?: boolean;
 }) {
   const [expr, setExpr] = useState(initial ? trimNum(initial) : "");
 
@@ -85,10 +87,18 @@ export default function CalcSheet({
           </div>
 
           <div className={styles.calcGrid}>
-            <button className={`${styles.calcKey} ${styles.calcSplit}`} onClick={() => split(2)}>÷2</button>
-            <button className={`${styles.calcKey} ${styles.calcSplit}`} onClick={() => split(3)}>÷3</button>
-            <button className={`${styles.calcKey} ${styles.calcSplit}`} onClick={() => split(4)}>÷4</button>
-            <button className={styles.calcKey} onClick={backspace} aria-label="Стерти">⌫</button>
+            {showSplit ? (
+              <>
+                <button className={`${styles.calcKey} ${styles.calcSplit}`} onClick={() => split(2)}>÷2</button>
+                <button className={`${styles.calcKey} ${styles.calcSplit}`} onClick={() => split(3)}>÷3</button>
+                <button className={`${styles.calcKey} ${styles.calcSplit}`} onClick={() => split(4)}>÷4</button>
+                <button className={styles.calcKey} onClick={clear} aria-label="Очистити">C</button>
+              </>
+            ) : (
+              <button className={styles.calcKey} style={{ gridColumn: "1 / -1" }} onClick={clear}>
+                Очистити
+              </button>
+            )}
 
             <button className={styles.calcKey} onClick={() => press("7")}>7</button>
             <button className={styles.calcKey} onClick={() => press("8")}>8</button>
@@ -107,7 +117,7 @@ export default function CalcSheet({
 
             <button className={styles.calcKey} onClick={() => press(".")}>.</button>
             <button className={styles.calcKey} onClick={() => press("0")}>0</button>
-            <button className={styles.calcKey} onClick={clear} aria-label="Очистити">C</button>
+            <button className={styles.calcKey} onClick={backspace} aria-label="Стерти">⌫</button>
             <button className={`${styles.calcKey} ${styles.calcOp}`} onClick={() => press("+")}>+</button>
           </div>
         </div>

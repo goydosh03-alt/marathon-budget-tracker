@@ -6,6 +6,7 @@ import styles from "@/app/dashboard/dashboard.module.css";
 import { addTransaction, updateTransaction, deleteTransaction } from "@/app/dashboard/actions";
 import { Icon } from "@/components/IconSprite";
 import CalcSheet from "@/components/CalcSheet";
+import CalendarSheet from "@/components/CalendarSheet";
 import { usd } from "@/lib/currency";
 import { catEmoji } from "@/lib/txui";
 
@@ -72,6 +73,9 @@ export default function AddTransactionForm({
 
   // калькулятор для позиції (індекс)
   const [calcItem, setCalcItem] = useState<number | null>(null);
+  // калькулятор для суми + наш календар для дати
+  const [calcAmount, setCalcAmount] = useState(false);
+  const [dateCalOpen, setDateCalOpen] = useState(false);
 
   function applyItemPrice(idx: number, value: number) {
     if (!scannedItems) return;
@@ -306,15 +310,17 @@ export default function AddTransactionForm({
             </>
           )}
           <div className={styles.amtRow}>
-            <input
+            <button
+              type="button"
               className={styles.amtField}
-              inputMode="decimal"
-              placeholder="0"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              style={{ width: `${Math.max(1, amount.length || 1)}ch` }}
-              autoFocus
-            />
+              onClick={() => setCalcAmount(true)}
+              style={{
+                width: `${Math.max(1, amount.length || 1)}ch`,
+                color: amount ? undefined : "rgba(255,255,255,0.3)",
+              }}
+            >
+              {amount || "0"}
+            </button>
             <span className={styles.amtZl}>zł</span>
           </div>
           <div className={styles.amtConv}>≈ {usd(parsed, 2)}</div>
@@ -383,10 +389,14 @@ export default function AddTransactionForm({
               <b>{o.label}</b><span>{dm(o.key)}</span>
             </button>
           ))}
-          <label className={styles.dayCalBtn}>
+          <button
+            type="button"
+            className={styles.dayCalBtn}
+            onClick={() => setDateCalOpen(true)}
+            aria-label="Вибрати дату"
+          >
             <Icon id="i-cal" />
-            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
-          </label>
+          </button>
         </div>
 
         <div className={styles.fcard}>
@@ -427,6 +437,34 @@ export default function AddTransactionForm({
           initial={scannedItems[calcItem].price}
           onApply={(val) => applyItemPrice(calcItem, val)}
           onClose={() => setCalcItem(null)}
+        />
+      )}
+
+      {calcAmount && (
+        <CalcSheet
+          title="Сума"
+          initial={parsed}
+          showSplit={false}
+          onApply={(val) => {
+            setAmount(val ? String(val) : "");
+            setCalcAmount(false);
+          }}
+          onClose={() => setCalcAmount(false)}
+        />
+      )}
+
+      {dateCalOpen && (
+        <CalendarSheet
+          single
+          title="Дата"
+          initialFrom={date}
+          initialTo={date}
+          onApply={(from) => {
+            setDate(from);
+            setDateCalOpen(false);
+          }}
+          onReset={() => setDateCalOpen(false)}
+          onClose={() => setDateCalOpen(false)}
         />
       )}
     </div>
