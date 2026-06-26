@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { addTransaction, updateTransaction, deleteTransaction } from "@/app/dashboard/actions";
 import { Icon } from "@/components/IconSprite";
+import CalcSheet from "@/components/CalcSheet";
 import { usd } from "@/lib/currency";
 import { catEmoji } from "@/lib/txui";
 
@@ -69,8 +70,19 @@ export default function AddTransactionForm({
   const [itemUndo, setItemUndo] = useState<{ items: Item[]; amount: string } | null>(null);
   const itemTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // тост «Додано ✓» після збереження
-  const [saved, setSaved] = useState(false);
+  // калькулятор для позиції (індекс)
+  const [calcItem, setCalcItem] = useState<number | null>(null);
+
+  function applyItemPrice(idx: number, value: number) {
+    if (!scannedItems) return;
+    const old = scannedItems[idx]?.price ?? 0;
+    const next = scannedItems.map((it, i) => (i === idx ? { ...it, price: value } : it));
+    setScannedItems(next);
+    const newAmount = Math.max(0, Number((parsed - old + value).toFixed(2)));
+    setAmount(newAmount ? String(newAmount) : "");
+    setCalcItem(null);
+  }
+
 
   const isIncome = type === "income";
   const cats = isIncome ? INCOME_CATS : EXPENSE_CATS;
@@ -122,11 +134,16 @@ export default function AddTransactionForm({
         return;
       }
       router.refresh();
-      setSaved(true);
+      onClose();
+      // анімацію + тост запускаємо ПІСЛЯ закриття попапа — на чистому екрані,
+      // незалежно від того, скільки тривало збереження
       if (typeof window !== "undefined") {
-        window.dispatchEvent(new CustomEvent("snapcost:saved"));
+        const label = isEdit ? "Збережено" : "Додано";
+        setTimeout(
+          () => window.dispatchEvent(new CustomEvent("snapcost:saved", { detail: { label } })),
+          80
+        );
       }
-      setTimeout(onClose, 2000);
     });
   }
 
@@ -309,8 +326,10 @@ export default function AddTransactionForm({
             <div className={styles.itemsEdit}>
               {scannedItems.map((it, i) => (
                 <div className={styles.itemRow} key={i}>
-                  <span className={styles.itemName}>{it.name}</span>
-                  <span className={styles.itemPrice}>{it.price.toFixed(2)} zł</span>
+                  <button type="button" className={styles.itemTap} onClick={() => setCalcItem(i)}>
+                    <span className={styles.itemName}>{it.name}</span>
+                    <span className={styles.itemPrice}>{it.price.toFixed(2)} zł</span>
+                  </button>
                   <button
                     className={styles.itemDel}
                     type="button"
@@ -402,11 +421,13 @@ export default function AddTransactionForm({
         </div>
       )}
 
-      {saved && (
-        <div className={styles.toast}>
-          <span className={styles.toastCheck}>✓</span>
-          <span className={styles.toastTxt}>{isEdit ? "Збережено" : "Додано"}</span>
-        </div>
+      {calcItem !== null && scannedItems && scannedItems[calcItem] && (
+        <CalcSheet
+          title={scannedItems[calcItem].name}
+          initial={scannedItems[calcItem].price}
+          onApply={(val) => applyItemPrice(calcItem, val)}
+          onClose={() => setCalcItem(null)}
+        />
       )}
     </div>
   );

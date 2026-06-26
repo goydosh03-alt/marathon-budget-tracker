@@ -105,7 +105,8 @@
 
 /* add transaction sheet */
 .sheetWrap { position: fixed; inset: 0; z-index: 40; display: flex; align-items: flex-end; justify-content: center; padding: 0 12px calc(12px + env(safe-area-inset-bottom)); touch-action: none; }
-.sheetBack { position: absolute; inset: 0; background: rgba(0,0,0,0.18); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+.sheetBack { position: absolute; inset: 0; background: rgba(0,0,0,0.18); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); animation: sheetFade 0.3s ease; }
+@keyframes sheetFade { from { opacity: 0; } to { opacity: 1; } }
 
 /* add/edit sheet v2 */
 .amtWrap { position: relative; text-align: center; padding: 18px 0 14px; }
@@ -149,7 +150,9 @@
 .dayCalBtn { position: relative; flex: 0 0 48px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); color: #6ee7b7; cursor: pointer; }
 .dayCalBtn svg { width: 18px; height: 18px; }
 .dayCalBtn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-.sheet { position: relative; width: 100%; max-width: 480px; background: #0e1a1d; border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 16px; z-index: 1; max-height: 86vh; display: flex; flex-direction: column; }
+.sheet { position: relative; width: 100%; max-width: 480px; background: #0e1a1d; border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 16px; z-index: 1; max-height: 86vh; display: flex; flex-direction: column; animation: sheetUp 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
+@keyframes sheetUp { from { transform: translateY(110%); } to { transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .sheet { animation: none; } }
 .sheet :focus { outline: none; }
 .sheetBody { overflow-y: auto; overflow-x: hidden; flex: 1 1 auto; min-height: 0; overscroll-behavior: contain; touch-action: pan-y; }
 .sheetBody::-webkit-scrollbar { width: 0; }
@@ -254,6 +257,16 @@
 .addLineBtn svg { width: 16px; height: 16px; }
 .addLineBtn:active { background: rgba(255,255,255,0.06); }
 
+/* calculator sheet */
+.calcDisp { text-align: right; padding: 6px 6px 16px; }
+.calcExpr { font-size: 14px; color: rgba(255,255,255,0.5); min-height: 18px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.calcRes { font-size: 30px; font-weight: 700; letter-spacing: -0.5px; margin-top: 4px; }
+.calcGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.calcKey { height: 54px; border-radius: 14px; border: none; background: rgba(255,255,255,0.05); color: #eaf2f0; font-size: 20px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.calcKey:active { background: rgba(255,255,255,0.1); }
+.calcOp { color: #6ee7b7; background: rgba(74,222,180,0.08); }
+.calcSplit { color: #7cc8f5; background: rgba(59,180,245,0.08); font-size: 16px; font-weight: 700; }
+
 /* calendar sheet */
 .calHint { text-align: center; font-size: 13px; font-weight: 600; color: #6ee7b7; margin-bottom: 14px; }
 .calSheetHead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
@@ -286,6 +299,7 @@
 /* editable receipt items (scan form + detail) */
 .itemsEdit { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
 .itemRow { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 10px 12px; font-size: 14px; }
+.itemTap { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; background: none; border: none; padding: 0; margin: 0; color: #eaf2f0; font: inherit; text-align: left; cursor: pointer; }
 .itemName { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .itemPrice { color: rgba(255,255,255,0.6); font-variant-numeric: tabular-nums; }
 .itemDel { display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 8px; border: none; background: rgba(255,120,120,0.10); color: #ff9090; cursor: pointer; flex-shrink: 0; }
