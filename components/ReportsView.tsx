@@ -213,10 +213,10 @@ export default function ReportsView({
         <div className={styles.repSubRow}>
           <span className={styles.repDate}>{view === "months" ? barsLabel : instanceLabel()}</span>
           <div className={styles.viewIconsSeg}>
-            <button className={`${styles.viewIcon} ${view === "cats" ? styles.viewIconOn : ""}`} onClick={() => { setView("cats"); setNavIdx(0); }} aria-label="Кругова">
+            <button className={`${styles.viewIcon} ${view === "cats" ? styles.viewIconOn : ""}`} onClick={() => setView("cats")} aria-label="Кругова">
               <Icon id="i-pie" />
             </button>
-            <button className={`${styles.viewIcon} ${view === "months" ? styles.viewIconOn : ""}`} onClick={() => { setView("months"); setNavIdx(0); }} aria-label="Стовпчики">
+            <button className={`${styles.viewIcon} ${view === "months" ? styles.viewIconOn : ""}`} onClick={() => setView("months")} aria-label="Стовпчики">
               <Icon id="i-bars" />
             </button>
           </div>

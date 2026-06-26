@@ -47,7 +47,10 @@ export default async function CategoryPage({
     date: t.tx_date as string,
     createdAt: t.created_at as string,
     items: Array.isArray(t.items)
-      ? (t.items as { name?: unknown }[]).map((it) => String(it?.name ?? ""))
+      ? (t.items as { name?: unknown; price?: unknown }[]).map((it) => ({
+          name: String(it?.name ?? ""),
+          price: Number(it?.price ?? 0),
+        }))
       : [],
   }));
 

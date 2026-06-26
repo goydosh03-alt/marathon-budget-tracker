@@ -10,6 +10,7 @@ import TransactionViewer from "@/components/TransactionViewer";
 import EmptyState from "@/components/EmptyState";
 import { catEmoji, catBg, fmtDate } from "@/lib/txui";
 
+type Item = { name: string; price: number };
 type Tx = {
   id: string;
   accountId: string;
@@ -19,7 +20,7 @@ type Tx = {
   merchant: string;
   date: string;
   createdAt: string;
-  items?: string[];
+  items?: Item[];
 };
 
 export default function CategoryView({
@@ -36,6 +37,16 @@ export default function CategoryView({
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<"date" | "amount">("date");
   const [viewId, setViewId] = useState<string | null>(null);
+  const [open, setOpen] = useState<Set<string>>(new Set());
+
+  function toggle(id: string) {
+    setOpen((prev) => {
+      const n = new Set(prev);
+      if (n.has(id)) n.delete(id);
+      else n.add(id);
+      return n;
+    });
+  }
 
   const q = query.trim().toLowerCase();
   const filtered = txs
@@ -43,7 +54,7 @@ export default function CategoryView({
       (t) =>
         !q ||
         t.merchant.toLowerCase().includes(q) ||
-        (t.items ?? []).some((n) => n.toLowerCase().includes(q))
+        (t.items ?? []).some((it) => it.name.toLowerCase().includes(q))
     )
     .sort((a, b) => (sort === "amount" ? b.amountHome - a.amountHome : 0));
 
@@ -55,65 +66,88 @@ export default function CategoryView({
 
       <header className={styles.topbar}>
         <Link href="/reports" className={styles.iconBtn} aria-label="Назад">
-          <Icon id="i-back" />
+          <Icon id="i-arrow-left" />
         </Link>
-        <span className={styles.barTitle} style={{ marginLeft: 12 }}>
-          {catEmoji(cat, isIncome)} {cat}
-        </span>
+        <span className={styles.barTitle} style={{ marginLeft: 12 }}>{cat}</span>
       </header>
 
-      <div className={styles.catHead}>
-        <span className={styles.catHeadEmoji} style={{ background: catBg(cat) }}>
-          {catEmoji(cat, isIncome)}
-        </span>
-        <div>
-          <span className={styles.catHeadSum}>{usd(total, 2)}</span>
-          <span className={styles.catHeadSub}>≈ {pln(total, 2)} · {txs.length} {txs.length === 1 ? "операція" : "операцій"}</span>
+      <section className={styles.periodcard}>
+        <div className={styles.catBoxHead}>
+          <span className={styles.catBoxLabel}>{isIncome ? "Зароблено" : "Витрачено"}</span>
+          <span className={styles.catBoxSum}>{usd(total, 0)}</span>
+          <span className={styles.catBoxSub}>
+            ≈ {pln(total, 0)} · {txs.length} {txs.length === 1 ? "операція" : "операцій"}
+          </span>
         </div>
-      </div>
 
-      <div className={styles.searchBar}>
-        <Icon id="i-search" />
-        <input placeholder="Пошук по назві або позиції…" value={query} onChange={(e) => setQuery(e.target.value)} />
-        {query && (
-          <button className={styles.searchClear} onClick={() => setQuery("")} aria-label="Очистити">
-            <Icon id="i-x" />
+        <div className={styles.searchBar}>
+          <Icon id="i-search" />
+          <input placeholder="Пошук по назві або позиції…" value={query} onChange={(e) => setQuery(e.target.value)} />
+          {query && (
+            <button className={styles.searchClear} onClick={() => setQuery("")} aria-label="Очистити">
+              <Icon id="i-x" />
+            </button>
+          )}
+        </div>
+
+        <div className={styles.viewToggleRow}>
+          <button className={`${styles.sortChip} ${sort === "date" ? styles.sortChipOn : ""}`} onClick={() => setSort("date")}>
+            За датою
           </button>
-        )}
-      </div>
-
-      <div className={styles.viewToggleRow}>
-        <button className={`${styles.sortChip} ${sort === "date" ? styles.sortChipOn : ""}`} onClick={() => setSort("date")}>
-          За датою
-        </button>
-        <button className={`${styles.sortChip} ${sort === "amount" ? styles.sortChipOn : ""}`} onClick={() => setSort("amount")}>
-          За сумою
-        </button>
-      </div>
-
-      {filtered.length === 0 ? (
-        <EmptyState icon="i-search" title="Нічого не знайдено" hint="Спробуй інший запит." />
-      ) : (
-        <div className={styles.catList}>
-          {filtered.map((t) => (
-            <div className={`${styles.tx} ${styles.clickable}`} key={t.id} onClick={() => setViewId(t.id)}>
-              <div className={styles.emo} style={{ background: catBg(t.category) }}>
-                {catEmoji(t.category, isIncome)}
-              </div>
-              <div>
-                <span className={styles.txName}>{t.merchant || t.category}</span>
-                <span className={styles.txMeta}>{fmtDate(t.date, t.createdAt)}</span>
-              </div>
-              <div className={styles.amt}>
-                <span className={`${styles.amtVal} ${isIncome ? styles.inc : ""}`}>
-                  {isIncome ? "+" : "−"}{usd(t.amountHome, 2)}
-                </span>
-                <span className={styles.amtSub}>{pln(t.amountHome, 2)}</span>
-              </div>
-            </div>
-          ))}
+          <button className={`${styles.sortChip} ${sort === "amount" ? styles.sortChipOn : ""}`} onClick={() => setSort("amount")}>
+            За сумою
+          </button>
         </div>
-      )}
+
+        <div className={styles.fulldiv} />
+
+        {filtered.length === 0 ? (
+          <EmptyState icon="i-search" title="Нічого не знайдено" hint="Спробуй інший запит." />
+        ) : (
+          filtered.map((t) => {
+            const hasItems = (t.items?.length ?? 0) > 0;
+            const isOpen = open.has(t.id);
+            return (
+              <div key={t.id}>
+                <div className={`${styles.tx} ${styles.clickable}`} onClick={() => setViewId(t.id)}>
+                  <div className={styles.emo} style={{ background: catBg(t.category) }}>
+                    {catEmoji(t.category, isIncome)}
+                  </div>
+                  <div>
+                    <span className={styles.txName}>{t.merchant || t.category}</span>
+                    <span className={styles.txMeta}>{fmtDate(t.date, t.createdAt)}</span>
+                  </div>
+                  <div className={styles.amt}>
+                    <span className={`${styles.amtVal} ${isIncome ? styles.inc : ""}`}>
+                      {isIncome ? "+" : "−"}{usd(t.amountHome, 2)}
+                    </span>
+                    <span className={styles.amtSub}>{pln(t.amountHome, 2)}</span>
+                  </div>
+                  {hasItems && (
+                    <button
+                      className={`${styles.txExpand} ${isOpen ? styles.txExpandOn : ""}`}
+                      onClick={(e) => { e.stopPropagation(); toggle(t.id); }}
+                      aria-label="Позиції"
+                    >
+                      <Icon id="i-chev" />
+                    </button>
+                  )}
+                </div>
+                {hasItems && isOpen && (
+                  <div className={styles.txItems}>
+                    {t.items!.map((it, i) => (
+                      <div className={styles.txItemRow} key={i}>
+                        <span className={styles.txItemName}>{it.name}</span>
+                        <span className={styles.txItemPrice}>{it.price.toFixed(2)} zł</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })
+        )}
+      </section>
 
       <BottomNav active="reports" accounts={accounts} />
 

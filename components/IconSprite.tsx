@@ -25,6 +25,8 @@ export function IconSprite() {
       <symbol id="i-trash" viewBox="0 0 24 24"><path fill="currentColor" d="M9 3h6l1 2h4v2H4V5h4zm-2 6h10l-.8 11.1A2 2 0 0114.2 22H9.8a2 2 0 01-2-1.9z" /></symbol>
       <symbol id="i-back" viewBox="0 0 24 24"><path fill="currentColor" d="M14.5 5.5v13L8 12z" /></symbol>
       <symbol id="i-fwd" viewBox="0 0 24 24"><path fill="currentColor" d="M9.5 5.5v13L16 12z" /></symbol>
+      <symbol id="i-arrow-left" viewBox="0 0 24 24"><path className="ic" d="M15 5l-7 7 7 7" /></symbol>
+      <symbol id="i-arrow-right" viewBox="0 0 24 24"><path className="ic" d="M9 5l7 7-7 7" /></symbol>
       <symbol id="i-x" viewBox="0 0 24 24"><path className="ic" d="M6 6l12 12M18 6L6 18" /></symbol>
       <symbol id="i-scan" viewBox="0 0 24 24"><path fill="currentColor" fillRule="evenodd" d="M9 4l-1.3 1.8H4.5A2.5 2.5 0 002 8.3v9.2A2.5 2.5 0 004.5 20h15a2.5 2.5 0 002.5-2.5V8.3a2.5 2.5 0 00-2.5-2.5h-3.2L15 4zm3 4.6A4.2 4.2 0 1012 17a4.2 4.2 0 000-8.4z" /><circle cx="12" cy="12.8" r="2.3" fill="currentColor" /></symbol>
       <symbol id="i-cog" viewBox="0 0 24 24"><path fill="currentColor" fillRule="evenodd" d="M9.7 2.5a.8.8 0 00-.78.62l-.4 1.78a7.5 7.5 0 00-1.5.87L5.3 5.9a.8.8 0 00-.97.35l-1.3 2.25a.8.8 0 00.18 1.02l1.4 1.15a7.6 7.6 0 000 1.74l-1.4 1.15a.8.8 0 00-.18 1.02l1.3 2.25a.8.8 0 00.97.35l1.72-.66c.46.35.96.64 1.5.87l.4 1.78a.8.8 0 00.78.62h4.6a.8.8 0 00.78-.62l.4-1.78c.54-.23 1.04-.52 1.5-.87l1.72.66a.8.8 0 00.97-.35l1.3-2.25a.8.8 0 00-.18-1.02l-1.4-1.15a7.6 7.6 0 000-1.74l1.4-1.15a.8.8 0 00.18-1.02l-1.3-2.25a.8.8 0 00-.97-.35l-1.72.66a7.5 7.5 0 00-1.5-.87l-.4-1.78a.8.8 0 00-.78-.62zM12 8.5a3.5 3.5 0 110 7 3.5 3.5 0 010-7z" /></symbol>

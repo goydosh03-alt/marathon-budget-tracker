@@ -46,7 +46,7 @@ export default async function SoonPage({
 
       <header className={styles.topbar}>
         <Link href="/menu" className={styles.iconBtn} aria-label="Назад">
-          <Icon id="i-back" />
+          <Icon id="i-arrow-left" />
         </Link>
         <span className={styles.barTitle} style={{ marginLeft: 12 }}>{feature}</span>
       </header>

@@ -110,11 +110,11 @@ export default function CalendarSheet({
 
           <div className={styles.calSheetHead}>
             <button className={styles.calNav} onClick={prevMonth} aria-label="Попередній місяць">
-              <Icon id="i-back" />
+              <Icon id="i-arrow-left" />
             </button>
             <span className={styles.calMonth}>{MONTHS[month]} {year}</span>
             <button className={styles.calNav} onClick={nextMonth} aria-label="Наступний місяць">
-              <Icon id="i-fwd" />
+              <Icon id="i-arrow-right" />
             </button>
           </div>
 
