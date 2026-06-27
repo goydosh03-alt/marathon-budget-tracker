@@ -52,9 +52,53 @@ export default async function MenuPage() {
           </span>
           <span className={styles.menuMid}>
             <span className={styles.menuName}>Налаштування</span>
-            <span className={styles.menuSub}>Рахунки, валюта, дані</span>
+            <span className={styles.menuSub}>Рахунки та дані</span>
           </span>
           <span className={styles.menuChev}><Icon id="i-chev" /></span>
+        </Link>
+
+        <Link href="/soon?f=Валюта" className={styles.menuItem}>
+          <span className={styles.menuIco} style={{ background: "rgba(74,222,180,0.14)", color: "#6ee7b7" }}>
+            <Icon id="i-wallet" />
+          </span>
+          <span className={styles.menuMid}>
+            <span className={styles.menuName}>Валюта</span>
+            <span className={styles.menuSub}>USD ($)</span>
+          </span>
+          <span className={styles.menuSoon}>СКОРО</span>
+        </Link>
+
+        <Link href="/soon?f=Категорії" className={styles.menuItem}>
+          <span className={styles.menuIco} style={{ background: "rgba(124,92,255,0.16)", color: "#b9a8ff" }}>
+            <Icon id="i-list" />
+          </span>
+          <span className={styles.menuMid}>
+            <span className={styles.menuName}>Категорії</span>
+            <span className={styles.menuSub}>Свої категорії витрат</span>
+          </span>
+          <span className={styles.menuSoon}>СКОРО</span>
+        </Link>
+
+        <Link href="/soon?f=Мова" className={styles.menuItem}>
+          <span className={styles.menuIco} style={{ background: "rgba(59,180,245,0.14)", color: "#7cc8f5" }}>
+            <Icon id="i-person" />
+          </span>
+          <span className={styles.menuMid}>
+            <span className={styles.menuName}>Мова</span>
+            <span className={styles.menuSub}>Українська</span>
+          </span>
+          <span className={styles.menuSoon}>СКОРО</span>
+        </Link>
+
+        <Link href="/soon?f=Експорт даних" className={styles.menuItem}>
+          <span className={styles.menuIco} style={{ background: "rgba(245,180,90,0.16)", color: "#f5c87c" }}>
+            <Icon id="i-download" />
+          </span>
+          <span className={styles.menuMid}>
+            <span className={styles.menuName}>Експорт даних</span>
+            <span className={styles.menuSub}>CSV / Excel / PDF</span>
+          </span>
+          <span className={styles.menuSoon}>СКОРО</span>
         </Link>
       </div>
 

@@ -260,7 +260,7 @@
 .exportBtn { width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%; background: rgba(74,222,180,0.12); border: 1px solid rgba(74,222,180,0.3); color: #6ee7b7; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 .exportBtn svg { width: 18px; height: 18px; }
 .exportBtn:active { background: rgba(74,222,180,0.2); }
-.floatAdd { position: fixed; right: 16px; bottom: calc(14px + env(safe-area-inset-bottom)); z-index: 35; height: 56px; }
+.floatAdd { position: fixed; right: 16px; bottom: calc(14px + env(safe-area-inset-bottom)); z-index: 35; height: 64px; }
 .catBoxHead { margin: 2px 0 12px; }
 .catBoxLabel { display: block; font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 8px; }
 .catBoxSum { display: block; font-size: 38px; font-weight: 700; letter-spacing: -1.2px; line-height: 1; }

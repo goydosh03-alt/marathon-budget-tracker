@@ -29,11 +29,11 @@ export default function ExportSheet({ onClose }: { onClose: () => void }) {
           </div>
 
           <div className={styles.fieldLabel}>Формат</div>
-          <div className={styles.tabs}>
-            <button className={`${styles.tab} ${fmt === "pdf" ? styles.tabOnExp : ""}`} onClick={() => setFmt("pdf")}>
+          <div className={styles.pfilter}>
+            <button className={`${styles.pf} ${fmt === "pdf" ? styles.pfOn : ""}`} onClick={() => setFmt("pdf")}>
               PDF
             </button>
-            <button className={`${styles.tab} ${fmt === "excel" ? styles.tabOnExp : ""}`} onClick={() => setFmt("excel")}>
+            <button className={`${styles.pf} ${fmt === "excel" ? styles.pfOn : ""}`} onClick={() => setFmt("excel")}>
               Excel
             </button>
           </div>

@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon } from "@/components/IconSprite";
 import {
@@ -148,53 +147,6 @@ export default function SettingsClient({
       <button className={styles.addLineBtn} onClick={() => setShowCreate(true)}>
         <Icon id="i-plus" /> Додати рахунок
       </button>
-
-      <div className={styles.menuGroupLabel}>Налаштування</div>
-      <div className={styles.menuList}>
-        <Link href="/soon?f=Валюта" className={styles.menuItem}>
-          <span className={styles.menuIco} style={{ background: "rgba(74,222,180,0.14)", color: "#6ee7b7" }}>
-            <Icon id="i-wallet" />
-          </span>
-          <span className={styles.menuMid}>
-            <span className={styles.menuName}>Валюта</span>
-            <span className={styles.menuSub}>Зараз: zł → $</span>
-          </span>
-          <span className={styles.menuSoon}>СКОРО</span>
-        </Link>
-
-        <Link href="/soon?f=Категорії" className={styles.menuItem}>
-          <span className={styles.menuIco} style={{ background: "rgba(124,92,255,0.16)", color: "#b9a8ff" }}>
-            <Icon id="i-list" />
-          </span>
-          <span className={styles.menuMid}>
-            <span className={styles.menuName}>Категорії</span>
-            <span className={styles.menuSub}>Свої категорії витрат</span>
-          </span>
-          <span className={styles.menuSoon}>СКОРО</span>
-        </Link>
-
-        <Link href="/soon?f=Мова" className={styles.menuItem}>
-          <span className={styles.menuIco} style={{ background: "rgba(59,180,245,0.14)", color: "#7cc8f5" }}>
-            <Icon id="i-person" />
-          </span>
-          <span className={styles.menuMid}>
-            <span className={styles.menuName}>Мова</span>
-            <span className={styles.menuSub}>Українська</span>
-          </span>
-          <span className={styles.menuSoon}>СКОРО</span>
-        </Link>
-
-        <Link href="/soon?f=Експорт даних" className={styles.menuItem}>
-          <span className={styles.menuIco} style={{ background: "rgba(245,180,90,0.16)", color: "#f5c87c" }}>
-            <Icon id="i-scan" />
-          </span>
-          <span className={styles.menuMid}>
-            <span className={styles.menuName}>Експорт даних</span>
-            <span className={styles.menuSub}>CSV / Excel</span>
-          </span>
-          <span className={styles.menuSoon}>СКОРО</span>
-        </Link>
-      </div>
 
       <div className={styles.menuGroupLabel}>Дані</div>
       <div className={styles.setHint}>
