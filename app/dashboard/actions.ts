@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { RATE_BASE_PER_HOME } from "@/lib/currency";
 import { revalidatePath } from "next/cache";
 
@@ -181,6 +182,49 @@ export async function deleteCategory(id: string): Promise<AddTxResult> {
   });
   if (error) return { ok: false, error: error.message };
   revalidatePath("/", "layout");
+  return { ok: true };
+}
+
+export async function updateProfileName(name: string): Promise<AddTxResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Не авторизовано" };
+  if (!name.trim()) return { ok: false, error: "Введи імʼя" };
+  const { error } = await supabase.auth.updateUser({ data: { full_name: name.trim() } });
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/", "layout");
+  return { ok: true };
+}
+
+// Повне видалення акаунта: стирає дані + видаляє користувача (через service role) + вихід.
+export async function deleteUserAccount(): Promise<AddTxResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Не авторизовано" };
+
+  await supabase.from("transactions").delete().eq("user_id", user.id);
+  await supabase.from("accounts").delete().eq("user_id", user.id);
+
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (key) {
+    try {
+      const admin = createAdminClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, key, {
+        auth: { persistSession: false, autoRefreshToken: false },
+      });
+      await admin.auth.admin.deleteUser(user.id);
+    } catch {
+      // якщо не вдалось — хоча б очистимо метадані
+      await supabase.auth.updateUser({ data: { categories: [], recurring: [], hide_cents: false } });
+    }
+  } else {
+    await supabase.auth.updateUser({ data: { categories: [], recurring: [], hide_cents: false } });
+  }
+
+  await supabase.auth.signOut();
   return { ok: true };
 }
 

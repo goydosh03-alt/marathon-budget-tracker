@@ -265,7 +265,7 @@
 .catType2 { display: block; font-size: 11px; color: rgba(255,255,255,0.45); line-height: 1.1; margin-top: 4px; }
 .recAmt { font-size: 14px; font-weight: 600; flex-shrink: 0; }
 .autoRow { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 0 4px; }
-.autoName { display: block; font-size: 15px; font-weight: 500; }
+.autoName { display: block; font-size: 15px; font-weight: 500; line-height: 1.1; }
 .autoSub { display: block; font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 4px; line-height: 1.1; }
 .preview { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
 .previewName { font-size: 16px; font-weight: 600; }
@@ -324,10 +324,20 @@
 .toggleOn .toggleKnob { transform: translateX(18px); }
 
 /* menu hub */
-.profCardLink { position: relative; display: block; text-align: center; text-decoration: none; color: #eaf2f0; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 24px 20px; margin-top: 16px; }
+.profCardLink { display: flex; align-items: center; gap: 14px; text-decoration: none; color: #eaf2f0; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 16px; margin-top: 16px; }
 .profCardLink:active { background: rgba(255,255,255,0.07); }
-.profCardChev { position: absolute; top: 50%; right: 16px; transform: translateY(-50%); color: rgba(255,255,255,0.28); }
+.profCardAv { width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg,#4ade9f,#3bb4f5); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; color: #04211a; flex-shrink: 0; }
+.profCardMid { flex: 1; min-width: 0; }
+.profCardName { display: block; font-size: 17px; font-weight: 600; line-height: 1.1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.profCardSub { display: block; font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.1; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.profCardChev { color: rgba(255,255,255,0.28); flex-shrink: 0; display: flex; }
 .profCardChev svg { width: 18px; height: 18px; transform: rotate(-90deg); }
+
+/* profile page — big avatar */
+.profBig { display: flex; flex-direction: column; align-items: center; text-align: center; margin: 18px 0 8px; }
+.profBigAvatar { width: 88px; height: 88px; border-radius: 50%; background: linear-gradient(135deg,#4ade9f,#3bb4f5); display: flex; align-items: center; justify-content: center; font-size: 34px; font-weight: 700; color: #04211a; margin-bottom: 14px; }
+.profBigName { font-size: 20px; font-weight: 600; line-height: 1.1; }
+.profBigSub { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.1; margin-top: 4px; }
 .menuGroupLabel { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.5px; margin: 22px 4px 10px; }
 .menuList { display: flex; flex-direction: column; gap: 10px; }
 .menuItem { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 15px; color: #eaf2f0; text-decoration: none; cursor: pointer; }

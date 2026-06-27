@@ -37,9 +37,12 @@ export default async function MenuPage() {
       </TopBar>
 
       <Link href="/profile" className={styles.profCardLink}>
-        <div className={styles.profAvatar}>{initial}</div>
-        <div className={styles.profName}>{fullName}</div>
-        <div className={styles.profEmail}>{user.email}</div>
+        <div className={styles.profCardAv}>{initial}</div>
+        <div className={styles.profCardMid}>
+          <span className={styles.profCardName}>{fullName}</span>
+          <span className={styles.profCardSub}>{user.email}</span>
+        </div>
+        <span className={styles.profCardChev}><Icon id="i-chev" /></span>
       </Link>
 
       <MenuQuickCards hideCents={hideCents} />
@@ -57,17 +60,6 @@ export default async function MenuPage() {
           <span className={styles.menuChev}><Icon id="i-chev" /></span>
         </Link>
 
-        <Link href="/soon?f=Валюта" className={styles.menuItem}>
-          <span className={styles.menuIco} style={{ background: "rgba(74,222,180,0.14)", color: "#6ee7b7" }}>
-            <Icon id="i-wallet" />
-          </span>
-          <span className={styles.menuMid}>
-            <span className={styles.menuName}>Валюта</span>
-            <span className={styles.menuSub}>USD ($)</span>
-          </span>
-          <span className={styles.menuSoon}>СКОРО</span>
-        </Link>
-
         <Link href="/categories" className={styles.menuItem}>
           <span className={styles.menuIco} style={{ background: "rgba(124,92,255,0.16)", color: "#b9a8ff" }}>
             <Icon id="i-list" />
@@ -78,14 +70,17 @@ export default async function MenuPage() {
           </span>
           <span className={styles.menuChev}><Icon id="i-chev" /></span>
         </Link>
+      </div>
 
-        <Link href="/soon?f=Мова" className={styles.menuItem}>
-          <span className={styles.menuIco} style={{ background: "rgba(59,180,245,0.14)", color: "#7cc8f5" }}>
-            <Icon id="i-person" />
+      <div className={styles.menuGroupLabel}>Фінанси</div>
+      <div className={styles.menuList}>
+        <Link href="/soon?f=Валюта" className={styles.menuItem}>
+          <span className={styles.menuIco} style={{ background: "rgba(74,222,180,0.14)", color: "#6ee7b7" }}>
+            <Icon id="i-wallet" />
           </span>
           <span className={styles.menuMid}>
-            <span className={styles.menuName}>Мова</span>
-            <span className={styles.menuSub}>Українська</span>
+            <span className={styles.menuName}>Валюта</span>
+            <span className={styles.menuSub}>USD ($)</span>
           </span>
           <span className={styles.menuSoon}>СКОРО</span>
         </Link>
@@ -102,7 +97,7 @@ export default async function MenuPage() {
         </Link>
       </div>
 
-      <div className={styles.menuGroupLabel}>Більше</div>
+      <div className={styles.menuGroupLabel}>Автоматизація</div>
       <div className={styles.menuList}>
         <Link href="/recurring" className={styles.menuItem}>
           <span className={styles.menuIco} style={{ background: "rgba(110,231,183,0.14)", color: "#6ee7b7" }}>
@@ -122,6 +117,20 @@ export default async function MenuPage() {
           <span className={styles.menuMid}>
             <span className={styles.menuName}>Нагадування</span>
             <span className={styles.menuSub}>Не забути записати витрати</span>
+          </span>
+          <span className={styles.menuSoon}>СКОРО</span>
+        </Link>
+      </div>
+
+      <div className={styles.menuGroupLabel}>Застосунок</div>
+      <div className={styles.menuList}>
+        <Link href="/soon?f=Мова" className={styles.menuItem}>
+          <span className={styles.menuIco} style={{ background: "rgba(59,180,245,0.14)", color: "#7cc8f5" }}>
+            <Icon id="i-person" />
+          </span>
+          <span className={styles.menuMid}>
+            <span className={styles.menuName}>Мова</span>
+            <span className={styles.menuSub}>Українська</span>
           </span>
           <span className={styles.menuSoon}>СКОРО</span>
         </Link>
