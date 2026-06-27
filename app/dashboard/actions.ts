@@ -6,6 +6,51 @@ import { revalidatePath } from "next/cache";
 
 export type AddTxResult = { ok: boolean; error?: string };
 
+export type UserCategory = {
+  id: string;
+  name: string;
+  emoji: string;
+  color: string;
+  type: "expense" | "income";
+};
+
+// Категорії користувача — у метаданих акаунта (без окремої таблиці).
+export async function addCategory(cat: Omit<UserCategory, "id">): Promise<AddTxResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Не авторизовано" };
+  if (!cat.name.trim()) return { ok: false, error: "Введи назву" };
+
+  const current: UserCategory[] = Array.isArray(user.user_metadata?.categories)
+    ? user.user_metadata.categories
+    : [];
+  const item: UserCategory = { ...cat, name: cat.name.trim(), id: crypto.randomUUID() };
+  const { error } = await supabase.auth.updateUser({ data: { categories: [...current, item] } });
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/", "layout");
+  return { ok: true };
+}
+
+export async function deleteCategory(id: string): Promise<AddTxResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Не авторизовано" };
+
+  const current: UserCategory[] = Array.isArray(user.user_metadata?.categories)
+    ? user.user_metadata.categories
+    : [];
+  const { error } = await supabase.auth.updateUser({
+    data: { categories: current.filter((c) => c.id !== id) },
+  });
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/", "layout");
+  return { ok: true };
+}
+
 // Налаштування користувача зберігаємо в метаданих акаунта (без окремої таблиці).
 export async function setHideCents(value: boolean): Promise<AddTxResult> {
   const supabase = await createClient();

@@ -68,7 +68,7 @@ export default async function MenuPage() {
           <span className={styles.menuSoon}>СКОРО</span>
         </Link>
 
-        <Link href="/soon?f=Категорії" className={styles.menuItem}>
+        <Link href="/categories" className={styles.menuItem}>
           <span className={styles.menuIco} style={{ background: "rgba(124,92,255,0.16)", color: "#b9a8ff" }}>
             <Icon id="i-list" />
           </span>
@@ -76,7 +76,7 @@ export default async function MenuPage() {
             <span className={styles.menuName}>Категорії</span>
             <span className={styles.menuSub}>Свої категорії витрат</span>
           </span>
-          <span className={styles.menuSoon}>СКОРО</span>
+          <span className={styles.menuChev}><Icon id="i-chev" /></span>
         </Link>
 
         <Link href="/soon?f=Мова" className={styles.menuItem}>
