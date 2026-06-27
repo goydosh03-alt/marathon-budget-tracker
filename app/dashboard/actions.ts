@@ -120,6 +120,64 @@ export async function processRecurring(): Promise<{ created: number }> {
   return { created: inserts.length };
 }
 
+export type Reminder = {
+  id: string;
+  name: string;
+  time: string; // HH:MM
+  freq: "daily" | "weekdays" | "weekends" | "weekly";
+  enabled: boolean;
+};
+
+async function readReminders() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { supabase, user: null, items: [] as Reminder[] };
+  const items: Reminder[] = Array.isArray(user.user_metadata?.reminders) ? user.user_metadata.reminders : [];
+  return { supabase, user, items };
+}
+
+export async function addReminder(r: Omit<Reminder, "id">): Promise<AddTxResult> {
+  const { supabase, user, items } = await readReminders();
+  if (!user) return { ok: false, error: "Не авторизовано" };
+  if (!r.name.trim()) return { ok: false, error: "Введи назву" };
+  const item: Reminder = { ...r, name: r.name.trim(), id: crypto.randomUUID() };
+  const { error } = await supabase.auth.updateUser({ data: { reminders: [...items, item] } });
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/", "layout");
+  return { ok: true };
+}
+
+export async function updateReminder(id: string, fields: Omit<Reminder, "id">): Promise<AddTxResult> {
+  const { supabase, user, items } = await readReminders();
+  if (!user) return { ok: false, error: "Не авторизовано" };
+  const next = items.map((c) => (c.id === id ? { ...c, ...fields, name: fields.name.trim(), id } : c));
+  const { error } = await supabase.auth.updateUser({ data: { reminders: next } });
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/", "layout");
+  return { ok: true };
+}
+
+export async function toggleReminder(id: string, enabled: boolean): Promise<AddTxResult> {
+  const { supabase, user, items } = await readReminders();
+  if (!user) return { ok: false, error: "Не авторизовано" };
+  const next = items.map((c) => (c.id === id ? { ...c, enabled } : c));
+  const { error } = await supabase.auth.updateUser({ data: { reminders: next } });
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/", "layout");
+  return { ok: true };
+}
+
+export async function deleteReminder(id: string): Promise<AddTxResult> {
+  const { supabase, user, items } = await readReminders();
+  if (!user) return { ok: false, error: "Не авторизовано" };
+  const { error } = await supabase.auth.updateUser({ data: { reminders: items.filter((c) => c.id !== id) } });
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/", "layout");
+  return { ok: true };
+}
+
 export type UserCategory = {
   id: string;
   name: string;

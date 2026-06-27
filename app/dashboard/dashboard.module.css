@@ -264,6 +264,8 @@
 .catName2 { display: block; font-size: 15px; font-weight: 500; line-height: 1.1; }
 .catType2 { display: block; font-size: 11px; color: rgba(255,255,255,0.45); line-height: 1.1; margin-top: 4px; }
 .recAmt { font-size: 14px; font-weight: 600; flex-shrink: 0; }
+.remRow { display: flex; align-items: center; gap: 12px; padding: 12px 8px; }
+.remRow + .remRow { border-top: 1px solid rgba(255,255,255,0.05); }
 .autoRow { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 0 4px; }
 .autoName { display: block; font-size: 15px; font-weight: 500; line-height: 1.1; }
 .autoSub { display: block; font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 4px; line-height: 1.1; }
