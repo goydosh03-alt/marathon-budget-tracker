@@ -263,6 +263,7 @@
 .catMid2 { flex: 1; min-width: 0; }
 .catName2 { display: block; font-size: 15px; font-weight: 500; line-height: 1.1; }
 .catType2 { display: block; font-size: 11px; color: rgba(255,255,255,0.45); line-height: 1.1; margin-top: 4px; }
+.recAmt { font-size: 14px; font-weight: 600; flex-shrink: 0; }
 .preview { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
 .previewName { font-size: 16px; font-weight: 600; }
 .emojiGrid { display: grid; grid-auto-flow: column; grid-template-rows: repeat(3, 44px); grid-auto-columns: 44px; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 14px;

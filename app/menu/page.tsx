@@ -102,9 +102,9 @@ export default async function MenuPage() {
         </Link>
       </div>
 
-      <div className={styles.menuGroupLabel}>Скоро</div>
+      <div className={styles.menuGroupLabel}>Більше</div>
       <div className={styles.menuList}>
-        <Link href="/soon?f=Регулярні платежі" className={styles.menuItem}>
+        <Link href="/recurring" className={styles.menuItem}>
           <span className={styles.menuIco} style={{ background: "rgba(110,231,183,0.14)", color: "#6ee7b7" }}>
             <Icon id="i-repeat" />
           </span>
@@ -112,7 +112,7 @@ export default async function MenuPage() {
             <span className={styles.menuName}>Регулярні платежі</span>
             <span className={styles.menuSub}>Підписки й щомісячні рахунки</span>
           </span>
-          <span className={styles.menuSoon}>СКОРО</span>
+          <span className={styles.menuChev}><Icon id="i-chev" /></span>
         </Link>
 
         <Link href="/soon?f=Нагадування" className={styles.menuItem}>

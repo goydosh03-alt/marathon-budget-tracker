@@ -9,6 +9,7 @@ import TopBar from "@/components/TopBar";
 import TransactionViewer from "@/components/TransactionViewer";
 import CalendarSheet from "@/components/CalendarSheet";
 import EmptyState from "@/components/EmptyState";
+import RecurringRunner from "@/components/RecurringRunner";
 import { periods, PERIOD_LABEL, inPeriod, catEmoji, catBg, fmtDate } from "@/lib/txui";
 import { useDec } from "@/components/SettingsProvider";
 
@@ -72,6 +73,7 @@ export default function Dashboard({
   return (
     <div className={styles.screen}>
       <IconSprite />
+      <RecurringRunner />
 
       <TopBar>
         <div className={styles.brand}>
