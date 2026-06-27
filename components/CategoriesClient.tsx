@@ -6,13 +6,22 @@ import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon, IconSprite } from "@/components/IconSprite";
 import SubHeader from "@/components/SubHeader";
 import EmptyState from "@/components/EmptyState";
-import { addCategory, deleteCategory, type UserCategory } from "@/app/dashboard/actions";
+import { addCategory, updateCategory, deleteCategory, type UserCategory } from "@/app/dashboard/actions";
 
-const EMOJIS = ["🛒", "☕", "🚌", "🎉", "💊", "👕", "🏠", "🎮", "🍔", "🎬", "✈️", "🐶", "📚", "🎁", "💪", "⛽", "💡", "💸"];
-const COLORS = ["#4ade9f", "#3bb4f5", "#b9a8ff", "#f5a86a", "#ff8a8a", "#ffd45a", "#7c6cff", "#f5a3d0", "#5ad1c4"];
+const EMOJIS = [
+  "🛒", "☕", "🚌", "🎉", "💊", "👕", "🏠", "🎮", "🍔", "🎬", "✈️", "🐶",
+  "📚", "🎁", "💪", "⛽", "💡", "💸", "🍷", "🍕", "🚕", "🏥", "💼", "🎵",
+  "📱", "💻", "🎓", "🧴", "🪑", "🐱", "🌸", "⚽", "🎨", "🔧", "🧹", "💳",
+];
+const COLORS = [
+  "#4ade9f", "#3bb4f5", "#b9a8ff", "#f5a86a", "#ff8a8a", "#ffd45a", "#7c6cff", "#f5a3d0",
+  "#5ad1c4", "#9ad17a", "#f57c7c", "#7ca3f5", "#d68cff", "#ffb86c", "#6ee7b7", "#c0c0c0",
+  "#e0779e", "#88d8c0",
+];
 
 export default function CategoriesClient({ categories }: { categories: UserCategory[] }) {
   const [showAdd, setShowAdd] = useState(false);
+  const [editId, setEditId] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [emoji, setEmoji] = useState(EMOJIS[0]);
   const [color, setColor] = useState(COLORS[0]);
@@ -21,16 +30,33 @@ export default function CategoriesClient({ categories }: { categories: UserCateg
   const [, start] = useTransition();
   const router = useRouter();
 
-  function create() {
+  function openNew() {
+    setEditId(null);
+    setName("");
+    setEmoji(EMOJIS[0]);
+    setColor(COLORS[0]);
+    setType("expense");
+    setShowAdd(true);
+  }
+
+  function openEdit(c: UserCategory) {
+    setEditId(c.id);
+    setName(c.name);
+    setEmoji(c.emoji);
+    setColor(c.color);
+    setType(c.type);
+    setShowAdd(true);
+  }
+
+  function save() {
     if (!name.trim()) return;
     setSaving(true);
     start(async () => {
-      await addCategory({ name, emoji, color, type });
+      if (editId) await updateCategory(editId, { name, emoji, color, type });
+      else await addCategory({ name, emoji, color, type });
       setSaving(false);
       setShowAdd(false);
-      setName("");
-      setEmoji(EMOJIS[0]);
-      setColor(COLORS[0]);
+      setEditId(null);
       router.refresh();
     });
   }
@@ -53,13 +79,17 @@ export default function CategoriesClient({ categories }: { categories: UserCateg
       ) : (
         <div className={styles.setCard}>
           {categories.map((c) => (
-            <div className={styles.catRow2} key={c.id}>
+            <div className={`${styles.catRow2} ${styles.clickable}`} key={c.id} onClick={() => openEdit(c)}>
               <span className={styles.catDot} style={{ background: c.color + "26" }}>{c.emoji}</span>
               <div className={styles.catMid2}>
                 <span className={styles.catName2}>{c.name}</span>
                 <span className={styles.catType2}>{c.type === "income" ? "Дохід" : "Витрата"}</span>
               </div>
-              <button className={`${styles.setAccBtn} ${styles.setAccDel}`} onClick={() => remove(c.id)} aria-label="Видалити">
+              <button
+                className={`${styles.setAccBtn} ${styles.setAccDel}`}
+                onClick={(e) => { e.stopPropagation(); remove(c.id); }}
+                aria-label="Видалити"
+              >
                 <Icon id="i-trash" />
               </button>
             </div>
@@ -67,7 +97,7 @@ export default function CategoriesClient({ categories }: { categories: UserCateg
         </div>
       )}
 
-      <button className={styles.addLineBtn} onClick={() => setShowAdd(true)}>
+      <button className={styles.addLineBtn} onClick={openNew}>
         <Icon id="i-plus" /> Додати категорію
       </button>
 
@@ -77,7 +107,7 @@ export default function CategoriesClient({ categories }: { categories: UserCateg
           <div className={styles.sheet}>
             <div className={styles.sheetBody}>
               <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span>Нова категорія</span>
+                <span>{editId ? "Редагувати категорію" : "Нова категорія"}</span>
                 <button className={styles.iconBtn} onClick={() => setShowAdd(false)} aria-label="Закрити">
                   <Icon id="i-x" />
                 </button>
@@ -118,8 +148,8 @@ export default function CategoriesClient({ categories }: { categories: UserCateg
             </div>
 
             <div className={styles.sheetActions}>
-              <button className={styles.btnPrimary} onClick={create} disabled={saving || !name.trim()}>
-                {saving ? "Створюю…" : "Створити"}
+              <button className={styles.btnPrimary} onClick={save} disabled={saving || !name.trim()}>
+                {saving ? "Зберігаю…" : editId ? "Зберегти" : "Створити"}
               </button>
             </div>
           </div>

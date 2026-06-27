@@ -32,12 +32,17 @@ export default async function RootLayout({
     data: { user },
   } = await supabase.auth.getUser();
   const hideCents = !!user?.user_metadata?.hide_cents;
+  const categories = Array.isArray(user?.user_metadata?.categories)
+    ? user!.user_metadata.categories
+    : [];
 
   return (
     <html lang="uk">
       <body>
         <SaveGlow />
-        <SettingsProvider hideCents={hideCents}>{children}</SettingsProvider>
+        <SettingsProvider hideCents={hideCents} categories={categories}>
+          {children}
+        </SettingsProvider>
       </body>
     </html>
   );

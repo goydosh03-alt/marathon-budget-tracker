@@ -10,7 +10,7 @@ import AmountPad from "@/components/AmountPad";
 import CalendarSheet from "@/components/CalendarSheet";
 import { usd } from "@/lib/currency";
 import { catEmoji } from "@/lib/txui";
-import { useDec } from "@/components/SettingsProvider";
+import { useDec, useCategories } from "@/components/SettingsProvider";
 
 const EXPENSE_CATS = ["Їжа", "Кафе", "Транспорт", "Розваги", "Аптека", "Одяг", "Комунальні", "Інше"];
 const INCOME_CATS = ["Зарплата", "Фриланс", "Подарунок", "Інше"];
@@ -93,7 +93,13 @@ export default function AddTransactionForm({
 
 
   const isIncome = type === "income";
-  const cats = isIncome ? INCOME_CATS : EXPENSE_CATS;
+  const customCats = useCategories();
+  const cats = [
+    ...(isIncome ? INCOME_CATS : EXPENSE_CATS),
+    ...customCats.filter((c) => c.type === (isIncome ? "income" : "expense")).map((c) => c.name),
+  ];
+  const customEmoji = new Map(customCats.map((c) => [c.name, c.emoji]));
+  const catIcon = (name: string) => customEmoji.get(name) ?? catEmoji(name, isIncome);
   const parsed = parseFloat(amount.replace(",", ".")) || 0;
   const dec = useDec();
 
@@ -363,7 +369,7 @@ export default function AddTransactionForm({
               className={`${styles.chip2} ${category === c ? styles.chip2On : ""}`}
               onClick={() => setCategory(c)}
             >
-              {catEmoji(c, isIncome)} {c}
+              {catIcon(c)} {c}
             </button>
           ))}
         </div>

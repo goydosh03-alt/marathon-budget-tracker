@@ -33,6 +33,26 @@ export async function addCategory(cat: Omit<UserCategory, "id">): Promise<AddTxR
   return { ok: true };
 }
 
+export async function updateCategory(
+  id: string,
+  fields: Omit<UserCategory, "id">
+): Promise<AddTxResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Не авторизовано" };
+
+  const current: UserCategory[] = Array.isArray(user.user_metadata?.categories)
+    ? user.user_metadata.categories
+    : [];
+  const next = current.map((c) => (c.id === id ? { ...c, ...fields, name: fields.name.trim(), id } : c));
+  const { error } = await supabase.auth.updateUser({ data: { categories: next } });
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/", "layout");
+  return { ok: true };
+}
+
 export async function deleteCategory(id: string): Promise<AddTxResult> {
   const supabase = await createClient();
   const {

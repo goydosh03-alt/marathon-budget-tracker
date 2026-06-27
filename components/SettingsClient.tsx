@@ -29,7 +29,9 @@ export default function SettingsClient({
   const router = useRouter();
   const [list, setList] = useState<Account[]>(accounts);
   const [, start] = useTransition();
-  const [confirmClear, setConfirmClear] = useState(false);
+  const [clearOpen, setClearOpen] = useState(false);
+  const [clearWord, setClearWord] = useState("");
+  const canClear = clearWord.trim().toLowerCase() === "так";
   const [clearing, setClearing] = useState(false);
   const [error, setError] = useState("");
 
@@ -46,14 +48,14 @@ export default function SettingsClient({
 
   // блокуємо скрол фону, поки відкритий будь-який bottom sheet
   useEffect(() => {
-    const open = !!delTarget || showCreate;
+    const open = !!delTarget || showCreate || clearOpen;
     if (!open) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = prev;
     };
-  }, [delTarget, showCreate]);
+  }, [delTarget, showCreate, clearOpen]);
 
   function editName(id: string, name: string) {
     setList((p) => p.map((a) => (a.id === id ? { ...a, name } : a)));
@@ -102,16 +104,18 @@ export default function SettingsClient({
   }
 
   function clearAll() {
+    if (!canClear) return;
     setError("");
     setClearing(true);
     start(async () => {
       const r = await deleteAllTransactions();
       setClearing(false);
-      setConfirmClear(false);
       if (!r.ok) {
         setError(r.error ?? "Помилка");
         return;
       }
+      setClearOpen(false);
+      setClearWord("");
       router.refresh();
     });
   }
@@ -152,17 +156,48 @@ export default function SettingsClient({
       <div className={styles.setHint}>
         Усього транзакцій: <b>{txCount}</b>. Видалення безповоротне.
       </div>
-      {!confirmClear ? (
-        <button className={styles.dangerBtn} onClick={() => setConfirmClear(true)} disabled={txCount === 0}>
-          Видалити всі транзакції
-        </button>
-      ) : (
-        <button className={styles.dangerBtn} onClick={clearAll} disabled={clearing}>
-          {clearing ? "Видаляю…" : `Точно видалити всі ${txCount}? Ще раз`}
-        </button>
-      )}
+      <button
+        className={styles.dangerBtn}
+        onClick={() => { setClearWord(""); setClearOpen(true); }}
+        disabled={txCount === 0}
+      >
+        Видалити всі транзакції
+      </button>
 
       {error && <div className={styles.setHint} style={{ color: "#ff9090" }}>{error}</div>}
+
+      {clearOpen && (
+        <div className={styles.sheetWrap}>
+          <div className={styles.sheetBack} onClick={() => setClearOpen(false)} />
+          <div className={styles.sheet}>
+            <div className={styles.sheetBody}>
+              <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span>Видалити всі транзакції?</span>
+                <button className={styles.iconBtn} onClick={() => setClearOpen(false)} aria-label="Закрити">
+                  <Icon id="i-x" />
+                </button>
+              </div>
+              <div className={styles.confirmText}>
+                Усі <b>{txCount}</b> транзакцій буде видалено безповоротно. Рахунки залишаться.
+                Щоб підтвердити, напиши слово <b>так</b>.
+              </div>
+              <input
+                className={styles.confirmInput}
+                placeholder="так"
+                value={clearWord}
+                onChange={(e) => setClearWord(e.target.value)}
+                autoFocus
+              />
+            </div>
+            <div className={styles.sheetActions}>
+              <button className={styles.btnGhost} onClick={() => setClearOpen(false)}>Скасувати</button>
+              <button className={styles.confirmDel} onClick={clearAll} disabled={!canClear || clearing}>
+                {clearing ? "Видаляю…" : "Видалити"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* bottom sheet: новий рахунок */}
       {showCreate && (
