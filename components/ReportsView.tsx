@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import Link from "next/link";
 import styles from "@/app/dashboard/dashboard.module.css";
-import { usd, pln } from "@/lib/currency";
+import { useMoney } from "@/components/SettingsProvider";
 import { Icon, IconSprite } from "@/components/IconSprite";
 import BottomNav from "@/components/BottomNav";
 import TopBar from "@/components/TopBar";
@@ -71,6 +71,7 @@ export default function ReportsView({
   accounts: { id: string; name: string; type: string }[];
   txs: Tx[];
 }) {
+  const money = useMoney();
   const [tab, setTab] = useState<"expenses" | "income">("expenses");
   const [view, setView] = useState<"cats" | "months">("cats");
   const [period, setPeriod] = useState("month");
@@ -229,8 +230,8 @@ export default function ReportsView({
             <div className={styles.donutWrap}>
               <Donut data={cats} />
               <div className={styles.donutCenter}>
-                <span className={styles.donutSum}>{usd(big, 0)}</span>
-                <span className={styles.donutLbl}>≈ {pln(big, 0)}</span>
+                <span className={styles.donutSum}>{money(big, 0)}</span>
+                <span className={styles.donutLbl}>{tab === "expenses" ? "Витрати" : "Дохід"}</span>
               </div>
             </div>
             {!range && avail.length > 1 && avail.length <= 12 && (
@@ -246,8 +247,8 @@ export default function ReportsView({
         ) : (
           <>
             <div className={styles.repLeft}>
-              <span className={styles.repBig2}>{usd(total6, 0)}</span>
-              <span className={styles.repSub}>≈ {pln(total6, 0)}</span>
+              <span className={styles.repBig2}>{money(total6, 0)}</span>
+              <span className={styles.repSub}>{tab === "expenses" ? "Витрати" : "Дохід"} за період</span>
             </div>
             <div className={styles.bars}>
               {barsData.map((d, i) => (
@@ -284,7 +285,7 @@ export default function ReportsView({
                   <span className={styles.legDot} style={{ background: c.color }} />
                   <span className={styles.legName}>{catEmoji(c.cat, !isExpenses)} {c.cat}</span>
                   <span className={styles.legPct}>{share}%</span>
-                  <span className={styles.legSum}>{usd(c.sum, 0)}</span>
+                  <span className={styles.legSum}>{money(c.sum, 0)}</span>
                   <span className={styles.legChev}><Icon id="i-chev" /></span>
                 </Link>
               );

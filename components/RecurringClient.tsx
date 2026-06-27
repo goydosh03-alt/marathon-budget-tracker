@@ -3,14 +3,14 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import styles from "@/app/dashboard/dashboard.module.css";
-import { usd } from "@/lib/currency";
 import { Icon, IconSprite } from "@/components/IconSprite";
 import SubHeader from "@/components/SubHeader";
 import AmountPad from "@/components/AmountPad";
 import CalendarSheet from "@/components/CalendarSheet";
 import EmptyState from "@/components/EmptyState";
 import { catEmoji, catBg } from "@/lib/txui";
-import { useDec } from "@/components/SettingsProvider";
+import { useDec, useMoney, useCurrency } from "@/components/SettingsProvider";
+import { currencyMeta } from "@/lib/currency";
 import {
   addRecurring,
   updateRecurring,
@@ -44,6 +44,8 @@ export default function RecurringClient({
 }) {
   const router = useRouter();
   const dec = useDec();
+  const money = useMoney();
+  const sym = currencyMeta(useCurrency()).symbol;
   const [, start] = useTransition();
   const [open, setOpen] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
@@ -131,8 +133,6 @@ export default function RecurringClient({
       <IconSprite />
       <SubHeader title="Регулярні платежі" back="/menu" />
 
-      <div className={styles.setHint}>Автоматично додаються у вказане число щомісяця.</div>
-
       {recurring.length === 0 ? (
         <EmptyState icon="i-repeat" title="Ще немає регулярних" hint="Додай підписку чи рахунок — додаватиметься сам щомісяця." />
       ) : (
@@ -145,7 +145,7 @@ export default function RecurringClient({
                 <span className={styles.catType2}>{r.dayOfMonth}-го числа{r.autoAdd ? " · авто" : ""}</span>
               </div>
               <span className={`${styles.recAmt} ${r.type === "income" ? styles.inc : ""}`}>
-                {r.type === "income" ? "+" : "−"}{usd(r.amountHome, dec)}
+                {r.type === "income" ? "+" : "−"}{money(r.amountHome, dec)}
               </span>
             </div>
           ))}
@@ -183,9 +183,8 @@ export default function RecurringClient({
                   >
                     {amount || "0"}
                   </button>
-                  <span className={styles.amtZl}>zł</span>
+                  <span className={styles.amtZl}>{sym}</span>
                 </div>
-                <div className={styles.amtConv}>≈ {usd(parsed, dec)}</div>
               </div>
 
               <div className={styles.fcard}>

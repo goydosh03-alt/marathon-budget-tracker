@@ -3,6 +3,7 @@ import "./globals.css";
 import SaveGlow from "@/components/SaveGlow";
 import { SettingsProvider } from "@/components/SettingsProvider";
 import { createClient } from "@/lib/supabase/server";
+import { DEFAULT_CURRENCY, isCurrency } from "@/lib/currency";
 
 export const metadata: Metadata = {
   title: "Snapcost",
@@ -35,12 +36,14 @@ export default async function RootLayout({
   const categories = Array.isArray(user?.user_metadata?.categories)
     ? user!.user_metadata.categories
     : [];
+  const mc = user?.user_metadata?.main_currency;
+  const currency = isCurrency(mc) ? mc : DEFAULT_CURRENCY;
 
   return (
     <html lang="uk">
       <body>
         <SaveGlow />
-        <SettingsProvider hideCents={hideCents} categories={categories}>
+        <SettingsProvider hideCents={hideCents} categories={categories} currency={currency}>
           {children}
         </SettingsProvider>
       </body>

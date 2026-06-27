@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import styles from "@/app/dashboard/dashboard.module.css";
-import { usd, pln } from "@/lib/currency";
 import { Icon, IconSprite } from "@/components/IconSprite";
 import BottomNav from "@/components/BottomNav";
 import TopBar from "@/components/TopBar";
@@ -10,7 +9,7 @@ import TransactionViewer from "@/components/TransactionViewer";
 import CalendarSheet from "@/components/CalendarSheet";
 import EmptyState from "@/components/EmptyState";
 import { periods, PERIOD_LABEL, inPeriod, catEmoji, catBg, fmtDate, pluralOps } from "@/lib/txui";
-import { useDec } from "@/components/SettingsProvider";
+import { useDec, useMoney } from "@/components/SettingsProvider";
 
 function dmShort(isoStr: string): string {
   const [, m, d] = isoStr.split("-");
@@ -59,6 +58,7 @@ export default function HistoryList({
   const searchTotal = searchResults.reduce((s, t) => s + t.amountHome, 0);
 
   const dec = useDec();
+  const money = useMoney();
   const isExpenses = tab === "expenses";
   const filtered = txs.filter((t) => {
     if (isExpenses ? t.type !== "expense" : t.type !== "income") return false;
@@ -131,7 +131,7 @@ export default function HistoryList({
               <span className={styles.searchSumLabel}>
                 Знайдено {searchResults.length} {pluralOps(searchResults.length)}
               </span>
-              <span className={styles.searchSumAmt}>{usd(searchTotal, dec)}</span>
+              <span className={styles.searchSumAmt}>{money(searchTotal, dec)}</span>
             </div>
             {searchResults.length === 0 ? (
               <EmptyState
@@ -151,9 +151,8 @@ export default function HistoryList({
                   </div>
                   <div className={styles.amt}>
                     <span className={`${styles.amtVal} ${!isExpenses ? styles.inc : ""}`}>
-                      {isExpenses ? "−" : "+"}{usd(t.amountHome, dec)}
+                      {isExpenses ? "−" : "+"}{money(t.amountHome, dec)}
                     </span>
-                    <span className={styles.amtSub}>{pln(t.amountHome, dec)}</span>
                   </div>
                 </div>
               ))
@@ -186,8 +185,7 @@ export default function HistoryList({
             {isExpenses ? "Витрачено" : "Зароблено"} · {periodText}
           </span>
           <div className={styles.psumRow}>
-            <span className={styles.psumAmt}>{usd(total, 0)}</span>
-            <span className={styles.pr}>≈ {pln(total, 0)}</span>
+            <span className={styles.psumAmt}>{money(total, 0)}</span>
           </div>
         </div>
 
@@ -217,14 +215,13 @@ export default function HistoryList({
                     <div className={styles.catMid}>
                       <div className={styles.catHead}>
                         <span className={styles.catName}>{c.cat}</span>
-                        <span className={`${styles.catSum} ${!isExpenses ? styles.inc : ""}`}>{usd(c.sum, 0)}</span>
+                        <span className={`${styles.catSum} ${!isExpenses ? styles.inc : ""}`}>{money(c.sum, 0)}</span>
                       </div>
                       <div className={styles.catBar}>
                         <span className={styles.catBarFill} style={{ width: `${share}%` }} />
                       </div>
                       <div className={styles.catSub}>
                         <span>{c.count} {pluralOps(c.count)} · {Math.round(share)}%</span>
-                        <span>≈ {pln(c.sum, 0)}</span>
                       </div>
                     </div>
                   </div>
@@ -243,9 +240,8 @@ export default function HistoryList({
                           </div>
                           <div className={styles.treeAmt}>
                             <span className={`${styles.treeVal} ${!isExpenses ? styles.inc : ""}`}>
-                              {isExpenses ? "−" : "+"}{usd(t.amountHome, dec)}
+                              {isExpenses ? "−" : "+"}{money(t.amountHome, dec)}
                             </span>
-                            <span className={styles.treeSub}>{pln(t.amountHome, dec)}</span>
                           </div>
                         </div>
                       ))}

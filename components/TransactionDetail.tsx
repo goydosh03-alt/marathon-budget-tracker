@@ -3,9 +3,8 @@
 import { useEffect } from "react";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon } from "@/components/IconSprite";
-import { usd, pln } from "@/lib/currency";
 import { catEmoji, catBg, fmtDate } from "@/lib/txui";
-import { useDec } from "@/components/SettingsProvider";
+import { useDec, useMoney } from "@/components/SettingsProvider";
 
 type Item = { name: string; price: number };
 
@@ -43,6 +42,7 @@ export default function TransactionDetail({
   const amount = Number(tx.amount_home);
   const items = Array.isArray(tx.items) ? tx.items : [];
   const dec = useDec();
+  const money = useMoney();
 
   // блокуємо скрол фону, поки відкритий попап
   useEffect(() => {
@@ -66,9 +66,8 @@ export default function TransactionDetail({
           </div>
 
           <div className={`${styles.detAmt} ${isIncome ? styles.inc : ""}`}>
-            {isIncome ? "+" : "−"}{usd(amount, dec)}
+            {isIncome ? "+" : "−"}{money(amount, dec)}
           </div>
-          <div className={styles.detSub}>≈ {pln(amount, dec)}</div>
 
           <div>
             <div className={styles.detRow}>
@@ -107,7 +106,7 @@ export default function TransactionDetail({
                 {items.map((it, i) => (
                   <div className={styles.itemRow} key={i}>
                     <span className={styles.itemName}>{it.name}</span>
-                    <span className={styles.itemPrice}>{it.price.toFixed(2)} zł</span>
+                    <span className={styles.itemPrice}>{money(it.price, 2)}</span>
                   </div>
                 ))}
               </div>

@@ -8,9 +8,9 @@ import { Icon } from "@/components/IconSprite";
 import CalcSheet from "@/components/CalcSheet";
 import AmountPad from "@/components/AmountPad";
 import CalendarSheet from "@/components/CalendarSheet";
-import { usd } from "@/lib/currency";
+import { currencyMeta } from "@/lib/currency";
 import { catEmoji } from "@/lib/txui";
-import { useDec, useCategories } from "@/components/SettingsProvider";
+import { useCategories, useCurrency, useMoney } from "@/components/SettingsProvider";
 
 const EXPENSE_CATS = ["Їжа", "Кафе", "Транспорт", "Розваги", "Аптека", "Одяг", "Комунальні", "Інше"];
 const INCOME_CATS = ["Зарплата", "Фриланс", "Подарунок", "Інше"];
@@ -101,7 +101,8 @@ export default function AddTransactionForm({
   const customEmoji = new Map(customCats.map((c) => [c.name, c.emoji]));
   const catIcon = (name: string) => customEmoji.get(name) ?? catEmoji(name, isIncome);
   const parsed = parseFloat(amount.replace(",", ".")) || 0;
-  const dec = useDec();
+  const money = useMoney();
+  const sym = currencyMeta(useCurrency()).symbol;
 
   const today = isoOffset(0);
   const yest = isoOffset(1);
@@ -332,9 +333,8 @@ export default function AddTransactionForm({
             >
               {amount || "0"}
             </button>
-            <span className={styles.amtZl}>zł</span>
+            <span className={styles.amtZl}>{sym}</span>
           </div>
-          <div className={styles.amtConv}>≈ {usd(parsed, dec)}</div>
         </div>
 
         {scannedItems && scannedItems.length > 0 && (
@@ -345,7 +345,7 @@ export default function AddTransactionForm({
                 <div className={styles.itemRow} key={i}>
                   <button type="button" className={styles.itemTap} onClick={() => setCalcItem(i)}>
                     <span className={styles.itemName}>{it.name}</span>
-                    <span className={styles.itemPrice}>{it.price.toFixed(2)} zł</span>
+                    <span className={styles.itemPrice}>{money(it.price, 2)}</span>
                   </button>
                   <button
                     className={styles.itemDel}

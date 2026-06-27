@@ -6,8 +6,10 @@ import Link from "next/link";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon } from "@/components/IconSprite";
 import { setHideCents } from "@/app/dashboard/actions";
+import { currencyMeta, type CurrencyCode } from "@/lib/currency";
 
-export default function MenuQuickCards({ hideCents }: { hideCents: boolean }) {
+export default function MenuQuickCards({ hideCents, currency }: { hideCents: boolean; currency: CurrencyCode }) {
+  const cur = currencyMeta(currency);
   const [on, setOn] = useState(hideCents);
   const [, start] = useTransition();
   const router = useRouter();
@@ -41,15 +43,15 @@ export default function MenuQuickCards({ hideCents }: { hideCents: boolean }) {
         <div className={styles.quickSub}>{on ? "Без копійок" : "Показувати"}</div>
       </div>
 
-      <Link href="/soon?f=Валюта" className={styles.quickCard}>
+      <Link href="/currency" className={styles.quickCard}>
         <div className={styles.quickTop}>
           <span className={styles.quickIco} style={{ background: "rgba(74,222,180,0.14)", color: "#6ee7b7" }}>
             <Icon id="i-wallet" />
           </span>
-          <span className={styles.menuSoon}>СКОРО</span>
+          <span className={styles.quickCur}>{cur.symbol}</span>
         </div>
         <div className={styles.quickName}>Основна валюта</div>
-        <div className={styles.quickSub}>USD ($)</div>
+        <div className={styles.quickSub}>{cur.label}</div>
       </Link>
     </div>
   );

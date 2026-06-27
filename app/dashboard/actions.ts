@@ -2,7 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
-import { RATE_BASE_PER_HOME } from "@/lib/currency";
+import { RATE_BASE_PER_HOME, USD_PER, isCurrency, type CurrencyCode } from "@/lib/currency";
 import { revalidatePath } from "next/cache";
 
 export type AddTxResult = { ok: boolean; error?: string };
@@ -69,6 +69,11 @@ export async function processRecurring(): Promise<{ created: number }> {
   const { supabase, user, recs } = await readRecurring();
   if (!user || !recs.length) return { created: 0 };
 
+  const mc: CurrencyCode = isCurrency(user.user_metadata?.main_currency)
+    ? user.user_metadata.main_currency
+    : "PLN";
+  const rate = USD_PER[mc];
+
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const inserts: Record<string, unknown>[] = [];
@@ -94,10 +99,10 @@ export async function processRecurring(): Promise<{ created: number }> {
           tx_date: isoDate(occ),
           type: r.type,
           amount_home: r.amountHome,
-          home_currency: "PLN",
-          amount_base: r.amountHome * RATE_BASE_PER_HOME,
+          home_currency: mc,
+          amount_base: r.amountHome * rate,
           base_currency: "USD",
-          exchange_rate: RATE_BASE_PER_HOME,
+          exchange_rate: rate,
           category: r.category || "Інше",
           merchant: r.name || null,
           is_confirmed: true,
@@ -299,7 +304,21 @@ export async function setHideCents(value: boolean): Promise<AddTxResult> {
   return { ok: true };
 }
 
-// Додає транзакцію (дохід або витрата). Сума вводиться в домашній валюті (zł).
+// Основна (відображувана) валюта користувача.
+export async function setMainCurrency(code: string): Promise<AddTxResult> {
+  if (!isCurrency(code)) return { ok: false, error: "Невідома валюта" };
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Не авторизовано" };
+  const { error } = await supabase.auth.updateUser({ data: { main_currency: code } });
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/", "layout");
+  return { ok: true };
+}
+
+// Додає транзакцію (дохід або витрата). Сума вводиться в основній валюті користувача.
 export async function addTransaction(input: {
   type: "expense" | "income";
   amountHome: number;
@@ -320,16 +339,21 @@ export async function addTransaction(input: {
     return { ok: false, error: "Введи суму більше нуля" };
   }
 
+  const mc: CurrencyCode = isCurrency(user.user_metadata?.main_currency)
+    ? user.user_metadata.main_currency
+    : "PLN";
+  const rate = USD_PER[mc];
+
   const { error } = await supabase.from("transactions").insert({
     user_id: user.id,
     account_id: input.accountId || null,
     tx_date: input.date,
     type: input.type,
     amount_home: input.amountHome,
-    home_currency: "PLN",
-    amount_base: input.amountHome * RATE_BASE_PER_HOME,
+    home_currency: mc,
+    amount_base: input.amountHome * rate,
     base_currency: "USD",
-    exchange_rate: RATE_BASE_PER_HOME,
+    exchange_rate: rate,
     category: input.category || "Інше",
     merchant: input.merchant || null,
     note: input.note || null,

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import styles from "@/app/dashboard/dashboard.module.css";
-import { usd, pln } from "@/lib/currency";
 import { useRouter } from "next/navigation";
 import { Icon, IconSprite } from "@/components/IconSprite";
 import SubHeader from "@/components/SubHeader";
@@ -11,7 +10,7 @@ import AddTransactionForm from "@/components/AddTransactionForm";
 import ExportSheet from "@/components/ExportSheet";
 import EmptyState from "@/components/EmptyState";
 import { catEmoji, catBg, fmtDate } from "@/lib/txui";
-import { useDec } from "@/components/SettingsProvider";
+import { useDec, useMoney } from "@/components/SettingsProvider";
 
 type Item = { name: string; price: number };
 type Tx = {
@@ -45,6 +44,7 @@ export default function CategoryView({
   const [addOpen, setAddOpen] = useState(false);
   const router = useRouter();
   const dec = useDec();
+  const money = useMoney();
 
   function toggle(id: string) {
     setOpen((prev) => {
@@ -84,9 +84,9 @@ export default function CategoryView({
       <section className={styles.periodcard}>
         <div className={styles.catBoxHead}>
           <span className={styles.catBoxLabel}>{isIncome ? "Зароблено" : "Витрачено"}</span>
-          <span className={styles.catBoxSum}>{usd(total, 0)}</span>
+          <span className={styles.catBoxSum}>{money(total, 0)}</span>
           <span className={styles.catBoxSub}>
-            ≈ {pln(total, 0)} · {txs.length} {txs.length === 1 ? "операція" : "операцій"}
+            {txs.length} {txs.length === 1 ? "операція" : "операцій"}
           </span>
         </div>
 
@@ -131,9 +131,8 @@ export default function CategoryView({
                   </div>
                   <div className={styles.amt}>
                     <span className={`${styles.amtVal} ${isIncome ? styles.inc : ""}`}>
-                      {isIncome ? "+" : "−"}{usd(t.amountHome, dec)}
+                      {isIncome ? "+" : "−"}{money(t.amountHome, dec)}
                     </span>
-                    <span className={styles.amtSub}>{pln(t.amountHome, dec)}</span>
                   </div>
                   {hasItems && (
                     <button

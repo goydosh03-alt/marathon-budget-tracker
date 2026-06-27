@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import styles from "@/app/dashboard/dashboard.module.css";
-import { usd, pln } from "@/lib/currency";
 import { Icon, IconSprite } from "@/components/IconSprite";
 import BottomNav from "@/components/BottomNav";
 import TopBar from "@/components/TopBar";
@@ -11,7 +10,7 @@ import CalendarSheet from "@/components/CalendarSheet";
 import EmptyState from "@/components/EmptyState";
 import RecurringRunner from "@/components/RecurringRunner";
 import { periods, PERIOD_LABEL, inPeriod, catEmoji, catBg, fmtDate } from "@/lib/txui";
-import { useDec } from "@/components/SettingsProvider";
+import { useDec, useMoney } from "@/components/SettingsProvider";
 
 function dmShort(isoStr: string): string {
   const [, m, d] = isoStr.split("-");
@@ -56,6 +55,7 @@ export default function Dashboard({
   const [calOpen, setCalOpen] = useState(false);
 
   const dec = useDec();
+  const money = useMoney();
   const isExpenses = tab === "expenses";
   const filtered = txs.filter((t) => {
     if (isExpenses ? t.type !== "expense" : t.type !== "income") return false;
@@ -93,8 +93,7 @@ export default function Dashboard({
       <section className={styles.totbal}>
         <span className={styles.totLabel}>Загальний баланс</span>
         <div className={styles.balrow}>
-          <span className={styles.big}>{usd(totalHome, 0)}</span>
-          <span className={styles.eq}>≈ {pln(totalHome, 0)}</span>
+          <span className={styles.big}>{money(totalHome, 0)}</span>
         </div>
       </section>
 
@@ -109,8 +108,7 @@ export default function Dashboard({
                 </div>
                 <span className={styles.accName}>{a.name}</span>
               </div>
-              <span className={styles.accBal}>{usd(a.balanceHome, 0)}</span>
-              <span className={styles.cur}>≈ {pln(a.balanceHome, 0)}</span>
+              <span className={styles.accBal}>{money(a.balanceHome, 0)}</span>
             </div>
           );
         })}
@@ -154,8 +152,7 @@ export default function Dashboard({
             {isExpenses ? "Витрачено" : "Зароблено"} · {periodText}
           </span>
           <div className={styles.psumRow}>
-            <span className={styles.psumAmt}>{usd(total, 0)}</span>
-            <span className={styles.pr}>≈ {pln(total, 0)}</span>
+            <span className={styles.psumAmt}>{money(total, 0)}</span>
           </div>
         </div>
         {pct !== null && (
@@ -163,7 +160,7 @@ export default function Dashboard({
             <div className={styles.pbar}>
               <span className={styles.pbarFill} style={{ width: `${pct}%` }} />
             </div>
-            <div className={styles.pmeta}>з {usd(budgetHome!, 0)} бюджету</div>
+            <div className={styles.pmeta}>з {money(budgetHome!, 0)} бюджету</div>
           </>
         )}
 
@@ -195,9 +192,8 @@ export default function Dashboard({
               </div>
               <div className={styles.amt}>
                 <span className={`${styles.amtVal} ${t.type === "income" ? styles.inc : ""}`}>
-                  {t.type === "income" ? "+" : "−"}{usd(t.amountHome, dec)}
+                  {t.type === "income" ? "+" : "−"}{money(t.amountHome, dec)}
                 </span>
-                <span className={styles.amtSub}>{pln(t.amountHome, dec)}</span>
               </div>
             </div>
           ))

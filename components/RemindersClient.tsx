@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon, IconSprite } from "@/components/IconSprite";
@@ -25,6 +25,8 @@ const FREQ_LABEL: Record<string, string> = { daily: "Щодня", weekdays: "П�
 export default function RemindersClient({ reminders }: { reminders: Reminder[] }) {
   const router = useRouter();
   const [, start] = useTransition();
+  const [items, setItems] = useState(reminders);
+  const [perm, setPerm] = useState<NotificationPermission | "unsupported">("default");
   const [open, setOpen] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -33,6 +35,19 @@ export default function RemindersClient({ reminders }: { reminders: Reminder[] }
   const [time, setTime] = useState("20:00");
   const [freq, setFreq] = useState<Reminder["freq"]>("daily");
   const [enabled, setEnabled] = useState(true);
+
+  useEffect(() => setItems(reminders), [reminders]);
+  useEffect(() => {
+    if (typeof window === "undefined" || !("Notification" in window)) setPerm("unsupported");
+    else setPerm(Notification.permission);
+  }, []);
+
+  async function askPerm() {
+    if (!("Notification" in window)) return;
+    const res = await Notification.requestPermission();
+    setPerm(res);
+    if (res === "granted") new Notification("Snapcost", { body: "Сповіщення увімкнено ✓" });
+  }
 
   function openNew() {
     setEditId(null);
@@ -71,6 +86,7 @@ export default function RemindersClient({ reminders }: { reminders: Reminder[] }
     });
   }
   function flip(r: Reminder) {
+    setItems((cur) => cur.map((x) => (x.id === r.id ? { ...x, enabled: !x.enabled } : x)));
     start(async () => {
       await toggleReminder(r.id, !r.enabled);
       router.refresh();
@@ -82,13 +98,27 @@ export default function RemindersClient({ reminders }: { reminders: Reminder[] }
       <IconSprite />
       <SubHeader title="Нагадування" back="/menu" />
 
-      <div className={styles.setHint}>Сповіщення працюють лише на встановленому застосунку (PWA). Поки що це налаштування.</div>
+      <div className={styles.notice}>
+        <Icon id="i-bell" />
+        <div>
+          <b>Зверни увагу:</b> сповіщення дзвонять лише коли Snapcost встановлений як застосунок (PWA) на телефоні. У браузері — лише як налаштування.
+        </div>
+      </div>
 
-      {reminders.length === 0 ? (
+      {perm !== "granted" && perm !== "unsupported" && (
+        <button className={styles.addLineBtn} onClick={askPerm} style={{ marginTop: 10 }}>
+          <Icon id="i-bell" /> Дозволити сповіщення
+        </button>
+      )}
+      {perm === "denied" && (
+        <div className={styles.setHint}>Сповіщення заблоковані. Увімкни їх у налаштуваннях браузера/телефону.</div>
+      )}
+
+      {items.length === 0 ? (
         <EmptyState icon="i-bell" title="Ще немає нагадувань" hint="Додай нагадування, щоб не забувати записувати витрати." />
       ) : (
         <div className={styles.setCard}>
-          {reminders.map((r) => (
+          {items.map((r) => (
             <div className={styles.remRow} key={r.id}>
               <div className={`${styles.catMid2} ${styles.clickable}`} onClick={() => openEdit(r)} style={{ cursor: "pointer" }}>
                 <span className={styles.catName2}>{r.name}</span>

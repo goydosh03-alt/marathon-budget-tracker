@@ -5,6 +5,7 @@ import { IconSprite, Icon } from "@/components/IconSprite";
 import TopBar from "@/components/TopBar";
 import BottomNav from "@/components/BottomNav";
 import MenuQuickCards from "@/components/MenuQuickCards";
+import { DEFAULT_CURRENCY, isCurrency, currencyMeta } from "@/lib/currency";
 import styles from "@/app/dashboard/dashboard.module.css";
 
 export const dynamic = "force-dynamic";
@@ -28,6 +29,9 @@ export default async function MenuPage() {
     (user.email ? user.email.split("@")[0] : "Друже");
   const initial = fullName.charAt(0).toUpperCase();
   const hideCents = !!user.user_metadata?.hide_cents;
+  const mc = user.user_metadata?.main_currency;
+  const currency = isCurrency(mc) ? mc : DEFAULT_CURRENCY;
+  const curMeta = currencyMeta(currency);
 
   return (
     <div className={styles.screen}>
@@ -45,7 +49,7 @@ export default async function MenuPage() {
         <span className={styles.profCardChev}><Icon id="i-chev" /></span>
       </Link>
 
-      <MenuQuickCards hideCents={hideCents} />
+      <MenuQuickCards hideCents={hideCents} currency={currency} />
 
       <div className={styles.menuGroupLabel}>Керування</div>
       <div className={styles.menuList}>
@@ -74,15 +78,15 @@ export default async function MenuPage() {
 
       <div className={styles.menuGroupLabel}>Фінанси</div>
       <div className={styles.menuList}>
-        <Link href="/soon?f=Валюта" className={styles.menuItem}>
+        <Link href="/currency" className={styles.menuItem}>
           <span className={styles.menuIco} style={{ background: "rgba(74,222,180,0.14)", color: "#6ee7b7" }}>
             <Icon id="i-wallet" />
           </span>
           <span className={styles.menuMid}>
             <span className={styles.menuName}>Валюта</span>
-            <span className={styles.menuSub}>USD ($)</span>
+            <span className={styles.menuSub}>{curMeta.label} ({curMeta.symbol})</span>
           </span>
-          <span className={styles.menuSoon}>СКОРО</span>
+          <span className={styles.menuChev}><Icon id="i-chev" /></span>
         </Link>
 
         <Link href="/soon?f=Експорт даних" className={styles.menuItem}>
