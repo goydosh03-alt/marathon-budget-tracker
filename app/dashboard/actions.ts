@@ -13,8 +13,9 @@ export type Recurring = {
   type: "expense" | "income";
   category: string;
   accountId: string;
-  dayOfMonth: number; // 1..31
+  dayOfMonth: number; // 1..31 (день із startDate)
   startDate: string; // YYYY-MM-DD
+  autoAdd: boolean; // створювати транзакцію автоматично
   lastGenerated: string | null;
 };
 
@@ -73,6 +74,7 @@ export async function processRecurring(): Promise<{ created: number }> {
   let changed = false;
 
   const nextRecs = recs.map((r) => {
+    if (!r.autoAdd) return r; // лише ті, де ввімкнено автододавання
     const start = new Date((r.startDate || isoDate(today)) + "T00:00:00");
     const lastGen = r.lastGenerated ? new Date(r.lastGenerated + "T00:00:00") : null;
     let newLast = r.lastGenerated ?? null;

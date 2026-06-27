@@ -126,10 +126,9 @@ export default function CategoriesClient({ categories }: { categories: UserCateg
                 autoFocus
               />
 
-              <div className={styles.fieldLabel}>Тип</div>
-              <div className={styles.pfilter}>
-                <button className={`${styles.pf} ${type === "expense" ? styles.pfOn : ""}`} onClick={() => setType("expense")}>Витрата</button>
-                <button className={`${styles.pf} ${type === "income" ? styles.pfOn : ""}`} onClick={() => setType("income")}>Дохід</button>
+              <div className={styles.tabs}>
+                <button className={`${styles.tab} ${type === "expense" ? styles.tabOnExp : ""}`} onClick={() => setType("expense")}>Витрата</button>
+                <button className={`${styles.tab} ${type === "income" ? styles.tabOnInc : ""}`} onClick={() => setType("income")}>Дохід</button>
               </div>
 
               <div className={styles.fieldLabel}>Іконка</div>

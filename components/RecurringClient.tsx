@@ -6,6 +6,8 @@ import styles from "@/app/dashboard/dashboard.module.css";
 import { usd } from "@/lib/currency";
 import { Icon, IconSprite } from "@/components/IconSprite";
 import SubHeader from "@/components/SubHeader";
+import AmountPad from "@/components/AmountPad";
+import CalendarSheet from "@/components/CalendarSheet";
 import EmptyState from "@/components/EmptyState";
 import { catEmoji, catBg } from "@/lib/txui";
 import { useDec } from "@/components/SettingsProvider";
@@ -23,9 +25,12 @@ const ACC_EMOJI: Record<string, string> = { cash: "👛", card: "💳", savings:
 
 type Account = { id: string; name: string; type: string };
 
-function isoToday(): string {
-  const d = new Date();
+function iso(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+function dm(s: string): string {
+  const [, m, d] = s.split("-");
+  return `${d}.${m}`;
 }
 
 export default function RecurringClient({
@@ -49,9 +54,14 @@ export default function RecurringClient({
   const [type, setType] = useState<"expense" | "income">("expense");
   const [category, setCategory] = useState("Комунальні");
   const [accountId, setAccountId] = useState(accounts[0]?.id ?? "");
-  const [day, setDay] = useState(1);
+  const [startDate, setStartDate] = useState(iso(new Date()));
+  const [autoAdd, setAutoAdd] = useState(true);
+
+  const [calcAmount, setCalcAmount] = useState(false);
+  const [dateOpen, setDateOpen] = useState(false);
 
   const isIncome = type === "income";
+  const parsed = parseFloat(amount.replace(",", ".")) || 0;
   const customEmoji = new Map(categories.map((c) => [c.name, c.emoji]));
   const customBg = new Map(categories.map((c) => [c.name, c.color]));
   const cats = [
@@ -68,7 +78,8 @@ export default function RecurringClient({
     setType("expense");
     setCategory("Комунальні");
     setAccountId(accounts[0]?.id ?? "");
-    setDay(1);
+    setStartDate(iso(new Date()));
+    setAutoAdd(true);
     setOpen(true);
   }
 
@@ -79,15 +90,24 @@ export default function RecurringClient({
     setType(r.type);
     setCategory(r.category);
     setAccountId(r.accountId);
-    setDay(r.dayOfMonth);
+    setStartDate(r.startDate || iso(new Date()));
+    setAutoAdd(r.autoAdd ?? true);
     setOpen(true);
   }
 
   function save() {
-    const amt = parseFloat(amount.replace(",", ".")) || 0;
-    if (!name.trim() || amt <= 0) return;
+    if (!name.trim() || parsed <= 0) return;
     setSaving(true);
-    const payload = { name, amountHome: amt, type, category, accountId, dayOfMonth: day, startDate: isoToday() };
+    const payload = {
+      name,
+      amountHome: parsed,
+      type,
+      category,
+      accountId,
+      startDate,
+      dayOfMonth: Number(startDate.split("-")[2]),
+      autoAdd,
+    };
     start(async () => {
       if (editId) await updateRecurring(editId, payload);
       else await addRecurring(payload);
@@ -97,10 +117,11 @@ export default function RecurringClient({
     });
   }
 
-  function remove(id: string) {
-    if (!window.confirm("Видалити регулярний платіж?")) return;
+  function remove() {
+    if (!editId) return;
     start(async () => {
-      await deleteRecurring(id);
+      await deleteRecurring(editId);
+      setOpen(false);
       router.refresh();
     });
   }
@@ -110,7 +131,7 @@ export default function RecurringClient({
       <IconSprite />
       <SubHeader title="Регулярні платежі" back="/menu" />
 
-      <div className={styles.setHint}>Створюються автоматично у вказане число щомісяця.</div>
+      <div className={styles.setHint}>Автоматично додаються у вказане число щомісяця.</div>
 
       {recurring.length === 0 ? (
         <EmptyState icon="i-repeat" title="Ще немає регулярних" hint="Додай підписку чи рахунок — додаватиметься сам щомісяця." />
@@ -121,16 +142,11 @@ export default function RecurringClient({
               <span className={styles.catDot} style={{ background: bgFor(r.category) }}>{iconFor(r.category)}</span>
               <div className={styles.catMid2}>
                 <span className={styles.catName2}>{r.name}</span>
-                <span className={styles.catType2}>{r.dayOfMonth}-го числа · {r.category}</span>
+                <span className={styles.catType2}>{r.dayOfMonth}-го числа{r.autoAdd ? " · авто" : ""}</span>
               </div>
-              <span className={styles.recAmt}>{r.type === "income" ? "+" : "−"}{usd(r.amountHome, dec)}</span>
-              <button
-                className={`${styles.setAccBtn} ${styles.setAccDel}`}
-                onClick={(e) => { e.stopPropagation(); remove(r.id); }}
-                aria-label="Видалити"
-              >
-                <Icon id="i-trash" />
-              </button>
+              <span className={`${styles.recAmt} ${r.type === "income" ? styles.inc : ""}`}>
+                {r.type === "income" ? "+" : "−"}{usd(r.amountHome, dec)}
+              </span>
             </div>
           ))}
         </div>
@@ -146,19 +162,37 @@ export default function RecurringClient({
           <div className={styles.sheet}>
             <div className={styles.sheetBody}>
               <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span>{editId ? "Редагувати платіж" : "Новий регулярний платіж"}</span>
+                <span>{editId ? "Редагувати платіж" : "Новий платіж"}</span>
                 <button className={styles.iconBtn} onClick={() => setOpen(false)} aria-label="Закрити">
                   <Icon id="i-x" />
                 </button>
               </div>
 
-              <input className={styles.confirmInput} placeholder="Назва (напр. Netflix)" value={name} onChange={(e) => setName(e.target.value)} autoFocus />
-              <input className={styles.confirmInput} inputMode="decimal" placeholder="Сума, zł" value={amount} onChange={(e) => setAmount(e.target.value)} />
+              <div className={styles.tabs}>
+                <button className={`${styles.tab} ${!isIncome ? styles.tabOnExp : ""}`} onClick={() => { setType("expense"); setCategory("Комунальні"); }}>Витрата</button>
+                <button className={`${styles.tab} ${isIncome ? styles.tabOnInc : ""}`} onClick={() => { setType("income"); setCategory("Зарплата"); }}>Дохід</button>
+              </div>
 
-              <div className={styles.fieldLabel}>Тип</div>
-              <div className={styles.pfilter}>
-                <button className={`${styles.pf} ${type === "expense" ? styles.pfOn : ""}`} onClick={() => { setType("expense"); setCategory("Комунальні"); }}>Витрата</button>
-                <button className={`${styles.pf} ${type === "income" ? styles.pfOn : ""}`} onClick={() => { setType("income"); setCategory("Зарплата"); }}>Дохід</button>
+              <div className={styles.amtWrap}>
+                <div className={styles.amtRow}>
+                  <button
+                    type="button"
+                    className={styles.amtField}
+                    onClick={() => setCalcAmount(true)}
+                    style={{ width: `${Math.max(1, amount.length || 1)}ch`, color: amount ? undefined : "rgba(255,255,255,0.3)" }}
+                  >
+                    {amount || "0"}
+                  </button>
+                  <span className={styles.amtZl}>zł</span>
+                </div>
+                <div className={styles.amtConv}>≈ {usd(parsed, dec)}</div>
+              </div>
+
+              <div className={styles.fcard}>
+                <div className={styles.fcIcon} style={{ background: "rgba(124,92,255,0.16)", color: "#b9a8ff" }}>
+                  <Icon id="i-edit" />
+                </div>
+                <input placeholder="Назва (напр. Netflix)" value={name} onChange={(e) => setName(e.target.value)} />
               </div>
 
               <div className={styles.fieldLabel}>Категорія</div>
@@ -179,23 +213,53 @@ export default function RecurringClient({
                 ))}
               </div>
 
-              <div className={styles.fieldLabel}>Число місяця</div>
-              <div className={styles.chips2}>
-                {Array.from({ length: 28 }, (_, i) => i + 1).map((d) => (
-                  <button key={d} className={`${styles.chip2} ${day === d ? styles.chip2On : ""}`} onClick={() => setDay(d)}>
-                    {d}
-                  </button>
-                ))}
+              <div className={styles.fieldLabel}>Частота · число</div>
+              <div className={styles.daysRow}>
+                <button className={`${styles.dayBtn} ${styles.dayBtnOn}`} style={{ flex: 1 }}>
+                  <b>Щомісяця</b><span>{dm(startDate)}</span>
+                </button>
+                <button className={styles.dayCalBtn} onClick={() => setDateOpen(true)} aria-label="Дата">
+                  <Icon id="i-cal" />
+                </button>
+              </div>
+
+              <div className={styles.autoRow}>
+                <div>
+                  <span className={styles.autoName}>Додати автоматично</span>
+                  <span className={styles.autoSub}>{autoAdd ? "Транзакція створюється сама" : "Лише нагадування"}</span>
+                </div>
+                <button type="button" className={`${styles.toggle} ${autoAdd ? styles.toggleOn : ""}`} onClick={() => setAutoAdd((v) => !v)} aria-label="Авто">
+                  <span className={styles.toggleKnob} />
+                </button>
               </div>
             </div>
 
             <div className={styles.sheetActions}>
-              <button className={styles.btnPrimary} onClick={save} disabled={saving || !name.trim() || !(parseFloat(amount.replace(",", ".")) > 0)}>
+              {editId && (
+                <button className={styles.btnDelText} onClick={remove}>Видалити</button>
+              )}
+              <button className={styles.btnPrimary} onClick={save} disabled={saving || !name.trim() || parsed <= 0}>
                 {saving ? "Зберігаю…" : editId ? "Зберегти" : "Створити"}
               </button>
             </div>
           </div>
         </div>
+      )}
+
+      {calcAmount && (
+        <AmountPad value={amount} onChange={setAmount} onClose={() => setCalcAmount(false)} />
+      )}
+
+      {dateOpen && (
+        <CalendarSheet
+          single
+          title="Дата початку"
+          initialFrom={startDate}
+          initialTo={startDate}
+          onApply={(from) => { setStartDate(from); setDateOpen(false); }}
+          onReset={() => setDateOpen(false)}
+          onClose={() => setDateOpen(false)}
+        />
       )}
     </div>
   );
