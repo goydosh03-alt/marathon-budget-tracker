@@ -90,6 +90,8 @@ export default function CategoryView({
           </span>
         </div>
 
+        <div className={styles.fulldiv} />
+
         <div className={styles.searchInline}>
           <Icon id="i-search" />
           <input placeholder="Пошук по назві або позиції…" value={query} onChange={(e) => setQuery(e.target.value)} />
@@ -99,6 +101,8 @@ export default function CategoryView({
             </button>
           )}
         </div>
+
+        <div className={styles.fulldiv} />
 
         <div className={styles.viewToggleRow}>
           <button className={`${styles.sortChip} ${sort === "date" ? styles.sortChipOn : ""}`} onClick={() => setSort("date")}>
@@ -144,7 +148,10 @@ export default function CategoryView({
                 {hasItems && isOpen && (
                   <div className={styles.txItems}>
                     {t.items!.map((it, i) => (
-                      <div className={styles.txItemRow} key={i}>
+                      <div
+                        className={`${styles.txItemRow} ${i === t.items!.length - 1 ? styles.txItemRowLast : ""}`}
+                        key={i}
+                      >
                         <span className={styles.txItemName}>{it.name}</span>
                         <span className={styles.txItemPrice}>{it.price.toFixed(2)} zł</span>
                       </div>
@@ -157,7 +164,7 @@ export default function CategoryView({
         )}
       </section>
 
-      <button className={styles.floatAdd} onClick={() => setAddOpen(true)} aria-label="Додати">
+      <button className={`${styles.cam} ${styles.floatAdd}`} onClick={() => setAddOpen(true)} aria-label="Додати">
         <Icon id="i-plus" />
       </button>
 

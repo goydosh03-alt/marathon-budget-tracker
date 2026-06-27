@@ -123,6 +123,7 @@ export default function HistoryList({
             </button>
           )}
         </div>
+        <div className={styles.fulldiv} />
 
         {searching ? (
           <>
