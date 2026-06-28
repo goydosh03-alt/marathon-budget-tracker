@@ -5,6 +5,7 @@ import SaveGlow from "@/components/SaveGlow";
 import { SettingsProvider } from "@/components/SettingsProvider";
 import { createClient } from "@/lib/supabase/server";
 import { DEFAULT_CURRENCY, isCurrency } from "@/lib/currency";
+import { DEFAULT_LANG, isLang } from "@/lib/i18n";
 import { fetchRates } from "@/lib/rates";
 
 export const metadata: Metadata = {
@@ -43,9 +44,11 @@ export default async function RootLayout({
   const cc = user?.user_metadata?.convert_currency;
   const convertCurrency = isCurrency(cc) ? cc : currency === "USD" ? "EUR" : "USD";
   const rates = await fetchRates();
+  const lg = user?.user_metadata?.lang;
+  const lang = isLang(lg) ? lg : DEFAULT_LANG;
 
   return (
-    <html lang="uk">
+    <html lang={lang}>
       <body>
         <SaveGlow />
         <SettingsProvider
@@ -54,6 +57,7 @@ export default async function RootLayout({
           currency={currency}
           convertCurrency={convertCurrency}
           rates={rates}
+          lang={lang}
         >
           {children}
         </SettingsProvider>

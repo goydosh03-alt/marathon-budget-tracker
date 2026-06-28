@@ -10,6 +10,7 @@ import {
   formatMoney,
   maskMoney,
 } from "@/lib/currency";
+import { type Lang, type StringKey, DEFAULT_LANG, translate } from "@/lib/i18n";
 
 type Rates = Record<CurrencyCode, number>;
 
@@ -19,6 +20,7 @@ const Ctx = createContext<{
   currency: CurrencyCode;
   convertCurrency: CurrencyCode;
   rates: Rates;
+  lang: Lang;
   hidden: boolean;
   toggleHidden: () => void;
 }>({
@@ -27,6 +29,7 @@ const Ctx = createContext<{
   currency: DEFAULT_CURRENCY,
   convertCurrency: "USD",
   rates: USD_PER,
+  lang: DEFAULT_LANG,
   hidden: false,
   toggleHidden: () => {},
 });
@@ -37,6 +40,7 @@ export function SettingsProvider({
   currency,
   convertCurrency,
   rates,
+  lang,
   children,
 }: {
   hideCents: boolean;
@@ -44,6 +48,7 @@ export function SettingsProvider({
   currency: CurrencyCode;
   convertCurrency: CurrencyCode;
   rates: Rates;
+  lang: Lang;
   children: React.ReactNode;
 }) {
   // Приватність: ховати всі суми (зберігається на пристрої).
@@ -64,10 +69,20 @@ export function SettingsProvider({
   }, []);
 
   return (
-    <Ctx.Provider value={{ hideCents, categories, currency, convertCurrency, rates, hidden, toggleHidden }}>
+    <Ctx.Provider value={{ hideCents, categories, currency, convertCurrency, rates, lang, hidden, toggleHidden }}>
       {children}
     </Ctx.Provider>
   );
+}
+
+export function useLang(): Lang {
+  return useContext(Ctx).lang;
+}
+
+// Хук перекладу: t("ключ") -> рядок поточною мовою.
+export function useT() {
+  const lang = useContext(Ctx).lang;
+  return (key: StringKey) => translate(key, lang);
 }
 
 export function useDec(): number {

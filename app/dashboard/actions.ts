@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { RATE_BASE_PER_HOME, USD_PER, isCurrency, type CurrencyCode } from "@/lib/currency";
+import { isLang } from "@/lib/i18n";
 import { revalidatePath } from "next/cache";
 
 export type AddTxResult = { ok: boolean; error?: string };
@@ -340,6 +341,20 @@ export async function setMainCurrency(code: string): Promise<AddTxResult> {
   } = await supabase.auth.getUser();
   if (!user) return { ok: false, error: "Не авторизовано" };
   const { error } = await supabase.auth.updateUser({ data: { main_currency: code } });
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/", "layout");
+  return { ok: true };
+}
+
+// Мова інтерфейсу.
+export async function setLanguage(code: string): Promise<AddTxResult> {
+  if (!isLang(code)) return { ok: false, error: "Невідома мова" };
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Не авторизовано" };
+  const { error } = await supabase.auth.updateUser({ data: { lang: code } });
   if (error) return { ok: false, error: error.message };
   revalidatePath("/", "layout");
   return { ok: true };

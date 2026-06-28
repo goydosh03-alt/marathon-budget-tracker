@@ -6,10 +6,12 @@ import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon } from "@/components/IconSprite";
 import { setHideCents } from "@/app/dashboard/actions";
 import { currencyMeta, type CurrencyCode } from "@/lib/currency";
+import { useT } from "@/components/SettingsProvider";
 import CurrencySheet from "@/components/CurrencySheet";
 
 export default function MenuQuickCards({ hideCents, currency }: { hideCents: boolean; currency: CurrencyCode }) {
   const cur = currencyMeta(currency);
+  const t = useT();
   const [on, setOn] = useState(hideCents);
   const [curOpen, setCurOpen] = useState(false);
   const [, start] = useTransition();
@@ -35,13 +37,13 @@ export default function MenuQuickCards({ hideCents, currency }: { hideCents: boo
             type="button"
             className={`${styles.toggle} ${on ? styles.toggleOn : ""}`}
             onClick={toggle}
-            aria-label="Приховати копійки"
+            aria-label={t("menu.hideCents")}
           >
             <span className={styles.toggleKnob} />
           </button>
         </div>
-        <div className={styles.quickName}>Приховати копійки</div>
-        <div className={styles.quickSub}>{on ? "Без копійок" : "Показувати"}</div>
+        <div className={styles.quickName}>{t("menu.hideCents")}</div>
+        <div className={styles.quickSub}>{on ? t("menu.hideCents.on") : t("menu.hideCents.off")}</div>
       </div>
 
       <button type="button" className={styles.quickCard} onClick={() => setCurOpen(true)} style={{ textAlign: "left" }}>
@@ -51,7 +53,7 @@ export default function MenuQuickCards({ hideCents, currency }: { hideCents: boo
           </span>
           <span className={styles.quickCur}>{cur.symbol}</span>
         </div>
-        <div className={styles.quickName}>Валюта</div>
+        <div className={styles.quickName}>{t("menu.currency")}</div>
         <div className={styles.quickSub}>{cur.label}</div>
       </button>
 

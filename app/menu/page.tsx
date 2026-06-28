@@ -7,7 +7,9 @@ import BottomNav from "@/components/BottomNav";
 import MenuQuickCards from "@/components/MenuQuickCards";
 import DonateBanner from "@/components/DonateBanner";
 import ExportMenuItem from "@/components/ExportMenuItem";
+import LangMenuItem from "@/components/LangMenuItem";
 import { DEFAULT_CURRENCY, isCurrency } from "@/lib/currency";
+import { DEFAULT_LANG, isLang, translate, type StringKey } from "@/lib/i18n";
 import styles from "@/app/dashboard/dashboard.module.css";
 
 export const dynamic = "force-dynamic";
@@ -33,12 +35,15 @@ export default async function MenuPage() {
   const hideCents = !!user.user_metadata?.hide_cents;
   const mc = user.user_metadata?.main_currency;
   const currency = isCurrency(mc) ? mc : DEFAULT_CURRENCY;
+  const lg = user.user_metadata?.lang;
+  const lang = isLang(lg) ? lg : DEFAULT_LANG;
+  const t = (k: StringKey) => translate(k, lang);
 
   return (
     <div className={styles.screen}>
       <IconSprite />
       <TopBar>
-        <span className={styles.barTitle}>Меню</span>
+        <span className={styles.barTitle}>{t("menu.title")}</span>
       </TopBar>
 
       <DonateBanner />
@@ -54,15 +59,15 @@ export default async function MenuPage() {
 
       <MenuQuickCards hideCents={hideCents} currency={currency} />
 
-      <div className={styles.menuGroupLabel}>Керування</div>
+      <div className={styles.menuGroupLabel}>{t("menu.group.manage")}</div>
       <div className={styles.menuList}>
         <Link href="/settings" className={styles.menuItem}>
           <span className={styles.menuIco} style={{ background: "rgba(124,92,255,0.16)", color: "#b9a8ff" }}>
             <Icon id="i-cog" />
           </span>
           <span className={styles.menuMid}>
-            <span className={styles.menuName}>Налаштування</span>
-            <span className={styles.menuSub}>Рахунки та дані</span>
+            <span className={styles.menuName}>{t("menu.settings")}</span>
+            <span className={styles.menuSub}>{t("menu.settings.sub")}</span>
           </span>
           <span className={styles.menuChev}><Icon id="i-arrow-right" /></span>
         </Link>
@@ -72,27 +77,27 @@ export default async function MenuPage() {
             <Icon id="i-list" />
           </span>
           <span className={styles.menuMid}>
-            <span className={styles.menuName}>Категорії</span>
-            <span className={styles.menuSub}>Свої категорії витрат</span>
+            <span className={styles.menuName}>{t("menu.categories")}</span>
+            <span className={styles.menuSub}>{t("menu.categories.sub")}</span>
           </span>
           <span className={styles.menuChev}><Icon id="i-arrow-right" /></span>
         </Link>
       </div>
 
-      <div className={styles.menuGroupLabel}>Фінанси</div>
+      <div className={styles.menuGroupLabel}>{t("menu.group.finance")}</div>
       <div className={styles.menuList}>
         <ExportMenuItem />
       </div>
 
-      <div className={styles.menuGroupLabel}>Автоматизація</div>
+      <div className={styles.menuGroupLabel}>{t("menu.group.automation")}</div>
       <div className={styles.menuList}>
         <Link href="/recurring" className={styles.menuItem}>
           <span className={styles.menuIco} style={{ background: "rgba(110,231,183,0.14)", color: "#6ee7b7" }}>
             <Icon id="i-repeat" />
           </span>
           <span className={styles.menuMid}>
-            <span className={styles.menuName}>Регулярні платежі</span>
-            <span className={styles.menuSub}>Підписки й щомісячні рахунки</span>
+            <span className={styles.menuName}>{t("menu.recurring")}</span>
+            <span className={styles.menuSub}>{t("menu.recurring.sub")}</span>
           </span>
           <span className={styles.menuChev}><Icon id="i-arrow-right" /></span>
         </Link>
@@ -102,35 +107,26 @@ export default async function MenuPage() {
             <Icon id="i-bell" />
           </span>
           <span className={styles.menuMid}>
-            <span className={styles.menuName}>Нагадування</span>
-            <span className={styles.menuSub}>Не забути записати витрати</span>
+            <span className={styles.menuName}>{t("menu.reminders")}</span>
+            <span className={styles.menuSub}>{t("menu.reminders.sub")}</span>
           </span>
           <span className={styles.menuChev}><Icon id="i-arrow-right" /></span>
         </Link>
       </div>
 
-      <div className={styles.menuGroupLabel}>Застосунок</div>
+      <div className={styles.menuGroupLabel}>{t("menu.group.app")}</div>
       <div className={styles.menuList}>
-        <Link href="/soon?f=Мова" className={styles.menuItem}>
-          <span className={styles.menuIco} style={{ background: "rgba(59,180,245,0.14)", color: "#7cc8f5" }}>
-            <Icon id="i-person" />
-          </span>
-          <span className={styles.menuMid}>
-            <span className={styles.menuName}>Мова</span>
-            <span className={styles.menuSub}>Українська</span>
-          </span>
-          <span className={styles.menuSoon}>СКОРО</span>
-        </Link>
+        <LangMenuItem />
 
-        <Link href="/soon?f=Оцінити застосунок" className={styles.menuItem}>
+        <Link href="/soon?f=rate" className={styles.menuItem}>
           <span className={styles.menuIco} style={{ background: "rgba(255,205,90,0.16)", color: "#ffd45a" }}>
             <Icon id="i-star" />
           </span>
           <span className={styles.menuMid}>
-            <span className={styles.menuName}>Оцінити застосунок</span>
-            <span className={styles.menuSub}>Підтримати Snapcost</span>
+            <span className={styles.menuName}>{t("menu.rate")}</span>
+            <span className={styles.menuSub}>{t("menu.rate.sub")}</span>
           </span>
-          <span className={styles.menuSoon}>СКОРО</span>
+          <span className={styles.menuSoon}>{t("common.soon")}</span>
         </Link>
       </div>
 

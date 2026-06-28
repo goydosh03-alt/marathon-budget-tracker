@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon } from "@/components/IconSprite";
+import { useT } from "@/components/SettingsProvider";
 import AddTransactionForm from "@/components/AddTransactionForm";
 
 export default function BottomNav({
@@ -15,6 +16,7 @@ export default function BottomNav({
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [formType, setFormType] = useState<"expense" | "income" | null>(null);
+  const t = useT();
 
   function openForm(t: "expense" | "income") {
     setMenuOpen(false);
@@ -53,16 +55,16 @@ export default function BottomNav({
       <nav className={styles.dock}>
         <div className={styles.navbar}>
           <Link href="/dashboard" className={`${styles.navItem} ${active === "home" ? styles.navOn : ""}`}>
-            <Icon id="i-home" />Головна
+            <Icon id="i-home" />{t("nav.home")}
           </Link>
           <Link href="/history" className={`${styles.navItem} ${active === "history" ? styles.navOn : ""}`}>
-            <Icon id="i-list" />Історія
+            <Icon id="i-list" />{t("nav.history")}
           </Link>
           <Link href="/reports" className={`${styles.navItem} ${active === "reports" ? styles.navOn : ""}`}>
-            <Icon id="i-bars" />Звіти
+            <Icon id="i-bars" />{t("nav.reports")}
           </Link>
           <Link href="/menu" className={`${styles.navItem} ${active === "profile" ? styles.navOn : ""}`}>
-            <Icon id="i-menu" />Меню
+            <Icon id="i-menu" />{t("nav.menu")}
           </Link>
         </div>
         <button className={styles.cam} onClick={() => setMenuOpen((v) => !v)} aria-label="Додати">
