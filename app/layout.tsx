@@ -1,3 +1,4 @@
+// build: 2026-06-28 — currency sheet + eye + donate + export
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import SaveGlow from "@/components/SaveGlow";
