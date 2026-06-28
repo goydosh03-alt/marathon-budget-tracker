@@ -3,8 +3,9 @@
 import { useEffect } from "react";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon } from "@/components/IconSprite";
-import { catEmoji, catBg, fmtDate } from "@/lib/txui";
-import { useDec, useMoney, useConv } from "@/components/SettingsProvider";
+import { catEmoji, catBg } from "@/lib/txui";
+import { dataLabel, fmtDateL } from "@/lib/i18n";
+import { useDec, useMoney, useConv, useT, useLang } from "@/components/SettingsProvider";
 
 type Item = { name: string; price: number };
 
@@ -44,6 +45,8 @@ export default function TransactionDetail({
   const dec = useDec();
   const money = useMoney();
   const conv = useConv();
+  const t = useT();
+  const lang = useLang();
 
   // блокуємо скрол фону, поки відкритий попап
   useEffect(() => {
@@ -60,8 +63,8 @@ export default function TransactionDetail({
       <div className={styles.sheet}>
         <div className={styles.sheetBody}>
           <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span>{tx.merchant || cat}</span>
-            <button className={styles.iconBtn} onClick={onClose} aria-label="Закрити">
+            <span>{tx.merchant || dataLabel(cat, lang)}</span>
+            <button className={styles.iconBtn} onClick={onClose} aria-label={t("common.close")}>
               <Icon id="i-x" />
             </button>
           </div>
@@ -73,29 +76,29 @@ export default function TransactionDetail({
 
           <div>
             <div className={styles.detRow}>
-              <span className={styles.detK}>Категорія</span>
+              <span className={styles.detK}>{t("det.category")}</span>
               <span className={styles.detV}>
                 <span style={{ background: catBg(cat), borderRadius: 8, padding: "2px 6px" }}>
                   {catEmoji(cat, isIncome)}
                 </span>
-                {cat}
+                {dataLabel(cat, lang)}
               </span>
             </div>
             <div className={styles.detRow}>
-              <span className={styles.detK}>Дата</span>
-              <span className={styles.detV}>{fmtDate(tx.tx_date, tx.created_at)}</span>
+              <span className={styles.detK}>{t("det.date")}</span>
+              <span className={styles.detV}>{fmtDateL(tx.tx_date, tx.created_at, lang)}</span>
             </div>
             <div className={styles.detRow}>
-              <span className={styles.detK}>Рахунок</span>
-              <span className={styles.detV}>{accountName}</span>
+              <span className={styles.detK}>{t("det.account")}</span>
+              <span className={styles.detV}>{dataLabel(accountName, lang)}</span>
             </div>
             <div className={styles.detRow}>
-              <span className={styles.detK}>Тип</span>
-              <span className={styles.detV}>{isIncome ? "Дохід" : "Витрата"}</span>
+              <span className={styles.detK}>{t("det.type")}</span>
+              <span className={styles.detV}>{isIncome ? t("common.income") : t("common.expense")}</span>
             </div>
             {tx.note && (
               <div className={styles.detRow}>
-                <span className={styles.detK}>Нотатка</span>
+                <span className={styles.detK}>{t("det.note")}</span>
                 <span className={styles.detV}>{tx.note}</span>
               </div>
             )}
@@ -103,7 +106,7 @@ export default function TransactionDetail({
 
           {items.length > 0 && (
             <>
-              <div className={styles.fieldLabel} style={{ marginTop: 16 }}>Позиції чека</div>
+              <div className={styles.fieldLabel} style={{ marginTop: 16 }}>{t("det.items")}</div>
               <div className={styles.itemsEdit}>
                 {items.map((it, i) => (
                   <div className={styles.itemRow} key={i}>
@@ -117,18 +120,18 @@ export default function TransactionDetail({
 
           {photoUrl && (
             <>
-              <div className={styles.fieldLabel} style={{ marginTop: 16 }}>Чек</div>
+              <div className={styles.fieldLabel} style={{ marginTop: 16 }}>{t("det.receipt")}</div>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img className={styles.detPhoto} src={photoUrl} alt="Чек" />
+              <img className={styles.detPhoto} src={photoUrl} alt={t("det.receipt")} />
             </>
           )}
         </div>
 
         <div className={styles.sheetActions}>
-          <button className={styles.btnDanger} onClick={onDelete} aria-label="Видалити">
+          <button className={styles.btnDanger} onClick={onDelete} aria-label={t("common.delete")}>
             <Icon id="i-trash" />
           </button>
-          <button className={styles.btnPrimary} onClick={onEdit}>Редагувати</button>
+          <button className={styles.btnPrimary} onClick={onEdit}>{t("common.edit")}</button>
         </div>
       </div>
     </div>

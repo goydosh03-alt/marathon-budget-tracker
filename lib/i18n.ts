@@ -105,6 +105,34 @@ export const STRINGS = {
   "hist.emptyPeriod": { uk: "Нічого за цей період", en: "Nothing for this period", ru: "Ничего за этот период" },
   "hist.emptyPeriodHint": { uk: "Інший період чи діапазон, або додай кнопкою + унизу.", en: "Try another period or range, or add with the + below.", ru: "Другой период или диапазон, или добавь кнопкой + внизу." },
   "hist.categories": { uk: "Категорії", en: "Categories", ru: "Категории" },
+
+  // категорія (drilldown) + спільне
+  "common.export": { uk: "Експорт", en: "Export", ru: "Экспорт" },
+  "common.items": { uk: "Позиції", en: "Items", ru: "Позиции" },
+  "cat.search": { uk: "Пошук по назві…", en: "Search by name…", ru: "Поиск по названию…" },
+  "cat.sortDate": { uk: "За датою", en: "By date", ru: "По дате" },
+  "cat.sortAmount": { uk: "За сумою", en: "By amount", ru: "По сумме" },
+  "cat.tryAnother": { uk: "Спробуй інший запит.", en: "Try another query.", ru: "Попробуй другой запрос." },
+
+  // деталі транзакції
+  "common.expense": { uk: "Витрата", en: "Expense", ru: "Расход" },
+  "common.edit": { uk: "Редагувати", en: "Edit", ru: "Изменить" },
+  "det.category": { uk: "Категорія", en: "Category", ru: "Категория" },
+  "det.date": { uk: "Дата", en: "Date", ru: "Дата" },
+  "det.account": { uk: "Рахунок", en: "Account", ru: "Счёт" },
+  "det.type": { uk: "Тип", en: "Type", ru: "Тип" },
+  "det.note": { uk: "Нотатка", en: "Note", ru: "Заметка" },
+  "det.items": { uk: "Позиції чека", en: "Receipt items", ru: "Позиции чека" },
+  "det.receipt": { uk: "Чек", en: "Receipt", ru: "Чек" },
+
+  // звіти + відносні дати
+  "rel.today": { uk: "Сьогодні", en: "Today", ru: "Сегодня" },
+  "rel.yesterday": { uk: "Вчора", en: "Yesterday", ru: "Вчера" },
+  "rep.noData": { uk: "Немає даних", en: "No data", ru: "Нет данных" },
+  "rep.noDataExp": { uk: "За цей період витрат немає.", en: "No expenses for this period.", ru: "Расходов за этот период нет." },
+  "rep.noDataInc": { uk: "За цей період доходів немає.", en: "No income for this period.", ru: "Доходов за этот период нет." },
+  "rep.donut": { uk: "Кругова", en: "Donut", ru: "Круговая" },
+  "rep.bars": { uk: "Стовпчики", en: "Bars", ru: "Столбцы" },
 } satisfies Record<string, Entry>;
 
 export type StringKey = keyof typeof STRINGS;
@@ -140,10 +168,17 @@ export function dataLabel(name: string, lang: Lang): string {
   return e ? e[lang] || e.uk : name;
 }
 
-const MONTHS_SHORT: Record<Lang, string[]> = {
+export const MONTHS_SHORT: Record<Lang, string[]> = {
   uk: ["січ", "лют", "бер", "кві", "тра", "чер", "лип", "сер", "вер", "жов", "лис", "гру"],
   en: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
   ru: ["янв", "фев", "мар", "апр", "мая", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"],
+};
+
+// Родовий відмінок (для «12 січня»). EN — без відмінків (короткий).
+export const MONTHS_GEN: Record<Lang, string[]> = {
+  uk: ["січня", "лютого", "березня", "квітня", "травня", "червня", "липня", "серпня", "вересня", "жовтня", "листопада", "грудня"],
+  en: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+  ru: ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"],
 };
 
 export const MONTHS_FULL: Record<Lang, string[]> = {

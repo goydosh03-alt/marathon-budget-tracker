@@ -187,7 +187,7 @@ export default function HistoryList({
 
         <div className={styles.psum}>
           <span className={styles.psumLabel}>
-            {isExpenses ? t("dash.spent") : t("dash.earned")} · {periodText}
+            {isExpenses ? t("common.expenses") : t("common.income")} · {periodText}
           </span>
           <div className={styles.psumRow}>
             <span className={styles.psumAmt}>{money(total, 0)}</span>

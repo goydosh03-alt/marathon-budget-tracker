@@ -3,21 +3,19 @@
 import { useState, useRef } from "react";
 import Link from "next/link";
 import styles from "@/app/dashboard/dashboard.module.css";
-import { useMoney, useConv } from "@/components/SettingsProvider";
+import { useMoney, useConv, useT, useLang } from "@/components/SettingsProvider";
 import { Icon, IconSprite } from "@/components/IconSprite";
 import BottomNav from "@/components/BottomNav";
 import TopBar from "@/components/TopBar";
 import CalendarSheet from "@/components/CalendarSheet";
 import EmptyState from "@/components/EmptyState";
 import { periods, catEmoji } from "@/lib/txui";
+import { dataLabel, MONTHS_SHORT, MONTHS_FULL, MONTHS_GEN, type StringKey } from "@/lib/i18n";
 
 type Tx = { type: string; amountHome: number; category: string; date: string };
 
 // чітко різні відтінки (без двох зелених/синіх поряд)
 const COLORS = ["#4ade9f", "#3bb4f5", "#b9a8ff", "#f5a86a", "#ff8a8a", "#ffd45a", "#7c6cff", "#f5a3d0", "#5ad1c4", "#a0a0a0"];
-const MONTHS_SHORT = ["січ", "лют", "бер", "кві", "тра", "чер", "лип", "сер", "вер", "жов", "лис", "гру"];
-const MONTHS_FULL = ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"];
-const MONTHS_GEN = ["січня", "лютого", "березня", "квітня", "травня", "червня", "липня", "серпня", "вересня", "жовтня", "листопада", "грудня"];
 
 function iso(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -73,6 +71,11 @@ export default function ReportsView({
 }) {
   const money = useMoney();
   const conv = useConv();
+  const t = useT();
+  const lang = useLang();
+  const mShort = MONTHS_SHORT[lang];
+  const mFull = MONTHS_FULL[lang];
+  const mGen = MONTHS_GEN[lang];
   const [tab, setTab] = useState<"expenses" | "income">("expenses");
   const [view, setView] = useState<"cats" | "months">("cats");
   const [period, setPeriod] = useState("month");
@@ -101,7 +104,7 @@ export default function ReportsView({
     if (period === "month") {
       const d = new Date(now.getFullYear(), now.getMonth() - off, 1);
       const e = new Date(now.getFullYear(), now.getMonth() - off + 1, 0);
-      return { start: iso(d), end: iso(e), short: MONTHS_SHORT[d.getMonth()] };
+      return { start: iso(d), end: iso(e), short: mShort[d.getMonth()] };
     }
     const y = now.getFullYear() - off;
     return { start: `${y}-01-01`, end: `${y}-12-31`, short: `${y}` };
@@ -121,18 +124,18 @@ export default function ReportsView({
     if (range) return `${dmShort(range.from)} – ${dmShort(range.to)}`;
     if (period === "day") {
       const d = new Date(now); d.setDate(now.getDate() - offset);
-      if (offset === 0) return "Сьогодні";
-      if (offset === 1) return "Вчора";
-      return `${d.getDate()} ${MONTHS_GEN[d.getMonth()]}`;
+      if (offset === 0) return t("rel.today");
+      if (offset === 1) return t("rel.yesterday");
+      return `${d.getDate()} ${mGen[d.getMonth()]}`;
     }
     if (period === "week") {
       const s = new Date(now); s.setDate(now.getDate() - ((now.getDay() + 6) % 7) - offset * 7);
       const e = new Date(s); e.setDate(s.getDate() + 6);
-      return `${s.getDate()}–${e.getDate()} ${MONTHS_GEN[e.getMonth()]}`;
+      return `${s.getDate()}–${e.getDate()} ${mGen[e.getMonth()]}`;
     }
     if (period === "month") {
       const d = new Date(now.getFullYear(), now.getMonth() - offset, 1);
-      return `${MONTHS_FULL[d.getMonth()]}${d.getFullYear() !== now.getFullYear() ? " " + d.getFullYear() : ""}`;
+      return `${mFull[d.getMonth()]}${d.getFullYear() !== now.getFullYear() ? " " + d.getFullYear() : ""}`;
     }
     return `${now.getFullYear() - offset}`;
   }
@@ -184,14 +187,14 @@ export default function ReportsView({
   return (
     <div className={styles.screen}>
       <IconSprite />
-      <TopBar><span className={styles.barTitle}>Звіти</span></TopBar>
+      <TopBar><span className={styles.barTitle}>{t("nav.reports")}</span></TopBar>
 
       <div className={styles.tabs}>
         <button className={`${styles.tab} ${isExpenses ? styles.tabOnExp : ""}`} onClick={() => { setTab("expenses"); setNavIdx(0); }}>
-          Витрати
+          {t("common.expenses")}
         </button>
         <button className={`${styles.tab} ${!isExpenses ? styles.tabOnInc : ""}`} onClick={() => { setTab("income"); setNavIdx(0); }}>
-          Дохід
+          {t("common.income")}
         </button>
       </div>
 
@@ -203,11 +206,11 @@ export default function ReportsView({
               className={`${styles.pf} ${!range && period === p.id ? styles.pfOn : ""}`}
               onClick={() => changePeriod(p.id)}
             >
-              {p.label}
+              {t(`period.${p.id}` as StringKey)}
             </button>
           ))}
           <span className={styles.vdiv} />
-          <button className={`${styles.cal} ${range ? styles.calActive : ""}`} aria-label="Період" onClick={() => setCalOpen(true)}>
+          <button className={`${styles.cal} ${range ? styles.calActive : ""}`} aria-label={t("common.period")} onClick={() => setCalOpen(true)}>
             <Icon id="i-cal" />
           </button>
         </div>
@@ -215,17 +218,17 @@ export default function ReportsView({
         <div className={styles.repSubRow}>
           <span className={styles.repDate}>{view === "months" ? barsLabel : instanceLabel()}</span>
           <div className={styles.viewIconsSeg}>
-            <button className={`${styles.viewIcon} ${view === "cats" ? styles.viewIconOn : ""}`} onClick={() => setView("cats")} aria-label="Кругова">
+            <button className={`${styles.viewIcon} ${view === "cats" ? styles.viewIconOn : ""}`} onClick={() => setView("cats")} aria-label={t("rep.donut")}>
               <Icon id="i-pie" />
             </button>
-            <button className={`${styles.viewIcon} ${view === "months" ? styles.viewIconOn : ""}`} onClick={() => setView("months")} aria-label="Стовпчики">
+            <button className={`${styles.viewIcon} ${view === "months" ? styles.viewIconOn : ""}`} onClick={() => setView("months")} aria-label={t("rep.bars")}>
               <Icon id="i-bars" />
             </button>
           </div>
         </div>
 
         {isEmpty ? (
-          <EmptyState icon="i-bars" title="Немає даних" hint={`За цей період ${isExpenses ? "витрат" : "доходів"} немає.`} />
+          <EmptyState icon="i-bars" title={t("rep.noData")} hint={isExpenses ? t("rep.noDataExp") : t("rep.noDataInc")} />
         ) : view === "cats" ? (
           <>
             <div className={styles.donutWrap}>
@@ -284,7 +287,7 @@ export default function ReportsView({
                   href={`/category?cat=${encodeURIComponent(c.cat)}&from=${drillFrom}&to=${drillTo}&type=${isExpenses ? "expense" : "income"}`}
                 >
                   <span className={styles.legDot} style={{ background: c.color }} />
-                  <span className={styles.legName}>{catEmoji(c.cat, !isExpenses)} {c.cat}</span>
+                  <span className={styles.legName}>{catEmoji(c.cat, !isExpenses)} {dataLabel(c.cat, lang)}</span>
                   <span className={styles.legPct}>{share}%</span>
                   <span className={styles.legSum}>{money(c.sum, 0)}</span>
                   <span className={styles.legChev}><Icon id="i-arrow-right" /></span>

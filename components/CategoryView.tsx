@@ -9,8 +9,9 @@ import TransactionViewer from "@/components/TransactionViewer";
 import AddTransactionForm from "@/components/AddTransactionForm";
 import ExportSheet from "@/components/ExportSheet";
 import EmptyState from "@/components/EmptyState";
-import { catEmoji, catBg, fmtDate } from "@/lib/txui";
-import { useDec, useMoney, useConv } from "@/components/SettingsProvider";
+import { catEmoji, catBg } from "@/lib/txui";
+import { dataLabel, fmtDateL, opsLabel } from "@/lib/i18n";
+import { useDec, useMoney, useConv, useT, useLang } from "@/components/SettingsProvider";
 
 type Item = { name: string; price: number };
 type Tx = {
@@ -46,6 +47,8 @@ export default function CategoryView({
   const dec = useDec();
   const money = useMoney();
   const conv = useConv();
+  const tt = useT();
+  const lang = useLang();
 
   function toggle(id: string) {
     setOpen((prev) => {
@@ -73,10 +76,10 @@ export default function CategoryView({
       <IconSprite />
 
       <SubHeader
-        title={cat}
+        title={dataLabel(cat, lang)}
         back="/reports"
         right={
-          <button className={styles.exportBtn} onClick={() => setShowExport(true)} aria-label="Експорт">
+          <button className={styles.exportBtn} onClick={() => setShowExport(true)} aria-label={tt("common.export")}>
             <Icon id="i-download" />
           </button>
         }
@@ -84,10 +87,10 @@ export default function CategoryView({
 
       <section className={styles.periodcard}>
         <div className={styles.catBoxHead}>
-          <span className={styles.catBoxLabel}>{isIncome ? "Зароблено" : "Витрачено"}</span>
+          <span className={styles.catBoxLabel}>{isIncome ? tt("common.income") : tt("common.expenses")}</span>
           <span className={styles.catBoxSum}>{money(total, 0)}</span>
           <span className={styles.catBoxSub}>
-            ≈ {conv(total, 0)} · {txs.length} {txs.length === 1 ? "операція" : "операцій"}
+            ≈ {conv(total, 0)} · {txs.length} {opsLabel(txs.length, lang)}
           </span>
         </div>
 
@@ -95,9 +98,9 @@ export default function CategoryView({
 
         <div className={styles.searchInline}>
           <Icon id="i-search" />
-          <input placeholder="Пошук по назві або позиції…" value={query} onChange={(e) => setQuery(e.target.value)} />
+          <input placeholder={tt("cat.search")} value={query} onChange={(e) => setQuery(e.target.value)} />
           {query && (
-            <button className={styles.searchClear} onClick={() => setQuery("")} aria-label="Очистити">
+            <button className={styles.searchClear} onClick={() => setQuery("")} aria-label={tt("common.clear")}>
               <Icon id="i-x" />
             </button>
           )}
@@ -107,15 +110,15 @@ export default function CategoryView({
 
         <div className={styles.viewToggleRow}>
           <button className={`${styles.sortChip} ${sort === "date" ? styles.sortChipOn : ""}`} onClick={() => setSort("date")}>
-            За датою
+            {tt("cat.sortDate")}
           </button>
           <button className={`${styles.sortChip} ${sort === "amount" ? styles.sortChipOn : ""}`} onClick={() => setSort("amount")}>
-            За сумою
+            {tt("cat.sortAmount")}
           </button>
         </div>
 
         {filtered.length === 0 ? (
-          <EmptyState icon="i-search" title="Нічого не знайдено" hint="Спробуй інший запит." />
+          <EmptyState icon="i-search" title={tt("hist.notFound")} hint={tt("cat.tryAnother")} />
         ) : (
           filtered.map((t) => {
             const hasItems = (t.items?.length ?? 0) > 0;
@@ -127,8 +130,8 @@ export default function CategoryView({
                     {catEmoji(t.category, isIncome)}
                   </div>
                   <div>
-                    <span className={styles.txName}>{t.merchant || t.category}</span>
-                    <span className={styles.txMeta}>{fmtDate(t.date, t.createdAt)}</span>
+                    <span className={styles.txName}>{t.merchant || dataLabel(t.category, lang)}</span>
+                    <span className={styles.txMeta}>{fmtDateL(t.date, t.createdAt, lang)}</span>
                   </div>
                   <div className={styles.amt}>
                     <span className={`${styles.amtVal} ${isIncome ? styles.inc : ""}`}>
@@ -140,7 +143,7 @@ export default function CategoryView({
                     <button
                       className={`${styles.txExpand} ${isOpen ? styles.txExpandOn : ""}`}
                       onClick={(e) => { e.stopPropagation(); toggle(t.id); }}
-                      aria-label="Позиції"
+                      aria-label={tt("common.items")}
                     >
                       <Icon id="i-chev" />
                     </button>
@@ -165,7 +168,7 @@ export default function CategoryView({
         )}
       </section>
 
-      <button className={`${styles.cam} ${styles.floatAdd}`} onClick={() => setAddOpen(true)} aria-label="Додати">
+      <button className={`${styles.cam} ${styles.floatAdd}`} onClick={() => setAddOpen(true)} aria-label={tt("common.add")}>
         <span className={styles.camInner}>
           <Icon id="i-plus" />
         </span>

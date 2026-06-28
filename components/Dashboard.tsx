@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon, IconSprite } from "@/components/IconSprite";
 import BottomNav from "@/components/BottomNav";
@@ -9,9 +9,10 @@ import TransactionViewer from "@/components/TransactionViewer";
 import CalendarSheet from "@/components/CalendarSheet";
 import EmptyState from "@/components/EmptyState";
 import RecurringRunner from "@/components/RecurringRunner";
-import { periods, inPeriod, catEmoji, catBg } from "@/lib/txui";
+import { periods, catEmoji, catBg } from "@/lib/txui";
 import { useDec, useMoney, useConv, useT, useLang } from "@/components/SettingsProvider";
 import { dataLabel, fmtDateL, type StringKey } from "@/lib/i18n";
+import { periodRange, periodLabel, availOffsets } from "@/lib/periodNav";
 
 function dmShort(isoStr: string): string {
   const [, m, d] = isoStr.split("-");
@@ -51,9 +52,11 @@ export default function Dashboard({
 }) {
   const [tab, setTab] = useState<"expenses" | "income">("expenses");
   const [period, setPeriod] = useState("month");
+  const [navIdx, setNavIdx] = useState(0);
   const [viewId, setViewId] = useState<string | null>(null);
   const [range, setRange] = useState<{ from: string; to: string } | null>(null);
   const [calOpen, setCalOpen] = useState(false);
+  const touch = useRef({ x: 0, y: 0 });
 
   const dec = useDec();
   const money = useMoney();
@@ -61,15 +64,32 @@ export default function Dashboard({
   const t = useT();
   const lang = useLang();
   const isExpenses = tab === "expenses";
-  const filtered = txs.filter((t) => {
-    if (isExpenses ? t.type !== "expense" : t.type !== "income") return false;
-    return range ? t.date >= range.from && t.date <= range.to : inPeriod(t.date, period);
-  });
-  const total = filtered.reduce((s, t) => s + t.amountHome, 0);
-  const list = filtered.slice(0, 5);
-  const periodText = range ? `${dmShort(range.from)} – ${dmShort(range.to)}` : t(`period.short.${period}` as StringKey);
 
-  const showBudget = isExpenses && budgetHome && period === "month" && !range;
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  const ofTab = txs.filter((tx) => (isExpenses ? tx.type === "expense" : tx.type === "income"));
+  const avail = availOffsets(period, ofTab.map((tx) => tx.date), now);
+  const idx = Math.min(navIdx, avail.length - 1);
+  const offset = avail[idx] ?? 0;
+  const curRange = range ? { start: range.from, end: range.to } : periodRange(period, offset, now);
+
+  const filtered = ofTab.filter((tx) => tx.date >= curRange.start && tx.date <= curRange.end);
+  const total = filtered.reduce((s, tx) => s + tx.amountHome, 0);
+  const list = filtered.slice(0, 5);
+  const periodText = range ? `${dmShort(range.from)} – ${dmShort(range.to)}` : periodLabel(period, offset, now, lang);
+
+  const showBudget = isExpenses && budgetHome && period === "month" && offset === 0 && !range;
+
+  const canOlder = !range && idx < avail.length - 1;
+  const canNewer = !range && idx > 0;
+  function swipeStart(e: React.TouchEvent) { const p = e.touches[0]; touch.current = { x: p.clientX, y: p.clientY }; }
+  function swipeEnd(e: React.TouchEvent) {
+    const p = e.changedTouches[0];
+    const dx = p.clientX - touch.current.x;
+    const dy = p.clientY - touch.current.y;
+    if (Math.abs(dx) < 35 || Math.abs(dx) < Math.abs(dy)) return;
+    if (dx < 0) { if (canOlder) setNavIdx(idx + 1); } else { if (canNewer) setNavIdx(idx - 1); }
+  }
   const pct = showBudget ? Math.min(100, (total / budgetHome!) * 100) : null;
 
   const accountsForForm = accounts.map((a) => ({ id: a.id, name: a.name, type: a.type }));
@@ -155,7 +175,7 @@ export default function Dashboard({
 
         <div className={styles.psum}>
           <span className={styles.psumLabel}>
-            {isExpenses ? t("dash.spent") : t("dash.earned")} · {periodText}
+            {isExpenses ? t("common.expenses") : t("common.income")} · {periodText}
           </span>
           <div className={styles.psumRow}>
             <span className={styles.psumAmt}>{money(total, 0)}</span>
