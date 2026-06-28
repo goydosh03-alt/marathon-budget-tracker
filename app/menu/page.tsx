@@ -6,6 +6,7 @@ import TopBar from "@/components/TopBar";
 import BottomNav from "@/components/BottomNav";
 import MenuQuickCards from "@/components/MenuQuickCards";
 import DonateBanner from "@/components/DonateBanner";
+import ExportMenuItem from "@/components/ExportMenuItem";
 import { DEFAULT_CURRENCY, isCurrency } from "@/lib/currency";
 import styles from "@/app/dashboard/dashboard.module.css";
 
@@ -80,16 +81,7 @@ export default async function MenuPage() {
 
       <div className={styles.menuGroupLabel}>Фінанси</div>
       <div className={styles.menuList}>
-        <Link href="/soon?f=Експорт даних" className={styles.menuItem}>
-          <span className={styles.menuIco} style={{ background: "rgba(245,180,90,0.16)", color: "#f5c87c" }}>
-            <Icon id="i-download" />
-          </span>
-          <span className={styles.menuMid}>
-            <span className={styles.menuName}>Експорт даних</span>
-            <span className={styles.menuSub}>CSV / Excel / PDF</span>
-          </span>
-          <span className={styles.menuSoon}>СКОРО</span>
-        </Link>
+        <ExportMenuItem />
       </div>
 
       <div className={styles.menuGroupLabel}>Автоматизація</div>

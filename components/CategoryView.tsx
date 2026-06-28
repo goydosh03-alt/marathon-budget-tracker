@@ -185,7 +185,13 @@ export default function CategoryView({
         />
       )}
 
-      {showExport && <ExportSheet onClose={() => setShowExport(false)} />}
+      {showExport && (
+        <ExportSheet
+          onClose={() => setShowExport(false)}
+          cat={cat}
+          type={isIncome ? "income" : "expense"}
+        />
+      )}
     </div>
   );
 }
