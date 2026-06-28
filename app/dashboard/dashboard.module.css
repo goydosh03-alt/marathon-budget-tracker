@@ -95,8 +95,10 @@
 .navOn:link, .navOn:visited { color: #fff; }
 .navOn { background: rgba(255,255,255,0.11); color: #fff; }
 .navItem svg { width: 22px; height: 22px; }
-.cam { flex: 0 0 auto; width: 60px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background: rgba(18,28,30,0.97); border: 1px solid rgba(255,255,255,0.07); color: rgba(255,255,255,0.5); box-shadow: 0 16px 40px rgba(0,0,0,0.5); cursor: pointer; }
-.camOpen { background: rgba(255,255,255,0.16); color: #fff; }
+.cam { flex: 0 0 auto; width: 60px; padding: 6px; border-radius: 26px; display: flex; align-items: stretch; justify-content: stretch; background: rgba(18,28,30,0.97); border: 1px solid rgba(255,255,255,0.07); box-shadow: 0 16px 40px rgba(0,0,0,0.5); cursor: pointer; }
+/* внутрішній блок — як selected-таб у навбарі: контейнер не чіпаємо, підсвічуємо лише його */
+.camInner { flex: 1; display: flex; align-items: center; justify-content: center; border-radius: 20px; color: rgba(255,255,255,0.5); transition: background 0.15s, color 0.15s; }
+.camInnerOn { background: rgba(255,255,255,0.11); color: #fff; }
 .cam svg { width: 24px; height: 24px; }
 
 .addmenu { position: fixed; right: max(16px, calc(50% - 224px)); bottom: calc(86px + env(safe-area-inset-bottom)); width: 248px; padding: 6px; background: rgba(22,32,34,0.98); border: 1px solid rgba(255,255,255,0.09); border-radius: 18px; z-index: 25; box-shadow: 0 18px 44px rgba(0,0,0,0.55); }
@@ -329,7 +331,7 @@
 .toggleOn .toggleKnob { transform: translateX(18px); }
 
 /* menu hub */
-.profCardLink { display: flex; align-items: center; gap: 14px; text-decoration: none; color: #eaf2f0; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 16px; margin-top: 16px; }
+.profCardLink { display: flex; align-items: center; gap: 14px; text-decoration: none; color: #eaf2f0; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 16px; margin-top: 12px; }
 .profCardLink:active { background: rgba(255,255,255,0.07); }
 .profCardAv { width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg,#4ade9f,#3bb4f5); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; color: #04211a; flex-shrink: 0; }
 .profCardMid { flex: 1; min-width: 0; }
@@ -391,6 +393,15 @@
 .donateBname { font-size: 15px; font-weight: 700; line-height: 1.15; }
 .donateBsub { font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.2; margin-top: 2px; }
 .donateHint { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.45; margin-top: 12px; }
+.donateLabel { display: block; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.5px; margin: 18px 4px 8px; }
+.donateLabel + .setCard { margin-top: 0; }
+/* Сповіщення */
+.notifDot { position: absolute; top: 7px; right: 7px; width: 8px; height: 8px; border-radius: 50%; background: #ff6b6b; border: 1.5px solid #0c1a1d; }
+.notifMarkAll { display: block; margin: 12px 0 0; padding: 0 4px; background: none; border: none; color: #6ee7b7; font-size: 13px; font-weight: 600; cursor: pointer; }
+.notifRow { display: flex; align-items: center; gap: 10px; padding: 12px 8px; }
+.notifUnread .catName2 { color: #fff; }
+.notifDot2 { width: 8px; height: 8px; border-radius: 50%; background: #6ee7b7; flex-shrink: 0; }
+.notifDate { font-size: 11px; color: rgba(255,255,255,0.4); flex-shrink: 0; margin-left: auto; }
 .donateBadge { width: 34px; height: 34px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 16px; font-weight: 800; color: #fff; }
 .donateItem { display: flex; align-items: center; gap: 12px; width: 100%; padding: 11px 8px; background: none; border: none; text-align: left; cursor: pointer; }
 .donateItemTitle { font-size: 13px; font-weight: 600; color: #eaf2f0; line-height: 1.2; }

@@ -69,10 +69,10 @@ export default function DonateSheet({ open, onClose }: { open: boolean; onClose:
             Snapcost безкоштовний, без реклами й підписок. Якщо хочеш віддячити — будь-яка сума на свій розсуд. Тапни рядок, щоб скопіювати. Дякую 🙏
           </div>
 
-          <div className={styles.fieldLabel}>Крипто</div>
+          <div className={styles.donateLabel}>Крипто</div>
           <div className={styles.setCard}>{CRYPTO.map(row)}</div>
 
-          <div className={styles.fieldLabel}>Банк · EUR (Wise)</div>
+          <div className={styles.donateLabel}>Банк · EUR (Wise)</div>
           <div className={styles.setCard}>{BANK.map(row)}</div>
         </div>
       </div>

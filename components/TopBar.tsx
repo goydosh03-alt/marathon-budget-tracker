@@ -1,6 +1,6 @@
 import styles from "@/app/dashboard/dashboard.module.css";
-import { Icon } from "@/components/IconSprite";
 import AmountsEyeButton from "@/components/AmountsEyeButton";
+import NotificationsBell from "@/components/NotificationsBell";
 
 // Спільна шапка: ліворуч — вміст сторінки (привітання/заголовок),
 // праворуч — око (сховати суми) + сповіщення.
@@ -10,9 +10,7 @@ export default function TopBar({ children }: { children: React.ReactNode }) {
       {children}
       <div className={styles.topActions}>
         <AmountsEyeButton />
-        <button className={styles.iconBtn} aria-label="Сповіщення">
-          <Icon id="i-bell" />
-        </button>
+        <NotificationsBell />
       </div>
     </header>
   );

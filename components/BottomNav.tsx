@@ -65,12 +65,10 @@ export default function BottomNav({
             <Icon id="i-menu" />Меню
           </Link>
         </div>
-        <button
-          className={`${styles.cam} ${menuOpen ? styles.camOpen : ""}`}
-          onClick={() => setMenuOpen((v) => !v)}
-          aria-label="Додати"
-        >
-          <Icon id="i-plus" />
+        <button className={styles.cam} onClick={() => setMenuOpen((v) => !v)} aria-label="Додати">
+          <span className={`${styles.camInner} ${menuOpen ? styles.camInnerOn : ""}`}>
+            <Icon id="i-plus" />
+          </span>
         </button>
       </nav>
 
