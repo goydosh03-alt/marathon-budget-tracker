@@ -5,6 +5,7 @@ import { IconSprite, Icon } from "@/components/IconSprite";
 import TopBar from "@/components/TopBar";
 import BottomNav from "@/components/BottomNav";
 import MenuQuickCards from "@/components/MenuQuickCards";
+import DonateBanner from "@/components/DonateBanner";
 import { DEFAULT_CURRENCY, isCurrency } from "@/lib/currency";
 import styles from "@/app/dashboard/dashboard.module.css";
 
@@ -38,6 +39,8 @@ export default async function MenuPage() {
       <TopBar>
         <span className={styles.barTitle}>Меню</span>
       </TopBar>
+
+      <DonateBanner />
 
       <Link href="/profile" className={styles.profCardLink}>
         <div className={styles.profCardAv}>{initial}</div>

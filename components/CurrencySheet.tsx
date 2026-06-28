@@ -4,22 +4,22 @@ import { useState, useEffect, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon } from "@/components/IconSprite";
-import { CURRENCIES, currencyMeta, type CurrencyCode } from "@/lib/currency";
-import { useCurrency, useConvertCurrency, useConv } from "@/components/SettingsProvider";
+import { CURRENCIES, currencyMeta, convert, formatMoney, type CurrencyCode } from "@/lib/currency";
+import { useCurrency, useConvertCurrency, useRates } from "@/components/SettingsProvider";
 import { setMainCurrency, setConvertCurrency } from "@/app/dashboard/actions";
 
 export default function CurrencySheet({ open, onClose }: { open: boolean; onClose: () => void }) {
   const router = useRouter();
-  const [, start] = useTransition();
+  const [saving, start] = useTransition();
   const ctxMain = useCurrency();
   const ctxConv = useConvertCurrency();
-  const convFmt = useConv();
+  const rates = useRates();
 
   const [main, setMain] = useState<CurrencyCode>(ctxMain);
   const [conv, setConv] = useState<CurrencyCode>(ctxConv);
 
-  useEffect(() => setMain(ctxMain), [ctxMain]);
-  useEffect(() => setConv(ctxConv), [ctxConv]);
+  // синхронізуємо з контекстом щоразу при відкритті
+  useEffect(() => { if (open) { setMain(ctxMain); setConv(ctxConv); } }, [open, ctxMain, ctxConv]);
 
   useEffect(() => {
     if (!open) return;
@@ -30,15 +30,17 @@ export default function CurrencySheet({ open, onClose }: { open: boolean; onClos
 
   if (!open) return null;
 
-  function pickMain(code: CurrencyCode) {
-    if (code === main) return;
-    setMain(code);
-    start(async () => { await setMainCurrency(code); router.refresh(); });
-  }
-  function pickConv(code: CurrencyCode) {
-    if (code === conv) return;
-    setConv(code);
-    start(async () => { await setConvertCurrency(code); router.refresh(); });
+  const changed = main !== ctxMain || conv !== ctxConv;
+  const rateText = `1 ${currencyMeta(main).symbol} ≈ ${formatMoney(convert(1, main, conv, rates), conv, 2)}`;
+
+  function apply() {
+    if (!changed) { onClose(); return; }
+    start(async () => {
+      if (main !== ctxMain) await setMainCurrency(main);
+      if (conv !== ctxConv) await setConvertCurrency(conv);
+      router.refresh();
+      onClose();
+    });
   }
 
   const pick = (active: CurrencyCode, on: (c: CurrencyCode) => void) => (
@@ -70,15 +72,21 @@ export default function CurrencySheet({ open, onClose }: { open: boolean; onClos
           </div>
 
           <div className={styles.fieldLabel}>Основна валюта</div>
-          {pick(main, pickMain)}
+          {pick(main, setMain)}
 
           <div className={styles.curSwap}>
             <span className={styles.curSwapArrow}>↓</span>
-            <span className={styles.curSwapRate}>1 {currencyMeta(main).symbol} ≈ {convFmt(1, 2)}</span>
+            <span className={styles.curSwapRate}>{rateText}</span>
           </div>
 
           <div className={styles.fieldLabel}>Конвертується в</div>
-          {pick(conv, pickConv)}
+          {pick(conv, setConv)}
+        </div>
+
+        <div className={styles.sheetActions}>
+          <button className={styles.btnPrimary} onClick={apply} disabled={saving}>
+            {saving ? "Зберігаю…" : changed ? "Застосувати" : "Готово"}
+          </button>
         </div>
       </div>
     </div>

@@ -49,6 +49,12 @@ export function convert(
   return (amount * f) / t;
 }
 
+// Замасковане значення (режим приватності «око»).
+export function maskMoney(code: CurrencyCode): string {
+  const m = currencyMeta(code);
+  return m.before ? `${m.symbol} •••` : `••• ${m.symbol}`;
+}
+
 // Формат суми з символом валюти.
 export function formatMoney(amount: number, code: CurrencyCode, dp = 2): string {
   const m = currencyMeta(code);

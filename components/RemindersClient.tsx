@@ -11,8 +11,11 @@ import {
   updateReminder,
   toggleReminder,
   deleteReminder,
+  savePushSubscription,
   type Reminder,
+  type PushSub,
 } from "@/app/dashboard/actions";
+import { subscribeToPush, pushSupported } from "@/lib/push";
 
 const FREQS = [
   { id: "daily", label: "Щодня" },
@@ -46,7 +49,20 @@ export default function RemindersClient({ reminders }: { reminders: Reminder[] }
     if (!("Notification" in window)) return;
     const res = await Notification.requestPermission();
     setPerm(res);
-    if (res === "granted") new Notification("Snapcost", { body: "Сповіщення увімкнено ✓" });
+    if (res !== "granted") return;
+    // підписка на справжні пуші (service worker + VAPID) і збереження на сервері
+    try {
+      if (pushSupported()) {
+        const sub = await subscribeToPush();
+        if (sub?.endpoint && sub.keys) {
+          const tzOffsetMin = -new Date().getTimezoneOffset(); // +120 для UTC+2
+          await savePushSubscription(sub as PushSub, tzOffsetMin);
+        }
+      }
+      new Notification("Snapcost", { body: "Сповіщення увімкнено ✓" });
+    } catch {
+      /* тихо: дозвіл є, підписку спробуємо ще раз пізніше */
+    }
   }
 
   function openNew() {

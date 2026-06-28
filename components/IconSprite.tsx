@@ -10,6 +10,9 @@ export function IconSprite() {
   return (
     <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
       <symbol id="i-bell" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.2a5.8 5.8 0 00-5.8 5.8c0 3.4-1 5-1.7 5.9-.5.7 0 1.6.8 1.6h13.4c.8 0 1.3-.9.8-1.6-.7-.9-1.7-2.5-1.7-5.9A5.8 5.8 0 0012 2.2z" /><path fill="currentColor" d="M9.6 18.6a2.4 2.4 0 004.8 0z" /></symbol>
+      <symbol id="i-copy" viewBox="0 0 24 24"><rect className="ic" x="9" y="9" width="11" height="11" rx="2.5" /><path className="ic" d="M5 15V5a2 2 0 012-2h8" /></symbol>
+      <symbol id="i-eye" viewBox="0 0 24 24"><path className="ic" d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z" /><circle className="ic" cx="12" cy="12" r="3" /></symbol>
+      <symbol id="i-eye-off" viewBox="0 0 24 24"><path className="ic" d="M2 12s4-7 10-7c2.1 0 3.9.8 5.3 1.8M22 12s-4 7-10 7c-2.1 0-3.9-.8-5.3-1.8" /><path className="ic" d="M9.9 9.9a3 3 0 004.2 4.2" /><path className="ic" d="M4 4l16 16" /></symbol>
       <symbol id="i-wallet" viewBox="0 0 24 24"><path fill="currentColor" fillRule="evenodd" d="M4 5h11a2 2 0 012 2v1h2.2A1.8 1.8 0 0121 9.8V18a2 2 0 01-2 2H4a2 2 0 01-2-2V7a2 2 0 012-2zm14.6 8.1a1.4 1.4 0 100 2.8 1.4 1.4 0 000-2.8z" /></symbol>
       <symbol id="i-card" viewBox="0 0 24 24"><path fill="currentColor" d="M5 4h14a2 2 0 012 2v1H3V6a2 2 0 012-2z" /><path fill="currentColor" fillRule="evenodd" d="M3 9h18v9a2 2 0 01-2 2H5a2 2 0 01-2-2zm3 6.2h6v1.8H6z" /></symbol>
       <symbol id="i-plus" viewBox="0 0 24 24"><path fill="currentColor" d="M10.5 4a1.5 1.5 0 013 0v6.5H20a1.5 1.5 0 010 3h-6.5V20a1.5 1.5 0 01-3 0v-6.5H4a1.5 1.5 0 010-3h6.5z" /></symbol>

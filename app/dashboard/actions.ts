@@ -131,7 +131,34 @@ export type Reminder = {
   time: string; // HH:MM
   freq: "daily" | "weekdays" | "weekends" | "weekly";
   enabled: boolean;
+  lastSent?: string; // YYYY-MM-DD — щоб не слати двічі на день
 };
+
+export type PushSub = {
+  endpoint: string;
+  keys: { p256dh: string; auth: string };
+};
+
+// Зберігає/оновлює пуш-підписку браузера в метаданих (дедуп за endpoint).
+// tzOffsetMin — зсув місцевого часу від UTC у хвилинах (напр. +120 для UTC+2),
+// щоб нагадування спрацьовували в правильну місцеву годину.
+export async function savePushSubscription(sub: PushSub, tzOffsetMin?: number): Promise<AddTxResult> {
+  if (!sub?.endpoint) return { ok: false, error: "Немає підписки" };
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Не авторизовано" };
+  const list: PushSub[] = Array.isArray(user.user_metadata?.push_subscriptions)
+    ? user.user_metadata.push_subscriptions
+    : [];
+  const next = [...list.filter((s) => s.endpoint !== sub.endpoint), sub];
+  const data: Record<string, unknown> = { push_subscriptions: next };
+  if (typeof tzOffsetMin === "number") data.push_tz = tzOffsetMin;
+  const { error } = await supabase.auth.updateUser({ data });
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
+}
 
 async function readReminders() {
   const supabase = await createClient();
