@@ -9,7 +9,7 @@ export const LANGS: { code: Lang; label: string; flag: string }[] = [
   { code: "ru", label: "Русский", flag: "🌐" },
 ];
 
-export const DEFAULT_LANG: Lang = "uk";
+export const DEFAULT_LANG: Lang = "en";
 
 export function isLang(v: unknown): v is Lang {
   return v === "uk" || v === "en" || v === "ru";
@@ -69,6 +69,32 @@ export const STRINGS = {
   // мова — екран вибору
   "lang.title": { uk: "Мова", en: "Language", ru: "Язык" },
   "lang.hint": { uk: "Оберіть мову інтерфейсу.", en: "Choose the interface language.", ru: "Выберите язык интерфейса." },
+
+  // спільне — типи/періоди
+  "common.expenses": { uk: "Витрати", en: "Expenses", ru: "Расходы" },
+  "common.income": { uk: "Дохід", en: "Income", ru: "Доход" },
+  "common.period": { uk: "Період", en: "Period", ru: "Период" },
+  "period.day": { uk: "День", en: "Day", ru: "День" },
+  "period.week": { uk: "Тиждень", en: "Week", ru: "Неделя" },
+  "period.month": { uk: "Місяць", en: "Month", ru: "Месяц" },
+  "period.year": { uk: "Рік", en: "Year", ru: "Год" },
+  "period.short.day": { uk: "сьогодні", en: "today", ru: "сегодня" },
+  "period.short.week": { uk: "цей тиждень", en: "this week", ru: "эта неделя" },
+  "period.short.month": { uk: "цей місяць", en: "this month", ru: "этот месяц" },
+  "period.short.year": { uk: "цей рік", en: "this year", ru: "этот год" },
+
+  // головна
+  "dash.totalBalance": { uk: "Загальний баланс", en: "Total balance", ru: "Общий баланс" },
+  "dash.spent": { uk: "Витрачено", en: "Spent", ru: "Потрачено" },
+  "dash.earned": { uk: "Зароблено", en: "Earned", ru: "Заработано" },
+  "dash.budgetPre": { uk: "з", en: "of", ru: "из" },
+  "dash.budgetPost": { uk: "бюджету", en: "budget", ru: "бюджета" },
+  "dash.recent": { uk: "Останні транзакції", en: "Recent transactions", ru: "Последние транзакции" },
+  "dash.all": { uk: "Всі", en: "All", ru: "Все" },
+  "dash.empty.exp": { uk: "Поки що порожньо", en: "Nothing yet", ru: "Пока пусто" },
+  "dash.empty.inc": { uk: "Ще немає доходів", en: "No income yet", ru: "Доходов пока нет" },
+  "dash.empty.expHint": { uk: "Додай першу витрату кнопкою + унизу або сканни чек", en: "Add your first expense with the + below, or scan a receipt", ru: "Добавь первый расход кнопкой + внизу или сканируй чек" },
+  "dash.empty.incHint": { uk: "Додай дохід кнопкою + унизу", en: "Add income with the + below", ru: "Добавь доход кнопкой + внизу" },
 } satisfies Record<string, Entry>;
 
 export type StringKey = keyof typeof STRINGS;

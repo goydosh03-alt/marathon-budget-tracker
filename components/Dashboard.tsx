@@ -9,8 +9,9 @@ import TransactionViewer from "@/components/TransactionViewer";
 import CalendarSheet from "@/components/CalendarSheet";
 import EmptyState from "@/components/EmptyState";
 import RecurringRunner from "@/components/RecurringRunner";
-import { periods, PERIOD_LABEL, inPeriod, catEmoji, catBg, fmtDate } from "@/lib/txui";
-import { useDec, useMoney, useConv } from "@/components/SettingsProvider";
+import { periods, inPeriod, catEmoji, catBg, fmtDate } from "@/lib/txui";
+import { useDec, useMoney, useConv, useT } from "@/components/SettingsProvider";
+import type { StringKey } from "@/lib/i18n";
 
 function dmShort(isoStr: string): string {
   const [, m, d] = isoStr.split("-");
@@ -57,6 +58,7 @@ export default function Dashboard({
   const dec = useDec();
   const money = useMoney();
   const conv = useConv();
+  const t = useT();
   const isExpenses = tab === "expenses";
   const filtered = txs.filter((t) => {
     if (isExpenses ? t.type !== "expense" : t.type !== "income") return false;
@@ -64,7 +66,7 @@ export default function Dashboard({
   });
   const total = filtered.reduce((s, t) => s + t.amountHome, 0);
   const list = filtered.slice(0, 5);
-  const periodText = range ? `${dmShort(range.from)} – ${dmShort(range.to)}` : PERIOD_LABEL[period];
+  const periodText = range ? `${dmShort(range.from)} – ${dmShort(range.to)}` : t(`period.short.${period}` as StringKey);
 
   const showBudget = isExpenses && budgetHome && period === "month" && !range;
   const pct = showBudget ? Math.min(100, (total / budgetHome!) * 100) : null;
@@ -92,7 +94,7 @@ export default function Dashboard({
       </TopBar>
 
       <section className={styles.totbal}>
-        <span className={styles.totLabel}>Загальний баланс</span>
+        <span className={styles.totLabel}>{t("dash.totalBalance")}</span>
         <div className={styles.balrow}>
           <span className={styles.big}>{money(totalHome, 0)}</span>
           <span className={styles.eq}>≈ {conv(totalHome, 0)}</span>
@@ -119,10 +121,10 @@ export default function Dashboard({
 
       <div className={styles.tabs}>
         <button className={`${styles.tab} ${isExpenses ? styles.tabOnExp : ""}`} onClick={() => setTab("expenses")}>
-          Витрати
+          {t("common.expenses")}
         </button>
         <button className={`${styles.tab} ${!isExpenses ? styles.tabOnInc : ""}`} onClick={() => setTab("income")}>
-          Дохід
+          {t("common.income")}
         </button>
       </div>
 
@@ -137,13 +139,13 @@ export default function Dashboard({
                 setPeriod(p.id);
               }}
             >
-              {p.label}
+              {t(`period.${p.id}` as StringKey)}
             </button>
           ))}
           <span className={styles.vdiv} />
           <button
             className={`${styles.cal} ${range ? styles.calActive : ""}`}
-            aria-label="Період"
+            aria-label={t("common.period")}
             onClick={() => setCalOpen(true)}
           >
             <Icon id="i-cal" />
@@ -152,7 +154,7 @@ export default function Dashboard({
 
         <div className={styles.psum}>
           <span className={styles.psumLabel}>
-            {isExpenses ? "Витрачено" : "Зароблено"} · {periodText}
+            {isExpenses ? t("dash.spent") : t("dash.earned")} · {periodText}
           </span>
           <div className={styles.psumRow}>
             <span className={styles.psumAmt}>{money(total, 0)}</span>
@@ -164,25 +166,21 @@ export default function Dashboard({
             <div className={styles.pbar}>
               <span className={styles.pbarFill} style={{ width: `${pct}%` }} />
             </div>
-            <div className={styles.pmeta}>з {money(budgetHome!, 0)} бюджету</div>
+            <div className={styles.pmeta}>{t("dash.budgetPre")} {money(budgetHome!, 0)} {t("dash.budgetPost")}</div>
           </>
         )}
 
         <div className={styles.fulldiv} />
 
         <div className={styles.sec}>
-          <h3 className={styles.secTitle}>Останні транзакції</h3>
-          <a className={styles.secLink} href="/history">Всі →</a>
+          <h3 className={styles.secTitle}>{t("dash.recent")}</h3>
+          <a className={styles.secLink} href="/history">{t("dash.all")} →</a>
         </div>
         {list.length === 0 ? (
           <EmptyState
             icon={isExpenses ? "i-wallet" : "i-income"}
-            title={isExpenses ? "Поки що порожньо" : "Ще немає доходів"}
-            hint={
-              isExpenses
-                ? "Додай першу витрату кнопкою + унизу або сканни чек"
-                : "Додай дохід кнопкою + унизу"
-            }
+            title={isExpenses ? t("dash.empty.exp") : t("dash.empty.inc")}
+            hint={isExpenses ? t("dash.empty.expHint") : t("dash.empty.incHint")}
           />
         ) : (
           list.map((t) => (
