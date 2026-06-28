@@ -14,6 +14,8 @@ export default async function CurrencyPage() {
 
   const mc = user.user_metadata?.main_currency;
   const current = isCurrency(mc) ? mc : DEFAULT_CURRENCY;
+  const cc = user.user_metadata?.convert_currency;
+  const convert = isCurrency(cc) ? cc : current === "USD" ? "EUR" : "USD";
 
-  return <CurrencyClient current={current} />;
+  return <CurrencyClient current={current} convert={convert} />;
 }

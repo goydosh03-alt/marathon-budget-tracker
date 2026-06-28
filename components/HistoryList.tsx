@@ -9,7 +9,7 @@ import TransactionViewer from "@/components/TransactionViewer";
 import CalendarSheet from "@/components/CalendarSheet";
 import EmptyState from "@/components/EmptyState";
 import { periods, PERIOD_LABEL, inPeriod, catEmoji, catBg, fmtDate, pluralOps } from "@/lib/txui";
-import { useDec, useMoney } from "@/components/SettingsProvider";
+import { useDec, useMoney, useConv } from "@/components/SettingsProvider";
 
 function dmShort(isoStr: string): string {
   const [, m, d] = isoStr.split("-");
@@ -59,6 +59,7 @@ export default function HistoryList({
 
   const dec = useDec();
   const money = useMoney();
+  const conv = useConv();
   const isExpenses = tab === "expenses";
   const filtered = txs.filter((t) => {
     if (isExpenses ? t.type !== "expense" : t.type !== "income") return false;
@@ -153,6 +154,7 @@ export default function HistoryList({
                     <span className={`${styles.amtVal} ${!isExpenses ? styles.inc : ""}`}>
                       {isExpenses ? "−" : "+"}{money(t.amountHome, dec)}
                     </span>
+                    <span className={styles.amtSub}>≈ {conv(t.amountHome, dec)}</span>
                   </div>
                 </div>
               ))
@@ -186,6 +188,7 @@ export default function HistoryList({
           </span>
           <div className={styles.psumRow}>
             <span className={styles.psumAmt}>{money(total, 0)}</span>
+            <span className={styles.pr}>≈ {conv(total, 0)}</span>
           </div>
         </div>
 
@@ -222,6 +225,7 @@ export default function HistoryList({
                       </div>
                       <div className={styles.catSub}>
                         <span>{c.count} {pluralOps(c.count)} · {Math.round(share)}%</span>
+                        <span>≈ {conv(c.sum, 0)}</span>
                       </div>
                     </div>
                   </div>
@@ -242,6 +246,7 @@ export default function HistoryList({
                             <span className={`${styles.treeVal} ${!isExpenses ? styles.inc : ""}`}>
                               {isExpenses ? "−" : "+"}{money(t.amountHome, dec)}
                             </span>
+                            <span className={styles.treeSub}>≈ {conv(t.amountHome, dec)}</span>
                           </div>
                         </div>
                       ))}

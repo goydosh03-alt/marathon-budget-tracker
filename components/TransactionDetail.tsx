@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon } from "@/components/IconSprite";
 import { catEmoji, catBg, fmtDate } from "@/lib/txui";
-import { useDec, useMoney } from "@/components/SettingsProvider";
+import { useDec, useMoney, useConv } from "@/components/SettingsProvider";
 
 type Item = { name: string; price: number };
 
@@ -43,6 +43,7 @@ export default function TransactionDetail({
   const items = Array.isArray(tx.items) ? tx.items : [];
   const dec = useDec();
   const money = useMoney();
+  const conv = useConv();
 
   // блокуємо скрол фону, поки відкритий попап
   useEffect(() => {
@@ -68,6 +69,7 @@ export default function TransactionDetail({
           <div className={`${styles.detAmt} ${isIncome ? styles.inc : ""}`}>
             {isIncome ? "+" : "−"}{money(amount, dec)}
           </div>
+          <div className={styles.detSub}>≈ {conv(amount, dec)}</div>
 
           <div>
             <div className={styles.detRow}>

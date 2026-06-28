@@ -13,25 +13,31 @@ const Ctx = createContext<{
   hideCents: boolean;
   categories: UserCategory[];
   currency: CurrencyCode;
+  convertCurrency: CurrencyCode;
 }>({
   hideCents: false,
   categories: [],
   currency: DEFAULT_CURRENCY,
+  convertCurrency: "USD",
 });
 
 export function SettingsProvider({
   hideCents,
   categories,
   currency,
+  convertCurrency,
   children,
 }: {
   hideCents: boolean;
   categories: UserCategory[];
   currency: CurrencyCode;
+  convertCurrency: CurrencyCode;
   children: React.ReactNode;
 }) {
   return (
-    <Ctx.Provider value={{ hideCents, categories, currency }}>{children}</Ctx.Provider>
+    <Ctx.Provider value={{ hideCents, categories, currency, convertCurrency }}>
+      {children}
+    </Ctx.Provider>
   );
 }
 
@@ -51,10 +57,21 @@ export function useCurrency(): CurrencyCode {
   return useContext(Ctx).currency;
 }
 
-// Форматер суми в основній валюті користувача.
+export function useConvertCurrency(): CurrencyCode {
+  return useContext(Ctx).convertCurrency;
+}
+
+// Форматер суми в ОСНОВНІЙ валюті користувача.
 // from — валюта, в якій збережена сума (за замовч. = основна, тобто без конвертації).
 export function useMoney() {
   const code = useContext(Ctx).currency;
   return (amountHome: number, dp = 2, from: CurrencyCode = code) =>
     formatMoney(convert(amountHome, from, code), code, dp);
+}
+
+// Форматер суми в КОНВЕРТОВАНІЙ (другій) валюті — для рядка "≈ ...".
+export function useConv() {
+  const { currency, convertCurrency } = useContext(Ctx);
+  return (amountHome: number, dp = 2, from: CurrencyCode = currency) =>
+    formatMoney(convert(amountHome, from, convertCurrency), convertCurrency, dp);
 }

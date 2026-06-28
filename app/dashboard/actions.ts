@@ -318,6 +318,20 @@ export async function setMainCurrency(code: string): Promise<AddTxResult> {
   return { ok: true };
 }
 
+// Конвертована (друга) валюта — для рядка "≈ ...".
+export async function setConvertCurrency(code: string): Promise<AddTxResult> {
+  if (!isCurrency(code)) return { ok: false, error: "Невідома валюта" };
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Не авторизовано" };
+  const { error } = await supabase.auth.updateUser({ data: { convert_currency: code } });
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/", "layout");
+  return { ok: true };
+}
+
 // Додає транзакцію (дохід або витрата). Сума вводиться в основній валюті користувача.
 export async function addTransaction(input: {
   type: "expense" | "income";

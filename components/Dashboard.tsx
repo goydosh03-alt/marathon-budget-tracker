@@ -10,7 +10,7 @@ import CalendarSheet from "@/components/CalendarSheet";
 import EmptyState from "@/components/EmptyState";
 import RecurringRunner from "@/components/RecurringRunner";
 import { periods, PERIOD_LABEL, inPeriod, catEmoji, catBg, fmtDate } from "@/lib/txui";
-import { useDec, useMoney } from "@/components/SettingsProvider";
+import { useDec, useMoney, useConv } from "@/components/SettingsProvider";
 
 function dmShort(isoStr: string): string {
   const [, m, d] = isoStr.split("-");
@@ -56,6 +56,7 @@ export default function Dashboard({
 
   const dec = useDec();
   const money = useMoney();
+  const conv = useConv();
   const isExpenses = tab === "expenses";
   const filtered = txs.filter((t) => {
     if (isExpenses ? t.type !== "expense" : t.type !== "income") return false;
@@ -94,6 +95,7 @@ export default function Dashboard({
         <span className={styles.totLabel}>Загальний баланс</span>
         <div className={styles.balrow}>
           <span className={styles.big}>{money(totalHome, 0)}</span>
+          <span className={styles.eq}>≈ {conv(totalHome, 0)}</span>
         </div>
       </section>
 
@@ -109,6 +111,7 @@ export default function Dashboard({
                 <span className={styles.accName}>{a.name}</span>
               </div>
               <span className={styles.accBal}>{money(a.balanceHome, 0)}</span>
+              <span className={styles.cur}>≈ {conv(a.balanceHome, 0)}</span>
             </div>
           );
         })}
@@ -153,6 +156,7 @@ export default function Dashboard({
           </span>
           <div className={styles.psumRow}>
             <span className={styles.psumAmt}>{money(total, 0)}</span>
+            <span className={styles.pr}>≈ {conv(total, 0)}</span>
           </div>
         </div>
         {pct !== null && (
@@ -194,6 +198,7 @@ export default function Dashboard({
                 <span className={`${styles.amtVal} ${t.type === "income" ? styles.inc : ""}`}>
                   {t.type === "income" ? "+" : "−"}{money(t.amountHome, dec)}
                 </span>
+                <span className={styles.amtSub}>≈ {conv(t.amountHome, dec)}</span>
               </div>
             </div>
           ))

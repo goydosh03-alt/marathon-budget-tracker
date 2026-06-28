@@ -14,7 +14,7 @@ export default function SubHeader({
   right?: React.ReactNode;
 }) {
   return (
-    <header className={styles.topbar}>
+    <header className={`${styles.topbar} ${styles.subHead}`}>
       <Link href={back} className={styles.iconBtn} aria-label="Назад">
         <Icon id="i-arrow-left" />
       </Link>

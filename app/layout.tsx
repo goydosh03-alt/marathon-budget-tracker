@@ -38,12 +38,19 @@ export default async function RootLayout({
     : [];
   const mc = user?.user_metadata?.main_currency;
   const currency = isCurrency(mc) ? mc : DEFAULT_CURRENCY;
+  const cc = user?.user_metadata?.convert_currency;
+  const convertCurrency = isCurrency(cc) ? cc : currency === "USD" ? "EUR" : "USD";
 
   return (
     <html lang="uk">
       <body>
         <SaveGlow />
-        <SettingsProvider hideCents={hideCents} categories={categories} currency={currency}>
+        <SettingsProvider
+          hideCents={hideCents}
+          categories={categories}
+          currency={currency}
+          convertCurrency={convertCurrency}
+        >
           {children}
         </SettingsProvider>
       </body>

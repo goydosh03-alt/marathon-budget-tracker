@@ -10,7 +10,7 @@ import AmountPad from "@/components/AmountPad";
 import CalendarSheet from "@/components/CalendarSheet";
 import { currencyMeta } from "@/lib/currency";
 import { catEmoji } from "@/lib/txui";
-import { useCategories, useCurrency, useMoney } from "@/components/SettingsProvider";
+import { useCategories, useCurrency, useMoney, useConv } from "@/components/SettingsProvider";
 
 const EXPENSE_CATS = ["Їжа", "Кафе", "Транспорт", "Розваги", "Аптека", "Одяг", "Комунальні", "Інше"];
 const INCOME_CATS = ["Зарплата", "Фриланс", "Подарунок", "Інше"];
@@ -102,6 +102,7 @@ export default function AddTransactionForm({
   const catIcon = (name: string) => customEmoji.get(name) ?? catEmoji(name, isIncome);
   const parsed = parseFloat(amount.replace(",", ".")) || 0;
   const money = useMoney();
+  const conv = useConv();
   const sym = currencyMeta(useCurrency()).symbol;
 
   const today = isoOffset(0);
@@ -335,6 +336,7 @@ export default function AddTransactionForm({
             </button>
             <span className={styles.amtZl}>{sym}</span>
           </div>
+          <div className={styles.amtConv}>≈ {conv(parsed, 2)}</div>
         </div>
 
         {scannedItems && scannedItems.length > 0 && (

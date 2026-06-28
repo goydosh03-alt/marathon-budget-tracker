@@ -46,7 +46,7 @@ export default async function MenuPage() {
           <span className={styles.profCardName}>{fullName}</span>
           <span className={styles.profCardSub}>{user.email}</span>
         </div>
-        <span className={styles.profCardChev}><Icon id="i-chev" /></span>
+        <span className={styles.profCardChev}><Icon id="i-arrow-right" /></span>
       </Link>
 
       <MenuQuickCards hideCents={hideCents} currency={currency} />
@@ -61,7 +61,7 @@ export default async function MenuPage() {
             <span className={styles.menuName}>Налаштування</span>
             <span className={styles.menuSub}>Рахунки та дані</span>
           </span>
-          <span className={styles.menuChev}><Icon id="i-chev" /></span>
+          <span className={styles.menuChev}><Icon id="i-arrow-right" /></span>
         </Link>
 
         <Link href="/categories" className={styles.menuItem}>
@@ -72,7 +72,7 @@ export default async function MenuPage() {
             <span className={styles.menuName}>Категорії</span>
             <span className={styles.menuSub}>Свої категорії витрат</span>
           </span>
-          <span className={styles.menuChev}><Icon id="i-chev" /></span>
+          <span className={styles.menuChev}><Icon id="i-arrow-right" /></span>
         </Link>
       </div>
 
@@ -86,7 +86,7 @@ export default async function MenuPage() {
             <span className={styles.menuName}>Валюта</span>
             <span className={styles.menuSub}>{curMeta.label} ({curMeta.symbol})</span>
           </span>
-          <span className={styles.menuChev}><Icon id="i-chev" /></span>
+          <span className={styles.menuChev}><Icon id="i-arrow-right" /></span>
         </Link>
 
         <Link href="/soon?f=Експорт даних" className={styles.menuItem}>
@@ -111,7 +111,7 @@ export default async function MenuPage() {
             <span className={styles.menuName}>Регулярні платежі</span>
             <span className={styles.menuSub}>Підписки й щомісячні рахунки</span>
           </span>
-          <span className={styles.menuChev}><Icon id="i-chev" /></span>
+          <span className={styles.menuChev}><Icon id="i-arrow-right" /></span>
         </Link>
 
         <Link href="/reminders" className={styles.menuItem}>
@@ -122,7 +122,7 @@ export default async function MenuPage() {
             <span className={styles.menuName}>Нагадування</span>
             <span className={styles.menuSub}>Не забути записати витрати</span>
           </span>
-          <span className={styles.menuChev}><Icon id="i-chev" /></span>
+          <span className={styles.menuChev}><Icon id="i-arrow-right" /></span>
         </Link>
       </div>
 

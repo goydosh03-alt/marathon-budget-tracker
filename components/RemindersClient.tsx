@@ -106,7 +106,7 @@ export default function RemindersClient({ reminders }: { reminders: Reminder[] }
       </div>
 
       {perm !== "granted" && perm !== "unsupported" && (
-        <button className={styles.addLineBtn} onClick={askPerm} style={{ marginTop: 10 }}>
+        <button className={styles.addLineBtn} onClick={askPerm}>
           <Icon id="i-bell" /> Дозволити сповіщення
         </button>
       )}

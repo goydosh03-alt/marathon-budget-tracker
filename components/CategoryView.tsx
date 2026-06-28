@@ -10,7 +10,7 @@ import AddTransactionForm from "@/components/AddTransactionForm";
 import ExportSheet from "@/components/ExportSheet";
 import EmptyState from "@/components/EmptyState";
 import { catEmoji, catBg, fmtDate } from "@/lib/txui";
-import { useDec, useMoney } from "@/components/SettingsProvider";
+import { useDec, useMoney, useConv } from "@/components/SettingsProvider";
 
 type Item = { name: string; price: number };
 type Tx = {
@@ -45,6 +45,7 @@ export default function CategoryView({
   const router = useRouter();
   const dec = useDec();
   const money = useMoney();
+  const conv = useConv();
 
   function toggle(id: string) {
     setOpen((prev) => {
@@ -86,7 +87,7 @@ export default function CategoryView({
           <span className={styles.catBoxLabel}>{isIncome ? "Зароблено" : "Витрачено"}</span>
           <span className={styles.catBoxSum}>{money(total, 0)}</span>
           <span className={styles.catBoxSub}>
-            {txs.length} {txs.length === 1 ? "операція" : "операцій"}
+            ≈ {conv(total, 0)} · {txs.length} {txs.length === 1 ? "операція" : "операцій"}
           </span>
         </div>
 
@@ -133,6 +134,7 @@ export default function CategoryView({
                     <span className={`${styles.amtVal} ${isIncome ? styles.inc : ""}`}>
                       {isIncome ? "+" : "−"}{money(t.amountHome, dec)}
                     </span>
+                    <span className={styles.amtSub}>≈ {conv(t.amountHome, dec)}</span>
                   </div>
                   {hasItems && (
                     <button

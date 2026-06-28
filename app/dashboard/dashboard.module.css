@@ -13,6 +13,9 @@
 }
 
 .topbar { display: flex; align-items: center; justify-content: space-between; height: 56px; }
+/* Підсторінки: завжди 24px від хедера (‹ назад + назва) до контенту */
+.subHead { margin-bottom: 24px; }
+.subHead + * { margin-top: 0 !important; }
 .hi { display: flex; align-items: center; gap: 12px; }
 .brand { display: flex; align-items: center; }
 .brandLogo { height: 40px; width: auto; max-width: 200px; display: block; }
@@ -250,7 +253,7 @@
 .legRow:active { background: rgba(255,255,255,0.05); }
 .legRow + .legRow { border-top: 1px solid rgba(255,255,255,0.05); }
 .legChev { color: rgba(255,255,255,0.28); flex-shrink: 0; display: flex; }
-.legChev svg { width: 16px; height: 16px; transform: rotate(-90deg); }
+.legChev svg { width: 16px; height: 16px; }
 .legDot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
 .legName { flex: 1; min-width: 0; font-size: 14px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .legPct { font-size: 12px; color: rgba(255,255,255,0.45); flex-shrink: 0; min-width: 34px; text-align: right; }
@@ -333,7 +336,7 @@
 .profCardName { display: block; font-size: 17px; font-weight: 600; line-height: 1.1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .profCardSub { display: block; font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.1; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .profCardChev { color: rgba(255,255,255,0.28); flex-shrink: 0; display: flex; }
-.profCardChev svg { width: 18px; height: 18px; transform: rotate(-90deg); }
+.profCardChev svg { width: 18px; height: 18px; }
 
 /* profile page — big avatar */
 .profBig { display: flex; flex-direction: column; align-items: center; text-align: center; margin: 18px 0 8px; }
@@ -350,12 +353,12 @@
 .menuName { display: block; font-size: 15px; font-weight: 600; line-height: 1.1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .menuSub { display: block; font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.1; margin-top: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .menuChev { color: rgba(255,255,255,0.28); flex-shrink: 0; }
-.menuChev svg { width: 18px; height: 18px; transform: rotate(-90deg); }
+.menuChev svg { width: 18px; height: 18px; }
 .menuSoon { font-size: 10.5px; font-weight: 700; color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.06); border-radius: 999px; padding: 4px 9px; flex-shrink: 0; }
 .menuItemOff { opacity: 0.5; cursor: default; }
 
 /* settings */
-.setCard { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 8px; }
+.setCard { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 8px; margin-top: 12px; }
 .setAccRow { display: flex; align-items: center; gap: 10px; padding: 10px 8px; }
 .setAccRow + .setAccRow { border-top: 1px solid rgba(255,255,255,0.05); }
 .setAccEmoji { font-size: 20px; flex-shrink: 0; }
@@ -367,6 +370,10 @@
 .dangerBtn { width: 100%; height: 50px; border-radius: 14px; margin-top: 12px; border: 1px solid rgba(255,90,90,0.35); background: rgba(255,90,90,0.10); color: #ff8a8a; font-size: 14px; font-weight: 600; cursor: pointer; }
 .dangerBtn:active { background: rgba(255,90,90,0.18); }
 .setHint { font-size: 12px; color: rgba(255,255,255,0.4); margin: 6px 4px 0; line-height: 1.4; }
+.curGroupLabel { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.5px; margin: 12px 4px 8px; }
+.curGroupLabel + .setCard { margin-top: 0; }
+.curRow { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 8px; background: none; border: none; cursor: pointer; text-align: left; }
+.curMid { display: flex; flex-direction: column; flex: 1; }
 .notice { display: flex; gap: 10px; align-items: flex-start; margin: 12px 0 0; padding: 12px 14px; border-radius: 14px; background: rgba(245,180,90,0.09); border: 1px solid rgba(245,180,90,0.22); color: rgba(245,200,124,0.92); font-size: 13px; line-height: 1.4; }
 .notice svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; color: #f5c87c; }
 .notice b { color: #f5d79a; font-weight: 700; }

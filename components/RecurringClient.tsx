@@ -9,7 +9,7 @@ import AmountPad from "@/components/AmountPad";
 import CalendarSheet from "@/components/CalendarSheet";
 import EmptyState from "@/components/EmptyState";
 import { catEmoji, catBg } from "@/lib/txui";
-import { useDec, useMoney, useCurrency } from "@/components/SettingsProvider";
+import { useDec, useMoney, useConv, useCurrency } from "@/components/SettingsProvider";
 import { currencyMeta } from "@/lib/currency";
 import {
   addRecurring,
@@ -45,6 +45,7 @@ export default function RecurringClient({
   const router = useRouter();
   const dec = useDec();
   const money = useMoney();
+  const conv = useConv();
   const sym = currencyMeta(useCurrency()).symbol;
   const [, start] = useTransition();
   const [open, setOpen] = useState(false);
@@ -185,6 +186,7 @@ export default function RecurringClient({
                   </button>
                   <span className={styles.amtZl}>{sym}</span>
                 </div>
+                <div className={styles.amtConv}>≈ {conv(parsed, dec)}</div>
               </div>
 
               <div className={styles.fcard}>
