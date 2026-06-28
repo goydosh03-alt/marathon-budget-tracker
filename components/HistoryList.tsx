@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon, IconSprite } from "@/components/IconSprite";
 import BottomNav from "@/components/BottomNav";
@@ -8,9 +8,10 @@ import TopBar from "@/components/TopBar";
 import TransactionViewer from "@/components/TransactionViewer";
 import CalendarSheet from "@/components/CalendarSheet";
 import EmptyState from "@/components/EmptyState";
-import { periods, inPeriod, catEmoji, catBg } from "@/lib/txui";
+import { periods, catEmoji, catBg } from "@/lib/txui";
 import { useDec, useMoney, useConv, useT, useLang } from "@/components/SettingsProvider";
 import { dataLabel, fmtDateL, opsLabel, type StringKey } from "@/lib/i18n";
+import { periodRange, periodLabel, availOffsets } from "@/lib/periodNav";
 
 function dmShort(isoStr: string): string {
   const [, m, d] = isoStr.split("-");
@@ -38,11 +39,13 @@ export default function HistoryList({
 }) {
   const [tab, setTab] = useState<"expenses" | "income">("expenses");
   const [period, setPeriod] = useState("month");
+  const [navIdx, setNavIdx] = useState(0);
   const [open, setOpen] = useState<Set<string>>(new Set());
   const [viewId, setViewId] = useState<string | null>(null);
   const [range, setRange] = useState<{ from: string; to: string } | null>(null);
   const [calOpen, setCalOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const touch = useRef({ x: 0, y: 0 });
 
   const q = query.trim().toLowerCase();
   const searching = q.length > 0;
@@ -64,12 +67,30 @@ export default function HistoryList({
   const t = useT();
   const lang = useLang();
   const isExpenses = tab === "expenses";
-  const filtered = txs.filter((t) => {
-    if (isExpenses ? t.type !== "expense" : t.type !== "income") return false;
-    return range ? t.date >= range.from && t.date <= range.to : inPeriod(t.date, period);
-  });
-  const periodText = range ? `${dmShort(range.from)} – ${dmShort(range.to)}` : t(`period.short.${period}` as StringKey);
-  const total = filtered.reduce((s, t) => s + t.amountHome, 0);
+
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  const ofTab = txs.filter((x) => (isExpenses ? x.type === "expense" : x.type === "income"));
+  const avail = availOffsets(period, ofTab.map((x) => x.date), now);
+  const idx = Math.min(navIdx, avail.length - 1);
+  const offset = avail[idx] ?? 0;
+  const curRange = range ? { start: range.from, end: range.to } : periodRange(period, offset, now);
+
+  const filtered = ofTab.filter((x) => x.date >= curRange.start && x.date <= curRange.end);
+  const periodText = range ? `${dmShort(range.from)} – ${dmShort(range.to)}` : periodLabel(period, offset, now, lang);
+  const total = filtered.reduce((s, x) => s + x.amountHome, 0);
+
+  const canOlder = !range && idx < avail.length - 1;
+  const canNewer = !range && idx > 0;
+  function swipeStart(e: React.TouchEvent) { const p = e.touches[0]; touch.current = { x: p.clientX, y: p.clientY }; }
+  function swipeEnd(e: React.TouchEvent) {
+    if (searching) return;
+    const p = e.changedTouches[0];
+    const dx = p.clientX - touch.current.x;
+    const dy = p.clientY - touch.current.y;
+    if (Math.abs(dx) < 35 || Math.abs(dx) < Math.abs(dy)) return;
+    if (dx < 0) { if (canOlder) setNavIdx(idx + 1); } else { if (canNewer) setNavIdx(idx - 1); }
+  }
 
   const catMap = new Map<string, { sum: number; count: number }>();
   for (const t of filtered) {
@@ -86,6 +107,7 @@ export default function HistoryList({
   function reset(setter: () => void) {
     setOpen(new Set());
     setRange(null);
+    setNavIdx(0);
     setter();
   }
 
@@ -113,7 +135,7 @@ export default function HistoryList({
         </button>
       </div>
 
-      <section className={styles.periodcard}>
+      <section className={styles.periodcard} onTouchStart={swipeStart} onTouchEnd={swipeEnd}>
         <div className={styles.searchInline}>
           <Icon id="i-search" />
           <input
@@ -194,6 +216,15 @@ export default function HistoryList({
             <span className={styles.pr}>≈ {conv(total, 0)}</span>
           </div>
         </div>
+
+        {!range && avail.length > 1 && avail.length <= 12 && (
+          <div className={styles.monthDots}>
+            {avail.map((_, i) => {
+              const di = avail.length - 1 - i;
+              return <button key={i} className={`${styles.mDot} ${idx === di ? styles.mDotOn : ""}`} onClick={() => setNavIdx(di)} aria-label={`${di}`} />;
+            })}
+          </div>
+        )}
 
         <div className={styles.fulldiv} />
 

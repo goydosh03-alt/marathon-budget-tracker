@@ -141,15 +141,15 @@ export default function Dashboard({
       </section>
 
       <div className={styles.tabs}>
-        <button className={`${styles.tab} ${isExpenses ? styles.tabOnExp : ""}`} onClick={() => setTab("expenses")}>
+        <button className={`${styles.tab} ${isExpenses ? styles.tabOnExp : ""}`} onClick={() => { setTab("expenses"); setNavIdx(0); }}>
           {t("common.expenses")}
         </button>
-        <button className={`${styles.tab} ${!isExpenses ? styles.tabOnInc : ""}`} onClick={() => setTab("income")}>
+        <button className={`${styles.tab} ${!isExpenses ? styles.tabOnInc : ""}`} onClick={() => { setTab("income"); setNavIdx(0); }}>
           {t("common.income")}
         </button>
       </div>
 
-      <section className={styles.periodcard}>
+      <section className={styles.periodcard} onTouchStart={swipeStart} onTouchEnd={swipeEnd}>
         <div className={styles.pfilter}>
           {periods.map((p) => (
             <button
@@ -157,6 +157,7 @@ export default function Dashboard({
               className={`${styles.pf} ${!range && period === p.id ? styles.pfOn : ""}`}
               onClick={() => {
                 setRange(null);
+                setNavIdx(0);
                 setPeriod(p.id);
               }}
             >
@@ -189,6 +190,15 @@ export default function Dashboard({
             </div>
             <div className={styles.pmeta}>{t("dash.budgetPre")} {money(budgetHome!, 0)} {t("dash.budgetPost")}</div>
           </>
+        )}
+
+        {!range && avail.length > 1 && avail.length <= 12 && (
+          <div className={styles.monthDots}>
+            {avail.map((_, i) => {
+              const di = avail.length - 1 - i;
+              return <button key={i} className={`${styles.mDot} ${idx === di ? styles.mDotOn : ""}`} onClick={() => setNavIdx(di)} aria-label={`${di}`} />;
+            })}
+          </div>
         )}
 
         <div className={styles.fulldiv} />
