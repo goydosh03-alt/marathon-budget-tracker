@@ -207,24 +207,25 @@ export default function HistoryList({
           </button>
         </div>
 
-        <div className={styles.psum}>
-          <span className={styles.psumLabel}>
-            {isExpenses ? t("common.expenses") : t("common.income")} · {periodText}
-          </span>
-          <div className={styles.psumRow}>
-            <span className={styles.psumAmt}>{money(total, 0)}</span>
-            <span className={styles.pr}>≈ {conv(total, 0)}</span>
+        <div className={styles.psumHead}>
+          <div className={styles.psum}>
+            <span className={styles.psumLabel}>
+              {isExpenses ? t("common.expenses") : t("common.income")} · {periodText}
+            </span>
+            <div className={styles.psumRow}>
+              <span className={styles.psumAmt}>{money(total, 0)}</span>
+              <span className={styles.pr}>≈ {conv(total, 0)}</span>
+            </div>
           </div>
+          {!range && avail.length > 1 && avail.length <= 12 && (
+            <div className={styles.psumDots}>
+              {avail.map((_, i) => {
+                const di = avail.length - 1 - i;
+                return <button key={i} className={`${styles.mDot} ${idx === di ? styles.mDotOn : ""}`} onClick={() => setNavIdx(di)} aria-label={`${di}`} />;
+              })}
+            </div>
+          )}
         </div>
-
-        {!range && avail.length > 1 && avail.length <= 12 && (
-          <div className={styles.monthDots}>
-            {avail.map((_, i) => {
-              const di = avail.length - 1 - i;
-              return <button key={i} className={`${styles.mDot} ${idx === di ? styles.mDotOn : ""}`} onClick={() => setNavIdx(di)} aria-label={`${di}`} />;
-            })}
-          </div>
-        )}
 
         <div className={styles.fulldiv} />
 

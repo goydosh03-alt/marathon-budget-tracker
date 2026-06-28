@@ -133,6 +133,28 @@ export const STRINGS = {
   "rep.noDataInc": { uk: "За цей період доходів немає.", en: "No income for this period.", ru: "Доходов за этот период нет." },
   "rep.donut": { uk: "Кругова", en: "Donut", ru: "Круговая" },
   "rep.bars": { uk: "Стовпчики", en: "Bars", ru: "Столбцы" },
+
+  // форма додавання транзакції
+  "common.undo": { uk: "Повернути", en: "Undo", ru: "Вернуть" },
+  "common.saved": { uk: "Збережено", en: "Saved", ru: "Сохранено" },
+  "common.added": { uk: "Додано", en: "Added", ru: "Добавлено" },
+  "common.dayBefore": { uk: "Позавчора", en: "2 days ago", ru: "Позавчера" },
+  "common.chosen": { uk: "Обрано", en: "Chosen", ru: "Выбрано" },
+  "form.addTitle": { uk: "Додати транзакцію", en: "Add transaction", ru: "Добавить транзакцию" },
+  "form.editTitle": { uk: "Редагувати транзакцію", en: "Edit transaction", ru: "Изменить транзакцию" },
+  "form.scan": { uk: "Скан", en: "Scan", ru: "Скан" },
+  "form.reading": { uk: "Читаю…", en: "Reading…", ru: "Читаю…" },
+  "form.receiptItems": { uk: "Позиції з чека", en: "Receipt items", ru: "Позиции из чека" },
+  "form.deleteItem": { uk: "Видалити позицію", en: "Delete item", ru: "Удалить позицию" },
+  "form.pickDate": { uk: "Вибрати дату", en: "Pick a date", ru: "Выбрать дату" },
+  "form.namePlaceholderInc": { uk: "Назва (напр. Зарплата)", en: "Name (e.g. Salary)", ru: "Название (напр. Зарплата)" },
+  "form.namePlaceholderExp": { uk: "Назва (напр. магазин)", en: "Name (e.g. store)", ru: "Название (напр. магазин)" },
+  "form.saving": { uk: "Зберігаю…", en: "Saving…", ru: "Сохраняю…" },
+  "form.itemDeleted": { uk: "Позицію видалено", en: "Item deleted", ru: "Позиция удалена" },
+  "form.errAmount": { uk: "Введи суму більше нуля", en: "Enter an amount above zero", ru: "Введи сумму больше нуля" },
+  "form.errSave": { uk: "Помилка збереження", en: "Save error", ru: "Ошибка сохранения" },
+  "form.errScan": { uk: "Не вдалося прочитати чек", en: "Couldn't read the receipt", ru: "Не удалось прочитать чек" },
+  "form.errDelete": { uk: "Помилка видалення", en: "Delete error", ru: "Ошибка удаления" },
 } satisfies Record<string, Entry>;
 
 export type StringKey = keyof typeof STRINGS;

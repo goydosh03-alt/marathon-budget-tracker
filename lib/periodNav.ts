@@ -52,13 +52,18 @@ export function periodLabel(period: string, off: number, now: Date, lang: Lang):
   return `${now.getFullYear() - off}`;
 }
 
-// Непорожні зсуви цієї гранулярності (від найновішого, 0).
+// Послідовні зсуви від поточного (0) до періоду найстарішої транзакції.
+// Гортаємо день за днем / місяць за місяцем у межах наявних даних — порожні
+// періоди всередині лишаються (для пустого стану), але далі найстарішої не йдемо.
 export function availOffsets(period: string, dates: string[], now: Date): number[] {
-  const SCAN = period === "day" ? 60 : period === "week" ? 53 : period === "month" ? 24 : 10;
-  const out: number[] = [];
+  if (!dates.length) return [0];
+  let oldest = dates[0];
+  for (const d of dates) if (d < oldest) oldest = d;
+  const SCAN = period === "day" ? 400 : period === "week" ? 110 : period === "month" ? 48 : 20;
+  let maxOff = 0;
   for (let o = 0; o <= SCAN; o++) {
-    const r = periodRange(period, o, now);
-    if (dates.some((d) => d >= r.start && d <= r.end)) out.push(o);
+    maxOff = o;
+    if (periodRange(period, o, now).start <= oldest) break;
   }
-  return out.length ? out : [0];
+  return Array.from({ length: maxOff + 1 }, (_, i) => i);
 }

@@ -174,14 +174,24 @@ export default function Dashboard({
           </button>
         </div>
 
-        <div className={styles.psum}>
-          <span className={styles.psumLabel}>
-            {isExpenses ? t("common.expenses") : t("common.income")} · {periodText}
-          </span>
-          <div className={styles.psumRow}>
-            <span className={styles.psumAmt}>{money(total, 0)}</span>
-            <span className={styles.pr}>≈ {conv(total, 0)}</span>
+        <div className={styles.psumHead}>
+          <div className={styles.psum}>
+            <span className={styles.psumLabel}>
+              {isExpenses ? t("common.expenses") : t("common.income")} · {periodText}
+            </span>
+            <div className={styles.psumRow}>
+              <span className={styles.psumAmt}>{money(total, 0)}</span>
+              <span className={styles.pr}>≈ {conv(total, 0)}</span>
+            </div>
           </div>
+          {!range && avail.length > 1 && avail.length <= 12 && (
+            <div className={styles.psumDots}>
+              {avail.map((_, i) => {
+                const di = avail.length - 1 - i;
+                return <button key={i} className={`${styles.mDot} ${idx === di ? styles.mDotOn : ""}`} onClick={() => setNavIdx(di)} aria-label={`${di}`} />;
+              })}
+            </div>
+          )}
         </div>
         {pct !== null && (
           <>
@@ -192,15 +202,6 @@ export default function Dashboard({
           </>
         )}
 
-        {!range && avail.length > 1 && avail.length <= 12 && (
-          <div className={styles.monthDots}>
-            {avail.map((_, i) => {
-              const di = avail.length - 1 - i;
-              return <button key={i} className={`${styles.mDot} ${idx === di ? styles.mDotOn : ""}`} onClick={() => setNavIdx(di)} aria-label={`${di}`} />;
-            })}
-          </div>
-        )}
-
         <div className={styles.fulldiv} />
 
         <div className={styles.sec}>
@@ -208,11 +209,19 @@ export default function Dashboard({
           <a className={styles.secLink} href="/history">{t("dash.all")} →</a>
         </div>
         {list.length === 0 ? (
-          <EmptyState
-            icon={isExpenses ? "i-wallet" : "i-income"}
-            title={isExpenses ? t("dash.empty.exp") : t("dash.empty.inc")}
-            hint={isExpenses ? t("dash.empty.expHint") : t("dash.empty.incHint")}
-          />
+          offset === 0 && !range && ofTab.length === 0 ? (
+            <EmptyState
+              icon={isExpenses ? "i-wallet" : "i-income"}
+              title={isExpenses ? t("dash.empty.exp") : t("dash.empty.inc")}
+              hint={isExpenses ? t("dash.empty.expHint") : t("dash.empty.incHint")}
+            />
+          ) : (
+            <EmptyState
+              icon="i-cal"
+              title={t("hist.emptyPeriod")}
+              hint={isExpenses ? t("rep.noDataExp") : t("rep.noDataInc")}
+            />
+          )
         ) : (
           list.map((t) => (
             <div className={`${styles.tx} ${styles.clickable}`} key={t.id} onClick={() => setViewId(t.id)}>
