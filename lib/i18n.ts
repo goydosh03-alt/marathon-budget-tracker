@@ -95,6 +95,16 @@ export const STRINGS = {
   "dash.empty.inc": { uk: "Ще немає доходів", en: "No income yet", ru: "Доходов пока нет" },
   "dash.empty.expHint": { uk: "Додай першу витрату кнопкою + унизу або сканни чек", en: "Add your first expense with the + below, or scan a receipt", ru: "Добавь первый расход кнопкой + внизу или сканируй чек" },
   "dash.empty.incHint": { uk: "Додай дохід кнопкою + унизу", en: "Add income with the + below", ru: "Добавь доход кнопкой + внизу" },
+
+  // історія
+  "common.clear": { uk: "Очистити", en: "Clear", ru: "Очистить" },
+  "hist.search": { uk: "Пошук: назва, категорія…", en: "Search: name, category…", ru: "Поиск: название, категория…" },
+  "hist.found": { uk: "Знайдено", en: "Found", ru: "Найдено" },
+  "hist.notFound": { uk: "Нічого не знайдено", en: "Nothing found", ru: "Ничего не найдено" },
+  "hist.noTxFor": { uk: "Немає транзакцій за", en: "No transactions for", ru: "Нет транзакций по" },
+  "hist.emptyPeriod": { uk: "Нічого за цей період", en: "Nothing for this period", ru: "Ничего за этот период" },
+  "hist.emptyPeriodHint": { uk: "Інший період чи діапазон, або додай кнопкою + унизу.", en: "Try another period or range, or add with the + below.", ru: "Другой период или диапазон, или добавь кнопкой + внизу." },
+  "hist.categories": { uk: "Категорії", en: "Categories", ru: "Категории" },
 } satisfies Record<string, Entry>;
 
 export type StringKey = keyof typeof STRINGS;
@@ -103,4 +113,85 @@ export function translate(key: StringKey, lang: Lang): string {
   const e = STRINGS[key];
   if (!e) return key;
   return e[lang] || e.uk;
+}
+
+// --- Дані: відомі дефолтні назви категорій/рахунків → переклад ---
+// Кастомні (свої) назви лишаються як є.
+const DATA_LABELS: Record<string, Entry> = {
+  "Їжа": { uk: "Їжа", en: "Food", ru: "Еда" },
+  "Кафе": { uk: "Кафе", en: "Cafe", ru: "Кафе" },
+  "Транспорт": { uk: "Транспорт", en: "Transport", ru: "Транспорт" },
+  "Розваги": { uk: "Розваги", en: "Fun", ru: "Развлечения" },
+  "Аптека": { uk: "Аптека", en: "Pharmacy", ru: "Аптека" },
+  "Одяг": { uk: "Одяг", en: "Clothes", ru: "Одежда" },
+  "Комунальні": { uk: "Комунальні", en: "Utilities", ru: "Коммуналка" },
+  "Інше": { uk: "Інше", en: "Other", ru: "Другое" },
+  "Зарплата": { uk: "Зарплата", en: "Salary", ru: "Зарплата" },
+  "Фриланс": { uk: "Фриланс", en: "Freelance", ru: "Фриланс" },
+  "Подарунок": { uk: "Подарунок", en: "Gift", ru: "Подарок" },
+  "Готівка": { uk: "Готівка", en: "Cash", ru: "Наличные" },
+  "Картка": { uk: "Картка", en: "Card", ru: "Карта" },
+  "Банк": { uk: "Банк", en: "Bank", ru: "Банк" },
+  "Заощадження": { uk: "Заощадження", en: "Savings", ru: "Сбережения" },
+};
+
+export function dataLabel(name: string, lang: Lang): string {
+  const e = DATA_LABELS[name];
+  return e ? e[lang] || e.uk : name;
+}
+
+const MONTHS_SHORT: Record<Lang, string[]> = {
+  uk: ["січ", "лют", "бер", "кві", "тра", "чер", "лип", "сер", "вер", "жов", "лис", "гру"],
+  en: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+  ru: ["янв", "фев", "мар", "апр", "мая", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"],
+};
+
+export const MONTHS_FULL: Record<Lang, string[]> = {
+  uk: ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"],
+  en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+  ru: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
+};
+
+export const WEEKDAYS_SHORT: Record<Lang, string[]> = {
+  uk: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"],
+  en: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
+  ru: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"],
+};
+
+const REL: Record<Lang, { today: string; yesterday: string }> = {
+  uk: { today: "Сьогодні", yesterday: "Вчора" },
+  en: { today: "Today", yesterday: "Yesterday" },
+  ru: { today: "Сегодня", yesterday: "Вчера" },
+};
+
+export function fmtDateL(dateStr: string, createdAt: string | undefined, lang: Lang): string {
+  const date = new Date(dateStr + "T00:00:00");
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const diff = Math.round((today.getTime() - date.getTime()) / 86400000);
+  let label: string;
+  if (diff === 0) label = REL[lang].today;
+  else if (diff === 1) label = REL[lang].yesterday;
+  else label = `${date.getDate()} ${MONTHS_SHORT[lang][date.getMonth()]}`;
+  if (createdAt) {
+    const t = new Date(createdAt);
+    label += `, ${String(t.getHours()).padStart(2, "0")}:${String(t.getMinutes()).padStart(2, "0")}`;
+  }
+  return label;
+}
+
+export function opsLabel(n: number, lang: Lang): string {
+  if (lang === "en") return n === 1 ? "operation" : "operations";
+  const a = Math.abs(n) % 100;
+  const b = a % 10;
+  if (lang === "ru") {
+    if (a > 10 && a < 20) return "операций";
+    if (b > 1 && b < 5) return "операции";
+    if (b === 1) return "операция";
+    return "операций";
+  }
+  if (a > 10 && a < 20) return "операцій";
+  if (b > 1 && b < 5) return "операції";
+  if (b === 1) return "операція";
+  return "операцій";
 }

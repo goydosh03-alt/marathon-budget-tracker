@@ -10,6 +10,7 @@ export function IconSprite() {
   return (
     <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
       <symbol id="i-bell" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.2a5.8 5.8 0 00-5.8 5.8c0 3.4-1 5-1.7 5.9-.5.7 0 1.6.8 1.6h13.4c.8 0 1.3-.9.8-1.6-.7-.9-1.7-2.5-1.7-5.9A5.8 5.8 0 0012 2.2z" /><path fill="currentColor" d="M9.6 18.6a2.4 2.4 0 004.8 0z" /></symbol>
+      <symbol id="i-globe" viewBox="0 0 24 24"><circle className="ic" cx="12" cy="12" r="9" /><path className="ic" d="M3 12h18" /><path className="ic" d="M12 3c2.6 2.7 2.6 15.3 0 18M12 3c-2.6 2.7-2.6 15.3 0 18" /></symbol>
       <symbol id="i-copy" viewBox="0 0 24 24"><rect className="ic" x="9" y="9" width="11" height="11" rx="2.5" /><path className="ic" d="M5 15V5a2 2 0 012-2h8" /></symbol>
       <symbol id="i-eye" viewBox="0 0 24 24"><path className="ic" d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z" /><circle className="ic" cx="12" cy="12" r="3" /></symbol>
       <symbol id="i-eye-off" viewBox="0 0 24 24"><path className="ic" d="M2 12s4-7 10-7c2.1 0 3.9.8 5.3 1.8M22 12s-4 7-10 7c-2.1 0-3.9-.8-5.3-1.8" /><path className="ic" d="M9.9 9.9a3 3 0 004.2 4.2" /><path className="ic" d="M4 4l16 16" /></symbol>

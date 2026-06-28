@@ -9,9 +9,9 @@ import TransactionViewer from "@/components/TransactionViewer";
 import CalendarSheet from "@/components/CalendarSheet";
 import EmptyState from "@/components/EmptyState";
 import RecurringRunner from "@/components/RecurringRunner";
-import { periods, inPeriod, catEmoji, catBg, fmtDate } from "@/lib/txui";
-import { useDec, useMoney, useConv, useT } from "@/components/SettingsProvider";
-import type { StringKey } from "@/lib/i18n";
+import { periods, inPeriod, catEmoji, catBg } from "@/lib/txui";
+import { useDec, useMoney, useConv, useT, useLang } from "@/components/SettingsProvider";
+import { dataLabel, fmtDateL, type StringKey } from "@/lib/i18n";
 
 function dmShort(isoStr: string): string {
   const [, m, d] = isoStr.split("-");
@@ -59,6 +59,7 @@ export default function Dashboard({
   const money = useMoney();
   const conv = useConv();
   const t = useT();
+  const lang = useLang();
   const isExpenses = tab === "expenses";
   const filtered = txs.filter((t) => {
     if (isExpenses ? t.type !== "expense" : t.type !== "income") return false;
@@ -110,7 +111,7 @@ export default function Dashboard({
                 <div className={styles.ai} style={{ background: st.bg, color: st.color }}>
                   <Icon id={ACC_ICON[a.type] ?? "i-wallet"} />
                 </div>
-                <span className={styles.accName}>{a.name}</span>
+                <span className={styles.accName}>{dataLabel(a.name, lang)}</span>
               </div>
               <span className={styles.accBal}>{money(a.balanceHome, 0)}</span>
               <span className={styles.cur}>≈ {conv(a.balanceHome, 0)}</span>
@@ -189,8 +190,8 @@ export default function Dashboard({
                 {catEmoji(t.category, t.type === "income")}
               </div>
               <div>
-                <span className={styles.txName}>{t.merchant || t.category}</span>
-                <span className={styles.txMeta}>{t.category} · {fmtDate(t.date, t.createdAt)}</span>
+                <span className={styles.txName}>{t.merchant || dataLabel(t.category, lang)}</span>
+                <span className={styles.txMeta}>{dataLabel(t.category, lang)} · {fmtDateL(t.date, t.createdAt, lang)}</span>
               </div>
               <div className={styles.amt}>
                 <span className={`${styles.amtVal} ${t.type === "income" ? styles.inc : ""}`}>

@@ -16,7 +16,7 @@ export default function LangMenuItem() {
     <>
       <button type="button" className={styles.menuItem} onClick={() => setOpen(true)} style={{ textAlign: "left" }}>
         <span className={styles.menuIco} style={{ background: "rgba(59,180,245,0.14)", color: "#7cc8f5" }}>
-          <Icon id="i-person" />
+          <Icon id="i-globe" />
         </span>
         <span className={styles.menuMid}>
           <span className={styles.menuName}>{t("menu.language")}</span>

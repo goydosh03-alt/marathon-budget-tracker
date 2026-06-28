@@ -8,8 +8,9 @@ import TopBar from "@/components/TopBar";
 import TransactionViewer from "@/components/TransactionViewer";
 import CalendarSheet from "@/components/CalendarSheet";
 import EmptyState from "@/components/EmptyState";
-import { periods, PERIOD_LABEL, inPeriod, catEmoji, catBg, fmtDate, pluralOps } from "@/lib/txui";
-import { useDec, useMoney, useConv } from "@/components/SettingsProvider";
+import { periods, inPeriod, catEmoji, catBg } from "@/lib/txui";
+import { useDec, useMoney, useConv, useT, useLang } from "@/components/SettingsProvider";
+import { dataLabel, fmtDateL, opsLabel, type StringKey } from "@/lib/i18n";
 
 function dmShort(isoStr: string): string {
   const [, m, d] = isoStr.split("-");
@@ -60,12 +61,14 @@ export default function HistoryList({
   const dec = useDec();
   const money = useMoney();
   const conv = useConv();
+  const t = useT();
+  const lang = useLang();
   const isExpenses = tab === "expenses";
   const filtered = txs.filter((t) => {
     if (isExpenses ? t.type !== "expense" : t.type !== "income") return false;
     return range ? t.date >= range.from && t.date <= range.to : inPeriod(t.date, period);
   });
-  const periodText = range ? `${dmShort(range.from)} – ${dmShort(range.to)}` : PERIOD_LABEL[period];
+  const periodText = range ? `${dmShort(range.from)} – ${dmShort(range.to)}` : t(`period.short.${period}` as StringKey);
   const total = filtered.reduce((s, t) => s + t.amountHome, 0);
 
   const catMap = new Map<string, { sum: number; count: number }>();
@@ -99,14 +102,14 @@ export default function HistoryList({
     <div className={styles.screen}>
       <IconSprite />
 
-      <TopBar><span className={styles.barTitle}>Історія</span></TopBar>
+      <TopBar><span className={styles.barTitle}>{t("nav.history")}</span></TopBar>
 
       <div className={styles.tabs}>
         <button className={`${styles.tab} ${isExpenses ? styles.tabOnExp : ""}`} onClick={() => reset(() => setTab("expenses"))}>
-          Витрати
+          {t("common.expenses")}
         </button>
         <button className={`${styles.tab} ${!isExpenses ? styles.tabOnInc : ""}`} onClick={() => reset(() => setTab("income"))}>
-          Дохід
+          {t("common.income")}
         </button>
       </div>
 
@@ -114,12 +117,12 @@ export default function HistoryList({
         <div className={styles.searchInline}>
           <Icon id="i-search" />
           <input
-            placeholder="Пошук: назва, категорія, позиція…"
+            placeholder={t("hist.search")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
           {query && (
-            <button className={styles.searchClear} onClick={() => setQuery("")} aria-label="Очистити">
+            <button className={styles.searchClear} onClick={() => setQuery("")} aria-label={t("common.clear")}>
               <Icon id="i-x" />
             </button>
           )}
@@ -130,15 +133,15 @@ export default function HistoryList({
           <>
             <div className={styles.searchSum}>
               <span className={styles.searchSumLabel}>
-                Знайдено {searchResults.length} {pluralOps(searchResults.length)}
+                {t("hist.found")} {searchResults.length} {opsLabel(searchResults.length, lang)}
               </span>
               <span className={styles.searchSumAmt}>{money(searchTotal, dec)}</span>
             </div>
             {searchResults.length === 0 ? (
               <EmptyState
                 icon="i-search"
-                title="Нічого не знайдено"
-                hint={`За запитом «${query}» транзакцій немає.`}
+                title={t("hist.notFound")}
+                hint={`${t("hist.noTxFor")} «${query}»`}
               />
             ) : (
               searchResults.map((t) => (
@@ -147,8 +150,8 @@ export default function HistoryList({
                     {catEmoji(t.category, !isExpenses)}
                   </div>
                   <div>
-                    <span className={styles.txName}>{t.merchant || t.category}</span>
-                    <span className={styles.txMeta}>{t.category} · {fmtDate(t.date, t.createdAt)}</span>
+                    <span className={styles.txName}>{t.merchant || dataLabel(t.category, lang)}</span>
+                    <span className={styles.txMeta}>{dataLabel(t.category, lang)} · {fmtDateL(t.date, t.createdAt, lang)}</span>
                   </div>
                   <div className={styles.amt}>
                     <span className={`${styles.amtVal} ${!isExpenses ? styles.inc : ""}`}>
@@ -169,13 +172,13 @@ export default function HistoryList({
               className={`${styles.pf} ${!range && period === p.id ? styles.pfOn : ""}`}
               onClick={() => reset(() => setPeriod(p.id))}
             >
-              {p.label}
+              {t(`period.${p.id}` as StringKey)}
             </button>
           ))}
           <span className={styles.vdiv} />
           <button
             className={`${styles.cal} ${range ? styles.calActive : ""}`}
-            aria-label="Період"
+            aria-label={t("common.period")}
             onClick={() => setCalOpen(true)}
           >
             <Icon id="i-cal" />
@@ -184,7 +187,7 @@ export default function HistoryList({
 
         <div className={styles.psum}>
           <span className={styles.psumLabel}>
-            {isExpenses ? "Витрачено" : "Зароблено"} · {periodText}
+            {isExpenses ? t("dash.spent") : t("dash.earned")} · {periodText}
           </span>
           <div className={styles.psumRow}>
             <span className={styles.psumAmt}>{money(total, 0)}</span>
@@ -197,13 +200,13 @@ export default function HistoryList({
         {filtered.length === 0 ? (
           <EmptyState
             icon="i-cal"
-            title="Нічого за цей період"
-            hint="Спробуй інший період чи діапазон, або додай транзакцію кнопкою + унизу."
+            title={t("hist.emptyPeriod")}
+            hint={t("hist.emptyPeriodHint")}
           />
         ) : (
           <>
             <div className={styles.sec}>
-              <h3 className={styles.secTitle}>Категорії</h3>
+              <h3 className={styles.secTitle}>{t("hist.categories")}</h3>
             </div>
             {cats.map((c, i) => {
               const isOpen = open.has(c.cat);
@@ -217,14 +220,14 @@ export default function HistoryList({
                     </div>
                     <div className={styles.catMid}>
                       <div className={styles.catHead}>
-                        <span className={styles.catName}>{c.cat}</span>
+                        <span className={styles.catName}>{dataLabel(c.cat, lang)}</span>
                         <span className={`${styles.catSum} ${!isExpenses ? styles.inc : ""}`}>{money(c.sum, 0)}</span>
                       </div>
                       <div className={styles.catBar}>
                         <span className={styles.catBarFill} style={{ width: `${share}%` }} />
                       </div>
                       <div className={styles.catSub}>
-                        <span>{c.count} {pluralOps(c.count)} · {Math.round(share)}%</span>
+                        <span>{c.count} {opsLabel(c.count, lang)} · {Math.round(share)}%</span>
                         <span>≈ {conv(c.sum, 0)}</span>
                       </div>
                     </div>
@@ -239,8 +242,8 @@ export default function HistoryList({
                           onClick={() => setViewId(t.id)}
                         >
                           <div className={styles.treeMid}>
-                            <span className={styles.treeName}>{t.merchant || t.category}</span>
-                            <span className={styles.treeDate}>{fmtDate(t.date, t.createdAt)}</span>
+                            <span className={styles.treeName}>{t.merchant || dataLabel(t.category, lang)}</span>
+                            <span className={styles.treeDate}>{fmtDateL(t.date, t.createdAt, lang)}</span>
                           </div>
                           <div className={styles.treeAmt}>
                             <span className={`${styles.treeVal} ${!isExpenses ? styles.inc : ""}`}>
