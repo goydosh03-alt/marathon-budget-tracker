@@ -166,7 +166,9 @@ export default function CategoryView({
       </section>
 
       <button className={`${styles.cam} ${styles.floatAdd}`} onClick={() => setAddOpen(true)} aria-label="Додати">
-        <Icon id="i-plus" />
+        <span className={styles.camInner}>
+          <Icon id="i-plus" />
+        </span>
       </button>
 
       {viewId && (
