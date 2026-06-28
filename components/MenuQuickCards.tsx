@@ -2,15 +2,16 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon } from "@/components/IconSprite";
 import { setHideCents } from "@/app/dashboard/actions";
 import { currencyMeta, type CurrencyCode } from "@/lib/currency";
+import CurrencySheet from "@/components/CurrencySheet";
 
 export default function MenuQuickCards({ hideCents, currency }: { hideCents: boolean; currency: CurrencyCode }) {
   const cur = currencyMeta(currency);
   const [on, setOn] = useState(hideCents);
+  const [curOpen, setCurOpen] = useState(false);
   const [, start] = useTransition();
   const router = useRouter();
 
@@ -43,16 +44,18 @@ export default function MenuQuickCards({ hideCents, currency }: { hideCents: boo
         <div className={styles.quickSub}>{on ? "Без копійок" : "Показувати"}</div>
       </div>
 
-      <Link href="/currency" className={styles.quickCard}>
+      <button type="button" className={styles.quickCard} onClick={() => setCurOpen(true)} style={{ textAlign: "left" }}>
         <div className={styles.quickTop}>
           <span className={styles.quickIco} style={{ background: "rgba(74,222,180,0.14)", color: "#6ee7b7" }}>
             <Icon id="i-wallet" />
           </span>
           <span className={styles.quickCur}>{cur.symbol}</span>
         </div>
-        <div className={styles.quickName}>Основна валюта</div>
+        <div className={styles.quickName}>Валюта</div>
         <div className={styles.quickSub}>{cur.label}</div>
-      </Link>
+      </button>
+
+      <CurrencySheet open={curOpen} onClose={() => setCurOpen(false)} />
     </div>
   );
 }

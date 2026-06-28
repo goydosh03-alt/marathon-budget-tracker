@@ -5,20 +5,25 @@ import type { UserCategory } from "@/app/dashboard/actions";
 import {
   type CurrencyCode,
   DEFAULT_CURRENCY,
+  USD_PER,
   convert,
   formatMoney,
 } from "@/lib/currency";
+
+type Rates = Record<CurrencyCode, number>;
 
 const Ctx = createContext<{
   hideCents: boolean;
   categories: UserCategory[];
   currency: CurrencyCode;
   convertCurrency: CurrencyCode;
+  rates: Rates;
 }>({
   hideCents: false,
   categories: [],
   currency: DEFAULT_CURRENCY,
   convertCurrency: "USD",
+  rates: USD_PER,
 });
 
 export function SettingsProvider({
@@ -26,16 +31,18 @@ export function SettingsProvider({
   categories,
   currency,
   convertCurrency,
+  rates,
   children,
 }: {
   hideCents: boolean;
   categories: UserCategory[];
   currency: CurrencyCode;
   convertCurrency: CurrencyCode;
+  rates: Rates;
   children: React.ReactNode;
 }) {
   return (
-    <Ctx.Provider value={{ hideCents, categories, currency, convertCurrency }}>
+    <Ctx.Provider value={{ hideCents, categories, currency, convertCurrency, rates }}>
       {children}
     </Ctx.Provider>
   );
@@ -64,14 +71,14 @@ export function useConvertCurrency(): CurrencyCode {
 // Форматер суми в ОСНОВНІЙ валюті користувача.
 // from — валюта, в якій збережена сума (за замовч. = основна, тобто без конвертації).
 export function useMoney() {
-  const code = useContext(Ctx).currency;
+  const { currency: code, rates } = useContext(Ctx);
   return (amountHome: number, dp = 2, from: CurrencyCode = code) =>
-    formatMoney(convert(amountHome, from, code), code, dp);
+    formatMoney(convert(amountHome, from, code, rates), code, dp);
 }
 
 // Форматер суми в КОНВЕРТОВАНІЙ (другій) валюті — для рядка "≈ ...".
 export function useConv() {
-  const { currency, convertCurrency } = useContext(Ctx);
+  const { currency, convertCurrency, rates } = useContext(Ctx);
   return (amountHome: number, dp = 2, from: CurrencyCode = currency) =>
-    formatMoney(convert(amountHome, from, convertCurrency), convertCurrency, dp);
+    formatMoney(convert(amountHome, from, convertCurrency, rates), convertCurrency, dp);
 }

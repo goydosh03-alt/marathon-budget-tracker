@@ -36,9 +36,17 @@ export function isCurrency(v: unknown): v is CurrencyCode {
 }
 
 // Конвертація між валютами через USD як проміжну базу.
-export function convert(amount: number, from: CurrencyCode, to: CurrencyCode): number {
+// rates — мапа "USD за 1 одиницю валюти". За замовч. статичний стаб USD_PER.
+export function convert(
+  amount: number,
+  from: CurrencyCode,
+  to: CurrencyCode,
+  rates: Record<CurrencyCode, number> = USD_PER
+): number {
   if (from === to) return amount;
-  return (amount * USD_PER[from]) / USD_PER[to];
+  const f = rates[from] || USD_PER[from];
+  const t = rates[to] || USD_PER[to];
+  return (amount * f) / t;
 }
 
 // Формат суми з символом валюти.

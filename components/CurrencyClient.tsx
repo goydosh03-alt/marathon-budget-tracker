@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon, IconSprite } from "@/components/IconSprite";
 import SubHeader from "@/components/SubHeader";
-import { CURRENCIES, type CurrencyCode } from "@/lib/currency";
+import { CURRENCIES, currencyMeta, type CurrencyCode } from "@/lib/currency";
+import { useConv } from "@/components/SettingsProvider";
 import { setMainCurrency, setConvertCurrency } from "@/app/dashboard/actions";
 
 export default function CurrencyClient({
@@ -19,6 +20,7 @@ export default function CurrencyClient({
   const [, start] = useTransition();
   const [main, setMain] = useState<CurrencyCode>(current);
   const [conv, setConv] = useState<CurrencyCode>(convert);
+  const convFmt = useConv();
 
   function pickMain(code: CurrencyCode) {
     if (code === main) return;
@@ -61,16 +63,22 @@ export default function CurrencyClient({
       <div className={styles.notice}>
         <Icon id="i-wallet" />
         <div>
-          Основна — у ній вводиш і бачиш суми. Друга показується поряд як «≈». Курси наразі приблизні — живий курс під'єднаємо згодом.
+          В <b>основній</b> валюті ти вводиш і бачиш суми. <b>Валюта конвертації</b> показується поряд як «≈» — перерахована з основної за курсом. Курс оновлюється автоматично щогодини.
         </div>
       </div>
 
+      <div className={styles.curRateLine}>
+        1 {currencyMeta(current).symbol} ≈ {convFmt(1, 2)}
+      </div>
+
       <div className={styles.curGroupLabel}>Основна валюта</div>
+      <div className={styles.curGroupSub}>У ній вводиш і бачиш суми</div>
       <div className={styles.setCard}>
         {CURRENCIES.map((c) => row(c, main === c.code, () => pickMain(c.code)))}
       </div>
 
-      <div className={styles.curGroupLabel}>Друга валюта (≈)</div>
+      <div className={styles.curGroupLabel}>Валюта конвертації · ≈</div>
+      <div className={styles.curGroupSub}>Показується поряд, перерахована з основної</div>
       <div className={styles.setCard}>
         {CURRENCIES.map((c) => row(c, conv === c.code, () => pickConv(c.code)))}
       </div>
