@@ -10,7 +10,8 @@ import AmountPad from "@/components/AmountPad";
 import CalendarSheet from "@/components/CalendarSheet";
 import { currencyMeta } from "@/lib/currency";
 import { catEmoji } from "@/lib/txui";
-import { useCategories, useCurrency, useMoney, useConv } from "@/components/SettingsProvider";
+import { dataLabel, type StringKey } from "@/lib/i18n";
+import { useCategories, useCurrency, useMoney, useConv, useT, useLang } from "@/components/SettingsProvider";
 
 const EXPENSE_CATS = ["Їжа", "Кафе", "Транспорт", "Розваги", "Аптека", "Одяг", "Комунальні", "Інше"];
 const INCOME_CATS = ["Зарплата", "Фриланс", "Подарунок", "Інше"];
@@ -103,6 +104,8 @@ export default function AddTransactionForm({
   const parsed = parseFloat(amount.replace(",", ".")) || 0;
   const money = useMoney();
   const conv = useConv();
+  const t = useT();
+  const lang = useLang();
   const sym = currencyMeta(useCurrency()).symbol;
 
   const today = isoOffset(0);
@@ -111,14 +114,14 @@ export default function AddTransactionForm({
 
   // дата зі скану/календаря, якщо вона не сьогодні/вчора/позавчора — виходить першим чипом
   const dayPresets = [
-    { key: today, label: "Сьогодні" },
-    { key: yest, label: "Вчора" },
-    { key: dayBefore, label: "Позавчора" },
+    { key: today, label: t("rel.today") },
+    { key: yest, label: t("rel.yesterday") },
+    { key: dayBefore, label: t("common.dayBefore") },
   ];
   const isPresetDate = dayPresets.some((p) => p.key === date);
   const dayOptions = isPresetDate
     ? dayPresets
-    : [{ key: date, label: "Обрано" }, dayPresets[0], dayPresets[1]];
+    : [{ key: date, label: t("common.chosen") }, dayPresets[0], dayPresets[1]];
 
   // блокуємо скрол фону, поки відкрита форма
   useEffect(() => {
@@ -138,7 +141,7 @@ export default function AddTransactionForm({
   function save() {
     setError("");
     if (!parsed || parsed <= 0) {
-      setError("Введи суму більше нуля");
+      setError(t("form.errAmount"));
       return;
     }
     startTransition(async () => {
@@ -147,7 +150,7 @@ export default function AddTransactionForm({
         ? await updateTransaction(editTx.id, { ...payload, items: scannedItems ?? [] })
         : await addTransaction({ ...payload, items: scannedItems ?? undefined });
       if (!res.ok) {
-        setError(res.error ?? "Помилка збереження");
+        setError(res.error ?? t("form.errSave"));
         return;
       }
       router.refresh();
@@ -155,7 +158,7 @@ export default function AddTransactionForm({
       // анімацію + тост запускаємо ПІСЛЯ закриття попапа — на чистому екрані,
       // незалежно від того, скільки тривало збереження
       if (typeof window !== "undefined") {
-        const label = isEdit ? "Збережено" : "Додано";
+        const label = isEdit ? t("common.saved") : t("common.added");
         setTimeout(
           () => window.dispatchEvent(new CustomEvent("snapcost:saved", { detail: { label } })),
           80
@@ -250,7 +253,7 @@ export default function AddTransactionForm({
       });
       const json = await res.json();
       if (!json.ok) {
-        setError(json.error ?? "Не вдалося прочитати чек");
+        setError(json.error ?? t("form.errScan"));
         return;
       }
       const d = json.data;
@@ -261,7 +264,7 @@ export default function AddTransactionForm({
       if (d.date) setDate(d.date);
       if (Array.isArray(d.items) && d.items.length) setScannedItems(d.items);
     } catch {
-      setError("Не вдалося прочитати чек");
+      setError(t("form.errScan"));
     } finally {
       setScanning(false);
       e.target.value = "";
@@ -273,7 +276,7 @@ export default function AddTransactionForm({
     startTransition(async () => {
       const res = await deleteTransaction(editTx.id);
       if (!res.ok) {
-        setError(res.error ?? "Помилка видалення");
+        setError(res.error ?? t("form.errDelete"));
         return;
       }
       router.refresh();
