@@ -290,18 +290,18 @@ export default function AddTransactionForm({
       <div className={styles.sheet}>
         <div className={styles.sheetBody}>
         <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span>{isEdit ? "Редагувати транзакцію" : "Додати транзакцію"}</span>
-          <button className={styles.iconBtn} onClick={onClose} aria-label="Закрити">
+          <span>{isEdit ? t("form.editTitle") : t("form.addTitle")}</span>
+          <button className={styles.iconBtn} onClick={onClose} aria-label={t("common.close")}>
             <Icon id="i-x" />
           </button>
         </div>
 
         <div className={styles.tabs}>
           <button className={`${styles.tab} ${type === "expense" ? styles.tabOnExp : ""}`} onClick={() => switchType("expense")}>
-            Витрата
+            {t("common.expense")}
           </button>
           <button className={`${styles.tab} ${type === "income" ? styles.tabOnInc : ""}`} onClick={() => switchType("income")}>
-            Дохід
+            {t("common.income")}
           </button>
         </div>
 
@@ -314,7 +314,7 @@ export default function AddTransactionForm({
                 onClick={() => fileRef.current?.click()}
                 disabled={scanning}
               >
-                <Icon id="i-scan" /> {scanning ? "Читаю…" : "Скан"}
+                <Icon id="i-scan" /> {scanning ? t("form.reading") : t("form.scan")}
               </button>
               <input
                 ref={fileRef}
@@ -344,7 +344,7 @@ export default function AddTransactionForm({
 
         {scannedItems && scannedItems.length > 0 && (
           <>
-            <div className={styles.fieldLabel}>Позиції з чека</div>
+            <div className={styles.fieldLabel}>{t("form.receiptItems")}</div>
             <div className={styles.itemsEdit}>
               {scannedItems.map((it, i) => (
                 <div className={styles.itemRow} key={i}>
@@ -356,7 +356,7 @@ export default function AddTransactionForm({
                     className={styles.itemDel}
                     type="button"
                     onClick={() => removeItem(i)}
-                    aria-label="Видалити позицію"
+                    aria-label={t("form.deleteItem")}
                   >
                     <Icon id="i-trash" />
                   </button>
@@ -366,7 +366,7 @@ export default function AddTransactionForm({
           </>
         )}
 
-        <div className={styles.fieldLabel}>Категорія</div>
+        <div className={styles.fieldLabel}>{t("det.category")}</div>
         <div className={styles.chips2}>
           {cats.map((c) => (
             <button
@@ -374,12 +374,12 @@ export default function AddTransactionForm({
               className={`${styles.chip2} ${category === c ? styles.chip2On : ""}`}
               onClick={() => setCategory(c)}
             >
-              {catIcon(c)} {c}
+              {catIcon(c)} {dataLabel(c, lang)}
             </button>
           ))}
         </div>
 
-        <div className={styles.fieldLabel}>Рахунок</div>
+        <div className={styles.fieldLabel}>{t("det.account")}</div>
         <div className={styles.accChips}>
           {accounts.map((a) => (
             <button
@@ -388,12 +388,12 @@ export default function AddTransactionForm({
               className={`${styles.accChip} ${accountId === a.id ? styles.accChipOn : ""}`}
               onClick={() => setAccountId(a.id)}
             >
-              {ACC_EMOJI[a.type] ?? "👛"} {a.name}
+              {ACC_EMOJI[a.type] ?? "👛"} {dataLabel(a.name, lang)}
             </button>
           ))}
         </div>
 
-        <div className={styles.fieldLabel}>Дата</div>
+        <div className={styles.fieldLabel}>{t("det.date")}</div>
         <div className={styles.daysRow}>
           {dayOptions.map((o) => (
             <button
@@ -409,7 +409,7 @@ export default function AddTransactionForm({
             type="button"
             className={styles.dayCalBtn}
             onClick={() => setDateCalOpen(true)}
-            aria-label="Вибрати дату"
+            aria-label={t("form.pickDate")}
           >
             <Icon id="i-cal" />
           </button>
@@ -420,7 +420,7 @@ export default function AddTransactionForm({
             <Icon id="i-edit" />
           </div>
           <input
-            placeholder={isIncome ? "Назва (напр. Зарплата)" : "Назва (напр. Biedronka)"}
+            placeholder={isIncome ? t("form.namePlaceholderInc") : t("form.namePlaceholderExp")}
             value={merchant}
             onChange={(e) => setMerchant(e.target.value)}
           />
@@ -431,10 +431,10 @@ export default function AddTransactionForm({
 
         <div className={styles.sheetActions}>
           {isEdit && (
-            <button className={styles.btnDelText} onClick={remove} disabled={pending}>Видалити</button>
+            <button className={styles.btnDelText} onClick={remove} disabled={pending}>{t("common.delete")}</button>
           )}
           <button className={styles.btnPrimary} onClick={save} disabled={pending}>
-            {pending ? "Зберігаю..." : "Зберегти"}
+            {pending ? t("form.saving") : t("common.save")}
           </button>
         </div>
       </div>
@@ -442,8 +442,8 @@ export default function AddTransactionForm({
       {itemUndo && (
         <div className={styles.toast}>
           <Icon id="i-trash" />
-          <span className={styles.toastTxt}>Позицію видалено</span>
-          <button className={styles.toastUndo} onClick={undoItem}>Повернути</button>
+          <span className={styles.toastTxt}>{t("form.itemDeleted")}</span>
+          <button className={styles.toastUndo} onClick={undoItem}>{t("common.undo")}</button>
         </div>
       )}
 
@@ -463,7 +463,7 @@ export default function AddTransactionForm({
       {dateCalOpen && (
         <CalendarSheet
           single
-          title="Дата"
+          title={t("det.date")}
           initialFrom={date}
           initialTo={date}
           onApply={(from) => {

@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon } from "@/components/IconSprite";
 import { evalExpr, trimNum } from "@/lib/calc";
+import { useT, useCurrency } from "@/components/SettingsProvider";
+import { currencyMeta } from "@/lib/currency";
 
 export default function CalcSheet({
   title,
@@ -18,6 +20,8 @@ export default function CalcSheet({
   onClose: () => void;
   showSplit?: boolean;
 }) {
+  const t = useT();
+  const sym = currencyMeta(useCurrency()).symbol;
   const [expr, setExpr] = useState(initial ? trimNum(initial) : "");
 
   useEffect(() => {
@@ -42,15 +46,15 @@ export default function CalcSheet({
       <div className={styles.sheet}>
         <div className={styles.sheetBody}>
           <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span>{title || "Сума"}</span>
-            <button className={styles.iconBtn} onClick={onClose} aria-label="Закрити">
+            <span>{title || t("calc.sum")}</span>
+            <button className={styles.iconBtn} onClick={onClose} aria-label={t("common.close")}>
               <Icon id="i-x" />
             </button>
           </div>
 
           <div className={styles.calcDisp}>
             <div className={styles.calcExpr}>{expr || "0"}</div>
-            <div className={styles.calcRes}>{result !== null ? trimNum(result) : "—"} zł</div>
+            <div className={styles.calcRes}>{result !== null ? trimNum(result) : "—"} {sym}</div>
           </div>
 
           <div className={styles.calcGrid}>
@@ -59,11 +63,11 @@ export default function CalcSheet({
                 <button className={`${styles.calcKey} ${styles.calcSplit}`} onClick={() => split(2)}>÷2</button>
                 <button className={`${styles.calcKey} ${styles.calcSplit}`} onClick={() => split(3)}>÷3</button>
                 <button className={`${styles.calcKey} ${styles.calcSplit}`} onClick={() => split(4)}>÷4</button>
-                <button className={styles.calcKey} onClick={clear} aria-label="Очистити">C</button>
+                <button className={styles.calcKey} onClick={clear} aria-label={t("common.clear")}>C</button>
               </>
             ) : (
               <button className={styles.calcKey} style={{ gridColumn: "1 / -1" }} onClick={clear}>
-                Очистити
+                {t("common.clear")}
               </button>
             )}
 
@@ -84,7 +88,7 @@ export default function CalcSheet({
 
             <button className={styles.calcKey} onClick={() => press(".")}>.</button>
             <button className={styles.calcKey} onClick={() => press("0")}>0</button>
-            <button className={styles.calcKey} onClick={backspace} aria-label="Стерти">⌫</button>
+            <button className={styles.calcKey} onClick={backspace} aria-label={t("calc.erase")}>⌫</button>
             <button className={`${styles.calcKey} ${styles.calcOp}`} onClick={() => press("+")}>+</button>
           </div>
         </div>
@@ -95,7 +99,7 @@ export default function CalcSheet({
             disabled={result === null || result < 0}
             onClick={() => result !== null && onApply(Number(result.toFixed(2)))}
           >
-            Застосувати
+            {t("common.apply")}
           </button>
         </div>
       </div>

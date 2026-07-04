@@ -4,20 +4,28 @@ import { useState, useEffect } from "react";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon } from "@/components/IconSprite";
 import EmptyState from "@/components/EmptyState";
+import { useT } from "@/components/SettingsProvider";
 
 // Поки що сповіщення зберігаються локально (на пристрої).
 // Структура готова під прочитані / непрочитані — наповнимо реальними подіями згодом.
 type Notif = { id: string; title: string; body: string; date: string; read: boolean };
 
 export default function NotificationsBell() {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<Notif[]>([]);
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem("sc_notifs");
-      if (raw) setItems(JSON.parse(raw));
-    } catch {}
+    function load() {
+      try {
+        const raw = localStorage.getItem("sc_notifs");
+        if (raw) setItems(JSON.parse(raw));
+      } catch {}
+    }
+    load();
+    // оновлення без перезавантаження, коли RecurringRunner пише нову подію
+    window.addEventListener("sc:notifs-updated", load);
+    return () => window.removeEventListener("sc:notifs-updated", load);
   }, []);
 
   useEffect(() => {
@@ -37,7 +45,7 @@ export default function NotificationsBell() {
 
   return (
     <>
-      <button className={styles.iconBtn} onClick={() => setOpen(true)} aria-label="Сповіщення" style={{ position: "relative" }}>
+      <button className={styles.iconBtn} onClick={() => setOpen(true)} aria-label={t("notif.title")} style={{ position: "relative" }}>
         <Icon id="i-bell" />
         {unread > 0 && <span className={styles.notifDot} />}
       </button>
@@ -48,18 +56,18 @@ export default function NotificationsBell() {
           <div className={styles.sheet}>
             <div className={styles.sheetBody}>
               <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span>Сповіщення</span>
-                <button className={styles.iconBtn} onClick={() => setOpen(false)} aria-label="Закрити">
+                <span>{t("notif.title")}</span>
+                <button className={styles.iconBtn} onClick={() => setOpen(false)} aria-label={t("common.close")}>
                   <Icon id="i-x" />
                 </button>
               </div>
 
               {items.length === 0 ? (
-                <EmptyState icon="i-bell" title="Сповіщень поки немає" hint="Тут зʼявлятимуться нагадування та записані регулярні платежі." />
+                <EmptyState icon="i-bell" title={t("notif.emptyTitle")} hint={t("notif.emptyHint")} />
               ) : (
                 <>
                   {unread > 0 && (
-                    <button className={styles.notifMarkAll} onClick={markAllRead}>Позначити всі прочитаними</button>
+                    <button className={styles.notifMarkAll} onClick={markAllRead}>{t("notif.markAll")}</button>
                   )}
                   <div className={styles.setCard}>
                     {items.map((n) => (

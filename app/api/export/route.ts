@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { isLang, translate, DEFAULT_LANG, type StringKey } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 
@@ -30,6 +31,10 @@ export async function GET(req: NextRequest) {
   } = await supabase.auth.getUser();
   if (!user) return new Response("Unauthorized", { status: 401 });
 
+  const lg = user.user_metadata?.lang;
+  const lang = isLang(lg) ? lg : DEFAULT_LANG;
+  const t = (k: StringKey) => translate(k, lang);
+
   const sp = req.nextUrl.searchParams;
   let q = supabase
     .from("transactions")
@@ -50,15 +55,15 @@ export async function GET(req: NextRequest) {
   if (error) return new Response(error.message, { status: 500 });
   const rows = (data ?? []) as TxRow[];
 
-  const header = ["Дата", "Тип", "Категорія", "Місце / опис", "Сума", "Валюта", "Нотатка"];
-  const body = rows.map((t) => [
-    t.tx_date,
-    t.type === "income" ? "Дохід" : "Витрата",
-    t.category ?? "",
-    t.merchant ?? "",
-    typeof t.amount_home === "number" ? t.amount_home.toFixed(2) : "",
-    t.home_currency ?? "",
-    t.note ?? "",
+  const header = [t("csv.date"), t("csv.type"), t("csv.category"), t("csv.place"), t("csv.amount"), t("csv.currency"), t("csv.note")];
+  const body = rows.map((r) => [
+    r.tx_date,
+    r.type === "income" ? t("common.income") : t("common.expense"),
+    r.category ?? "",
+    r.merchant ?? "",
+    typeof r.amount_home === "number" ? r.amount_home.toFixed(2) : "",
+    r.home_currency ?? "",
+    r.note ?? "",
   ]);
 
   // BOM (﻿) — щоб Excel коректно показав кирилицю.

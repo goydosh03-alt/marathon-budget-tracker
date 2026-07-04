@@ -6,6 +6,8 @@ import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon, IconSprite } from "@/components/IconSprite";
 import SubHeader from "@/components/SubHeader";
 import EmptyState from "@/components/EmptyState";
+import { useT } from "@/components/SettingsProvider";
+import type { StringKey } from "@/lib/i18n";
 import {
   addReminder,
   updateReminder,
@@ -17,16 +19,11 @@ import {
 } from "@/app/dashboard/actions";
 import { subscribeToPush, pushSupported } from "@/lib/push";
 
-const FREQS = [
-  { id: "daily", label: "Щодня" },
-  { id: "weekdays", label: "Будні" },
-  { id: "weekends", label: "Вихідні" },
-  { id: "weekly", label: "Щотижня" },
-] as const;
-const FREQ_LABEL: Record<string, string> = { daily: "Щодня", weekdays: "По буднях", weekends: "У вихідні", weekly: "Щотижня" };
+const FREQ_IDS = ["daily", "weekdays", "weekends", "weekly"] as const;
 
 export default function RemindersClient({ reminders }: { reminders: Reminder[] }) {
   const router = useRouter();
+  const t = useT();
   const [, start] = useTransition();
   const [items, setItems] = useState(reminders);
   const [perm, setPerm] = useState<NotificationPermission | "unsupported">("default");
@@ -59,7 +56,7 @@ export default function RemindersClient({ reminders }: { reminders: Reminder[] }
           await savePushSubscription(sub as PushSub, tzOffsetMin);
         }
       }
-      new Notification("Snapcost", { body: "Сповіщення увімкнено ✓" });
+      new Notification("Snapcost", { body: t("rem.notifOn") });
     } catch {
       /* тихо: дозвіл є, підписку спробуємо ще раз пізніше */
     }
@@ -67,7 +64,7 @@ export default function RemindersClient({ reminders }: { reminders: Reminder[] }
 
   function openNew() {
     setEditId(null);
-    setName("Записати витрати");
+    setName(t("rem.defaultName"));
     setTime("20:00");
     setFreq("daily");
     setEnabled(true);
@@ -112,35 +109,35 @@ export default function RemindersClient({ reminders }: { reminders: Reminder[] }
   return (
     <div className={styles.screen}>
       <IconSprite />
-      <SubHeader title="Нагадування" back="/menu" />
+      <SubHeader title={t("menu.reminders")} back="/menu" />
 
       <div className={styles.notice}>
         <Icon id="i-bell" />
         <div>
-          <b>Зверни увагу:</b> сповіщення дзвонять лише коли Snapcost встановлений як застосунок (PWA) на телефоні. У браузері — лише як налаштування.
+          <b>{t("rem.noticeTitle")}</b> {t("rem.noticeBody")}
         </div>
       </div>
 
       {perm !== "granted" && perm !== "unsupported" && (
         <button className={styles.addLineBtn} onClick={askPerm}>
-          <Icon id="i-bell" /> Дозволити сповіщення
+          <Icon id="i-bell" /> {t("rem.allow")}
         </button>
       )}
       {perm === "denied" && (
-        <div className={styles.setHint}>Сповіщення заблоковані. Увімкни їх у налаштуваннях браузера/телефону.</div>
+        <div className={styles.setHint}>{t("rem.blocked")}</div>
       )}
 
       {items.length === 0 ? (
-        <EmptyState icon="i-bell" title="Ще немає нагадувань" hint="Додай нагадування, щоб не забувати записувати витрати." />
+        <EmptyState icon="i-bell" title={t("rem.emptyTitle")} hint={t("rem.emptyHint")} />
       ) : (
         <div className={styles.setCard}>
           {items.map((r) => (
             <div className={styles.remRow} key={r.id}>
               <div className={`${styles.catMid2} ${styles.clickable}`} onClick={() => openEdit(r)} style={{ cursor: "pointer" }}>
                 <span className={styles.catName2}>{r.name}</span>
-                <span className={styles.catType2}>{r.enabled ? `${r.time} · ${FREQ_LABEL[r.freq]}` : "Вимкнено"}</span>
+                <span className={styles.catType2}>{r.enabled ? `${r.time} · ${t(("freqL." + r.freq) as StringKey)}` : t("rem.offSub")}</span>
               </div>
-              <button type="button" className={`${styles.toggle} ${r.enabled ? styles.toggleOn : ""}`} onClick={() => flip(r)} aria-label="Увімкнути">
+              <button type="button" className={`${styles.toggle} ${r.enabled ? styles.toggleOn : ""}`} onClick={() => flip(r)} aria-label={t("rem.enabled")}>
                 <span className={styles.toggleKnob} />
               </button>
             </div>
@@ -149,7 +146,7 @@ export default function RemindersClient({ reminders }: { reminders: Reminder[] }
       )}
 
       <button className={styles.addLineBtn} onClick={openNew}>
-        <Icon id="i-plus" /> Додати нагадування
+        <Icon id="i-plus" /> {t("rem.add")}
       </button>
 
       {open && (
@@ -158,8 +155,8 @@ export default function RemindersClient({ reminders }: { reminders: Reminder[] }
           <div className={styles.sheet}>
             <div className={styles.sheetBody}>
               <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span>{editId ? "Редагувати нагадування" : "Нове нагадування"}</span>
-                <button className={styles.iconBtn} onClick={() => setOpen(false)} aria-label="Закрити">
+                <span>{editId ? t("rem.editTitle") : t("rem.newTitle")}</span>
+                <button className={styles.iconBtn} onClick={() => setOpen(false)} aria-label={t("common.close")}>
                   <Icon id="i-x" />
                 </button>
               </div>
@@ -168,36 +165,36 @@ export default function RemindersClient({ reminders }: { reminders: Reminder[] }
                 <div className={styles.fcIcon} style={{ background: "rgba(245,180,90,0.16)", color: "#f5c87c" }}>
                   <Icon id="i-bell" />
                 </div>
-                <input placeholder="Назва (напр. Записати витрати)" value={name} onChange={(e) => setName(e.target.value)} />
+                <input placeholder={t("rem.namePh")} value={name} onChange={(e) => setName(e.target.value)} />
               </div>
 
-              <div className={styles.fieldLabel}>Час</div>
+              <div className={styles.fieldLabel}>{t("rem.time")}</div>
               <input className={styles.confirmInput} type="time" value={time} onChange={(e) => setTime(e.target.value)} />
 
-              <div className={styles.fieldLabel}>Частота</div>
+              <div className={styles.fieldLabel}>{t("rem.freq")}</div>
               <div className={styles.chips2}>
-                {FREQS.map((f) => (
-                  <button key={f.id} className={`${styles.chip2} ${freq === f.id ? styles.chip2On : ""}`} onClick={() => setFreq(f.id)}>
-                    {f.label}
+                {FREQ_IDS.map((f) => (
+                  <button key={f} className={`${styles.chip2} ${freq === f ? styles.chip2On : ""}`} onClick={() => setFreq(f)}>
+                    {t(("freq." + f) as StringKey)}
                   </button>
                 ))}
               </div>
 
               <div className={styles.autoRow}>
                 <div>
-                  <span className={styles.autoName}>Увімкнено</span>
-                  <span className={styles.autoSub}>{enabled ? "Нагадування активне" : "Вимкнено"}</span>
+                  <span className={styles.autoName}>{t("rem.enabled")}</span>
+                  <span className={styles.autoSub}>{enabled ? t("rem.activeSub") : t("rem.offSub")}</span>
                 </div>
-                <button type="button" className={`${styles.toggle} ${enabled ? styles.toggleOn : ""}`} onClick={() => setEnabled((v) => !v)} aria-label="Увімкнути">
+                <button type="button" className={`${styles.toggle} ${enabled ? styles.toggleOn : ""}`} onClick={() => setEnabled((v) => !v)} aria-label={t("rem.enabled")}>
                   <span className={styles.toggleKnob} />
                 </button>
               </div>
             </div>
 
             <div className={styles.sheetActions}>
-              {editId && <button className={styles.btnDelText} onClick={remove}>Видалити</button>}
+              {editId && <button className={styles.btnDelText} onClick={remove}>{t("common.delete")}</button>}
               <button className={styles.btnPrimary} onClick={save} disabled={saving || !name.trim()}>
-                {saving ? "Зберігаю…" : editId ? "Зберегти" : "Створити"}
+                {saving ? t("form.saving") : editId ? t("common.save") : t("common.create")}
               </button>
             </div>
           </div>

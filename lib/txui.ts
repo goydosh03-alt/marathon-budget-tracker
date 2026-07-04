@@ -1,18 +1,12 @@
 // Спільна логіка/хелпери для головної та історії — щоб усе було консистентне.
 
+// Підписи періодів беруться з i18n (ключі period.*) — тут лише id.
 export const periods = [
-  { id: "day", label: "День" },
-  { id: "week", label: "Тиждень" },
-  { id: "month", label: "Місяць" },
-  { id: "year", label: "Рік" },
+  { id: "day" },
+  { id: "week" },
+  { id: "month" },
+  { id: "year" },
 ];
-
-export const PERIOD_LABEL: Record<string, string> = {
-  day: "сьогодні",
-  week: "тиждень",
-  month: "місяць",
-  year: "рік",
-};
 
 export function inPeriod(dateStr: string, period: string): boolean {
   const d = new Date(dateStr + "T00:00:00");
@@ -44,32 +38,4 @@ export function catBg(cat: string): string {
   return CAT_BG[cat] ?? "rgba(255,255,255,0.06)";
 }
 
-export function fmtDate(dateStr: string, createdAt?: string): string {
-  const date = new Date(dateStr + "T00:00:00");
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const diff = Math.round((today.getTime() - date.getTime()) / 86400000);
-  let label: string;
-  if (diff === 0) label = "Сьогодні";
-  else if (diff === 1) label = "Вчора";
-  else {
-    const months = ["січ", "лют", "бер", "кві", "тра", "чер", "лип", "сер", "вер", "жов", "лис", "гру"];
-    label = `${date.getDate()} ${months[date.getMonth()]}`;
-  }
-  if (createdAt) {
-    const t = new Date(createdAt);
-    const hh = String(t.getHours()).padStart(2, "0");
-    const mm = String(t.getMinutes()).padStart(2, "0");
-    label += `, ${hh}:${mm}`;
-  }
-  return label;
-}
-
-export function pluralOps(n: number): string {
-  const a = Math.abs(n) % 100;
-  const b = a % 10;
-  if (a > 10 && a < 20) return "операцій";
-  if (b > 1 && b < 5) return "операції";
-  if (b === 1) return "операція";
-  return "операцій";
-}
+// Дата/множина операцій — див. fmtDateL() та opsLabel() у lib/i18n.ts (мультимовні).

@@ -7,6 +7,7 @@ import TransactionDetail from "@/components/TransactionDetail";
 import AddTransactionForm from "@/components/AddTransactionForm";
 import { Icon } from "@/components/IconSprite";
 import styles from "@/app/dashboard/dashboard.module.css";
+import { useT } from "@/components/SettingsProvider";
 
 type Account = { id: string; name: string; type: string };
 
@@ -19,6 +20,7 @@ export default function TransactionViewer({
   accounts: Account[];
   onClose: () => void;
 }) {
+  const t = useT();
   const [tx, setTx] = useState<Record<string, unknown> | null>(null);
   const [editing, setEditing] = useState(false);
   const [pendingDel, setPendingDel] = useState<{ name: string } | null>(null);
@@ -44,7 +46,7 @@ export default function TransactionViewer({
 
   function handleDelete() {
     if (!tx) return;
-    const name = (tx.merchant as string) || (tx.category as string) || "запис";
+    const name = (tx.merchant as string) || (tx.category as string) || t("tv.record");
     setPendingDel({ name });
     timerRef.current = setTimeout(() => {
       deleteTransaction(String(tx.id)).then(() => router.refresh());
@@ -65,9 +67,9 @@ export default function TransactionViewer({
     return (
       <div className={styles.toast}>
         <Icon id="i-trash" />
-        <span className={styles.toastTxt}>Видалено «{pendingDel.name}»</span>
+        <span className={styles.toastTxt}>{t("tv.deleted")} «{pendingDel.name}»</span>
         <button className={styles.toastUndo} onClick={undoDelete}>
-          Повернути
+          {t("common.undo")}
         </button>
       </div>
     );

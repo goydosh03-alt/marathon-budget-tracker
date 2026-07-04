@@ -2,10 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import styles from "@/app/dashboard/dashboard.module.css";
+import { useT } from "@/components/SettingsProvider";
 
 // Глобальний фідбек: слухає "snapcost:saved" (шлеться ПІСЛЯ закриття попапа)
 // і показує світіння верхнього градієнта + тост «Додано ✓» на чистому екрані.
 export default function SaveGlow() {
+  const t = useT();
   const [on, setOn] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const glowTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -13,7 +15,7 @@ export default function SaveGlow() {
 
   useEffect(() => {
     function trigger(e: Event) {
-      const label = (e as CustomEvent).detail?.label ?? "Готово";
+      const label = (e as CustomEvent).detail?.label ?? t("common.done");
       setOn(false);
       requestAnimationFrame(() => setOn(true));
       if (glowTimer.current) clearTimeout(glowTimer.current);

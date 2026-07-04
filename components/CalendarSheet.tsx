@@ -3,12 +3,8 @@
 import { useState, useEffect } from "react";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon } from "@/components/IconSprite";
-
-const WEEK = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"];
-const MONTHS = [
-  "Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень",
-  "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень",
-];
+import { useT, useLang } from "@/components/SettingsProvider";
+import { MONTHS_FULL, WEEKDAYS_SHORT } from "@/lib/i18n";
 
 function iso(y: number, m: number, d: number): string {
   return `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
@@ -25,7 +21,7 @@ export default function CalendarSheet({
   onReset,
   onClose,
   single = false,
-  title = "Період",
+  title,
 }: {
   initialFrom: string | null;
   initialTo: string | null;
@@ -35,6 +31,9 @@ export default function CalendarSheet({
   single?: boolean;
   title?: string;
 }) {
+  const t = useT();
+  const lang = useLang();
+  const sheetTitle = title ?? t("common.period");
   const base = initialFrom ? new Date(initialFrom + "T00:00:00") : new Date();
   const [year, setYear] = useState(base.getFullYear());
   const [month, setMonth] = useState(base.getMonth());
@@ -102,24 +101,24 @@ export default function CalendarSheet({
       <div className={styles.sheet}>
         <div className={styles.sheetBody}>
           <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span>{title}{label ? ` (${label})` : ""}</span>
-            <button className={styles.iconBtn} onClick={onClose} aria-label="Закрити">
+            <span>{sheetTitle}{label ? ` (${label})` : ""}</span>
+            <button className={styles.iconBtn} onClick={onClose} aria-label={t("common.close")}>
               <Icon id="i-x" />
             </button>
           </div>
 
           <div className={styles.calSheetHead}>
-            <button className={styles.calNav} onClick={prevMonth} aria-label="Попередній місяць">
+            <button className={styles.calNav} onClick={prevMonth} aria-label={t("cal.prev")}>
               <Icon id="i-arrow-left" />
             </button>
-            <span className={styles.calMonth}>{MONTHS[month]} {year}</span>
-            <button className={styles.calNav} onClick={nextMonth} aria-label="Наступний місяць">
+            <span className={styles.calMonth}>{MONTHS_FULL[lang][month]} {year}</span>
+            <button className={styles.calNav} onClick={nextMonth} aria-label={t("cal.next")}>
               <Icon id="i-arrow-right" />
             </button>
           </div>
 
           <div className={styles.calWeek}>
-            {WEEK.map((w) => (
+            {WEEKDAYS_SHORT[lang].map((w) => (
               <span key={w}>{w}</span>
             ))}
           </div>
@@ -151,14 +150,14 @@ export default function CalendarSheet({
               onReset();
             }}
           >
-            <Icon id="i-refresh" /> Скинути
+            <Icon id="i-refresh" /> {t("cal.reset")}
           </button>
           <button
             className={styles.btnPrimary}
             disabled={!from}
             onClick={() => from && onApply(from, to ?? from)}
           >
-            Застосувати
+            {t("common.apply")}
           </button>
         </div>
       </div>

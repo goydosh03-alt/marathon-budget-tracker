@@ -4,6 +4,7 @@ import { useState, useEffect, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon } from "@/components/IconSprite";
+import { useT } from "@/components/SettingsProvider";
 import {
   renameAccount,
   deleteAccount,
@@ -14,10 +15,10 @@ import {
 type Account = { id: string; name: string; type: string };
 const ACC_EMOJI: Record<string, string> = { cash: "👛", card: "💳", savings: "🏦", bank: "🏦" };
 const ACC_TYPES = [
-  { id: "cash", emoji: "👛", label: "Готівка" },
-  { id: "card", emoji: "💳", label: "Картка" },
-  { id: "savings", emoji: "🏦", label: "Заощадження" },
-];
+  { id: "cash", emoji: "👛", key: "acc.cash" },
+  { id: "card", emoji: "💳", key: "acc.card" },
+  { id: "savings", emoji: "🏦", key: "acc.savings" },
+] as const;
 
 export default function SettingsClient({
   accounts,
@@ -27,18 +28,19 @@ export default function SettingsClient({
   txCount: number;
 }) {
   const router = useRouter();
+  const t = useT();
   const [list, setList] = useState<Account[]>(accounts);
   const [, start] = useTransition();
   const [clearOpen, setClearOpen] = useState(false);
   const [clearWord, setClearWord] = useState("");
-  const canClear = clearWord.trim().toLowerCase() === "так";
+  const canClear = clearWord.trim().toLowerCase() === t("confirm.yes");
   const [clearing, setClearing] = useState(false);
   const [error, setError] = useState("");
 
   // bottom sheet: видалення рахунку
   const [delTarget, setDelTarget] = useState<Account | null>(null);
   const [delWord, setDelWord] = useState("");
-  const canDelete = delWord.trim().toLowerCase() === "так";
+  const canDelete = delWord.trim().toLowerCase() === t("confirm.yes");
 
   // bottom sheet: новий рахунок
   const [showCreate, setShowCreate] = useState(false);
@@ -65,7 +67,7 @@ export default function SettingsClient({
     if (!name.trim()) return;
     start(async () => {
       const r = await renameAccount(id, name.trim());
-      if (!r.ok) setError(r.error ?? "Помилка");
+      if (!r.ok) setError(r.error ?? t("common.error"));
     });
   }
 
@@ -77,7 +79,7 @@ export default function SettingsClient({
       const r = await createAccount({ name: newName.trim(), type: newType });
       setCreating(false);
       if (!r.ok || !r.id) {
-        setError(r.error ?? "Помилка");
+        setError(r.error ?? t("common.error"));
         return;
       }
       setList((p) => [...p, { id: r.id!, name: newName.trim(), type: newType }]);
@@ -94,7 +96,7 @@ export default function SettingsClient({
     start(async () => {
       const r = await deleteAccount(id);
       if (!r.ok) {
-        setError(r.error ?? "Помилка");
+        setError(r.error ?? t("common.error"));
         return;
       }
       setList((p) => p.filter((a) => a.id !== id));
@@ -111,7 +113,7 @@ export default function SettingsClient({
       const r = await deleteAllTransactions();
       setClearing(false);
       if (!r.ok) {
-        setError(r.error ?? "Помилка");
+        setError(r.error ?? t("common.error"));
         return;
       }
       setClearOpen(false);
@@ -122,7 +124,7 @@ export default function SettingsClient({
 
   return (
     <>
-      <div className={styles.menuGroupLabel}>Рахунки</div>
+      <div className={styles.menuGroupLabel}>{t("set.accounts")}</div>
       {list.length > 0 && (
         <div className={styles.setCard}>
           {list.map((a) => (
@@ -140,7 +142,7 @@ export default function SettingsClient({
                   setDelWord("");
                   setDelTarget(a);
                 }}
-                aria-label="Видалити рахунок"
+                aria-label={t("common.delete")}
               >
                 <Icon id="i-trash" />
               </button>
@@ -149,19 +151,19 @@ export default function SettingsClient({
         </div>
       )}
       <button className={styles.addLineBtn} onClick={() => setShowCreate(true)}>
-        <Icon id="i-plus" /> Додати рахунок
+        <Icon id="i-plus" /> {t("set.addAccount")}
       </button>
 
-      <div className={styles.menuGroupLabel}>Дані</div>
+      <div className={styles.menuGroupLabel}>{t("set.data")}</div>
       <div className={styles.setHint}>
-        Усього транзакцій: <b>{txCount}</b>. Видалення безповоротне.
+        {t("set.total")}: <b>{txCount}</b>. {t("set.irreversible")}
       </div>
       <button
         className={styles.dangerBtn}
         onClick={() => { setClearWord(""); setClearOpen(true); }}
         disabled={txCount === 0}
       >
-        Видалити всі транзакції
+        {t("set.deleteAll")}
       </button>
 
       {error && <div className={styles.setHint} style={{ color: "#ff9090" }}>{error}</div>}
@@ -172,27 +174,27 @@ export default function SettingsClient({
           <div className={styles.sheet}>
             <div className={styles.sheetBody}>
               <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span>Видалити всі транзакції?</span>
-                <button className={styles.iconBtn} onClick={() => setClearOpen(false)} aria-label="Закрити">
+                <span>{t("set.clearTitle")}</span>
+                <button className={styles.iconBtn} onClick={() => setClearOpen(false)} aria-label={t("common.close")}>
                   <Icon id="i-x" />
                 </button>
               </div>
               <div className={styles.confirmText}>
-                Усі <b>{txCount}</b> транзакцій буде видалено безповоротно. Рахунки залишаться.
-                Щоб підтвердити, напиши слово <b>так</b>.
+                {t("set.allWord")} <b>{txCount}</b> {t("set.clearBody")}{" "}
+                {t("confirm.typeWord")} <b>{t("confirm.yes")}</b>.
               </div>
               <input
                 className={styles.confirmInput}
-                placeholder="так"
+                placeholder={t("confirm.yes")}
                 value={clearWord}
                 onChange={(e) => setClearWord(e.target.value)}
                 autoFocus
               />
             </div>
             <div className={styles.sheetActions}>
-              <button className={styles.btnGhost} onClick={() => setClearOpen(false)}>Скасувати</button>
+              <button className={styles.btnGhost} onClick={() => setClearOpen(false)}>{t("common.cancel")}</button>
               <button className={styles.confirmDel} onClick={clearAll} disabled={!canClear || clearing}>
-                {clearing ? "Видаляю…" : "Видалити"}
+                {clearing ? t("common.deleting") : t("common.delete")}
               </button>
             </div>
           </div>
@@ -206,35 +208,35 @@ export default function SettingsClient({
           <div className={styles.sheet}>
             <div className={styles.sheetBody}>
               <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span>Новий рахунок</span>
-                <button className={styles.iconBtn} onClick={() => setShowCreate(false)} aria-label="Закрити">
+                <span>{t("set.newAccount")}</span>
+                <button className={styles.iconBtn} onClick={() => setShowCreate(false)} aria-label={t("common.close")}>
                   <Icon id="i-x" />
                 </button>
               </div>
               <input
                 className={styles.confirmInput}
-                placeholder="Назва (напр. Картка mBank)"
+                placeholder={t("set.accNamePh")}
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
                 autoFocus
               />
-              <div className={styles.fieldLabel}>Тип</div>
+              <div className={styles.fieldLabel}>{t("common.type")}</div>
               <div className={styles.chips2}>
-                {ACC_TYPES.map((t) => (
+                {ACC_TYPES.map((tp) => (
                   <button
-                    key={t.id}
+                    key={tp.id}
                     type="button"
-                    className={`${styles.chip2} ${newType === t.id ? styles.chip2On : ""}`}
-                    onClick={() => setNewType(t.id)}
+                    className={`${styles.chip2} ${newType === tp.id ? styles.chip2On : ""}`}
+                    onClick={() => setNewType(tp.id)}
                   >
-                    {t.emoji} {t.label}
+                    {tp.emoji} {t(tp.key)}
                   </button>
                 ))}
               </div>
             </div>
             <div className={styles.sheetActions}>
               <button className={styles.btnPrimary} onClick={createAcc} disabled={creating || !newName.trim()}>
-                {creating ? "Створюю…" : "Створити"}
+                {creating ? t("common.creating") : t("common.create")}
               </button>
             </div>
           </div>
@@ -248,18 +250,18 @@ export default function SettingsClient({
           <div className={styles.sheet}>
             <div className={styles.sheetBody}>
               <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span>Видалити рахунок?</span>
-                <button className={styles.iconBtn} onClick={() => setDelTarget(null)} aria-label="Закрити">
+                <span>{t("set.delAccTitle")}</span>
+                <button className={styles.iconBtn} onClick={() => setDelTarget(null)} aria-label={t("common.close")}>
                   <Icon id="i-x" />
                 </button>
               </div>
               <div className={styles.confirmText}>
-                Рахунок «{delTarget.name}» буде видалено. Транзакції залишаться, але без рахунку.
-                Щоб підтвердити, напиши слово <b>так</b>.
+                {t("set.delAccPre")} «{delTarget.name}» {t("set.delAccPost")}{" "}
+                {t("confirm.typeWord")} <b>{t("confirm.yes")}</b>.
               </div>
               <input
                 className={styles.confirmInput}
-                placeholder="так"
+                placeholder={t("confirm.yes")}
                 value={delWord}
                 onChange={(e) => setDelWord(e.target.value)}
                 autoFocus
@@ -267,10 +269,10 @@ export default function SettingsClient({
             </div>
             <div className={styles.sheetActions}>
               <button className={styles.btnGhost} onClick={() => setDelTarget(null)}>
-                Скасувати
+                {t("common.cancel")}
               </button>
               <button className={styles.confirmDel} onClick={confirmDeleteAcc} disabled={!canDelete}>
-                Видалити
+                {t("common.delete")}
               </button>
             </div>
           </div>

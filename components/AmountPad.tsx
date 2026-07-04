@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { evalExpr, trimNum } from "@/lib/calc";
+import { useT } from "@/components/SettingsProvider";
 
 // Клавіатура для суми: виїжджає знизу, без блюра/дисплея/«очистити».
 // Пише live у поле суми (видно у формі вище), знизу ⌫ і «Застосувати».
@@ -15,6 +16,7 @@ export default function AmountPad({
   onChange: (v: string) => void;
   onClose: () => void;
 }) {
+  const t = useT();
   useEffect(() => {
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -54,11 +56,11 @@ export default function AmountPad({
 
           <button className={styles.calcKey} onClick={() => press(".")}>.</button>
           <button className={styles.calcKey} onClick={() => press("0")}>0</button>
-          <button className={styles.calcKey} onClick={backspace} aria-label="Стерти">⌫</button>
+          <button className={styles.calcKey} onClick={backspace} aria-label={t("calc.erase")}>⌫</button>
           <button className={`${styles.calcKey} ${styles.calcOp}`} onClick={() => press("+")}>+</button>
         </div>
         <button className={styles.btnPrimary} style={{ width: "100%", marginTop: 8 }} onClick={apply}>
-          Застосувати
+          {t("common.apply")}
         </button>
       </div>
     </div>

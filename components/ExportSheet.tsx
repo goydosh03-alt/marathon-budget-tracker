@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon } from "@/components/IconSprite";
 import CalendarSheet from "@/components/CalendarSheet";
+import { useT } from "@/components/SettingsProvider";
 
 function iso(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -26,6 +27,7 @@ export default function ExportSheet({
   type?: "expense" | "income";
   scopeLabel?: string;
 }) {
+  const t = useT();
   const [type, setType] = useState<"all" | "expense" | "income">(fixedType ?? "all");
   const [period, setPeriod] = useState<Period>("all");
   const [cFrom, setCFrom] = useState<string | null>(null);
@@ -66,12 +68,12 @@ export default function ExportSheet({
     setTimeout(() => { setBusy(false); onClose(); }, 600);
   }
 
-  const scope = scopeLabel ?? (cat ? `Категорія «${cat}»` : "Усі транзакції");
+  const scope = scopeLabel ?? (cat ? `${t("det.category")} «${cat}»` : t("exp.scopeAll"));
   const periodText =
-    period === "all" ? "Весь час" :
-    period === "month" ? "Цей місяць" :
-    period === "year" ? "Цей рік" :
-    cFrom && cTo ? `${dm(cFrom)} – ${dm(cTo)}` : "Обрати дати";
+    period === "all" ? t("exp.allTime") :
+    period === "month" ? t("exp.thisMonth") :
+    period === "year" ? t("exp.thisYear") :
+    cFrom && cTo ? `${dm(cFrom)} – ${dm(cTo)}` : t("exp.pickDates");
 
   return (
     <div className={styles.sheetWrap}>
@@ -79,34 +81,34 @@ export default function ExportSheet({
       <div className={styles.sheet}>
         <div className={styles.sheetBody}>
           <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span>Експорт</span>
-            <button className={styles.iconBtn} onClick={onClose} aria-label="Закрити">
+            <span>{t("common.export")}</span>
+            <button className={styles.iconBtn} onClick={onClose} aria-label={t("common.close")}>
               <Icon id="i-x" />
             </button>
           </div>
 
           <div className={styles.donateHint}>
-            <b>{scope}</b> · <b>{periodText}</b> → файл <b>CSV</b> (Excel / Google Sheets / Numbers).
+            <b>{scope}</b> · <b>{periodText}</b> → {t("exp.hintTail")}
           </div>
 
           {!fixedType && (
             <>
-              <div className={styles.fieldLabel} style={{ marginTop: 14 }}>Що експортувати</div>
+              <div className={styles.fieldLabel} style={{ marginTop: 14 }}>{t("exp.what")}</div>
               <div className={styles.pfilter}>
-                <button className={`${styles.pf} ${type === "all" ? styles.pfOn : ""}`} onClick={() => setType("all")}>Усе</button>
-                <button className={`${styles.pf} ${type === "expense" ? styles.pfOn : ""}`} onClick={() => setType("expense")}>Витрати</button>
-                <button className={`${styles.pf} ${type === "income" ? styles.pfOn : ""}`} onClick={() => setType("income")}>Доходи</button>
+                <button className={`${styles.pf} ${type === "all" ? styles.pfOn : ""}`} onClick={() => setType("all")}>{t("exp.all")}</button>
+                <button className={`${styles.pf} ${type === "expense" ? styles.pfOn : ""}`} onClick={() => setType("expense")}>{t("common.expenses")}</button>
+                <button className={`${styles.pf} ${type === "income" ? styles.pfOn : ""}`} onClick={() => setType("income")}>{t("common.incomes")}</button>
               </div>
             </>
           )}
 
-          <div className={styles.fieldLabel} style={{ marginTop: 14 }}>Період</div>
+          <div className={styles.fieldLabel} style={{ marginTop: 14 }}>{t("common.period")}</div>
           <div className={styles.pfilter}>
-            <button className={`${styles.pf} ${period === "all" ? styles.pfOn : ""}`} onClick={() => setPeriod("all")}>Весь час</button>
-            <button className={`${styles.pf} ${period === "month" ? styles.pfOn : ""}`} onClick={() => setPeriod("month")}>Місяць</button>
-            <button className={`${styles.pf} ${period === "year" ? styles.pfOn : ""}`} onClick={() => setPeriod("year")}>Рік</button>
+            <button className={`${styles.pf} ${period === "all" ? styles.pfOn : ""}`} onClick={() => setPeriod("all")}>{t("exp.allTime")}</button>
+            <button className={`${styles.pf} ${period === "month" ? styles.pfOn : ""}`} onClick={() => setPeriod("month")}>{t("period.month")}</button>
+            <button className={`${styles.pf} ${period === "year" ? styles.pfOn : ""}`} onClick={() => setPeriod("year")}>{t("period.year")}</button>
             <span className={styles.vdiv} />
-            <button className={`${styles.cal} ${period === "custom" ? styles.calActive : ""}`} aria-label="Обрати дати" onClick={() => setCalOpen(true)}>
+            <button className={`${styles.cal} ${period === "custom" ? styles.calActive : ""}`} aria-label={t("exp.pickDates")} onClick={() => setCalOpen(true)}>
               <Icon id="i-cal" />
             </button>
           </div>
@@ -114,7 +116,7 @@ export default function ExportSheet({
 
         <div className={styles.sheetActions}>
           <button className={styles.btnPrimary} onClick={download} disabled={busy}>
-            {busy ? "Готую файл…" : "Завантажити CSV"}
+            {busy ? t("exp.preparing") : t("exp.downloadCsv")}
           </button>
         </div>
       </div>
@@ -123,7 +125,7 @@ export default function ExportSheet({
         <CalendarSheet
           initialFrom={cFrom}
           initialTo={cTo}
-          title="Період експорту"
+          title={t("exp.periodTitle")}
           onApply={(f, t) => { setCFrom(f); setCTo(t); setPeriod("custom"); setCalOpen(false); }}
           onReset={() => { setCFrom(null); setCTo(null); setPeriod("all"); setCalOpen(false); }}
           onClose={() => setCalOpen(false)}

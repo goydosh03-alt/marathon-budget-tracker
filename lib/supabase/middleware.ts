@@ -30,11 +30,13 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Не залогінений і йде не на /login та не на /auth → відправляємо на вхід
+  // Не залогінений і йде не на /login, /auth чи публічні сторінки → відправляємо на вхід
+  // /privacy має бути доступна без логіну (вимога App Store / Google OAuth).
   if (
     !user &&
     !request.nextUrl.pathname.startsWith("/login") &&
-    !request.nextUrl.pathname.startsWith("/auth")
+    !request.nextUrl.pathname.startsWith("/auth") &&
+    !request.nextUrl.pathname.startsWith("/privacy")
   ) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";

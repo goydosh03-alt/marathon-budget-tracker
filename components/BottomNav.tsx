@@ -33,20 +33,20 @@ export default function BottomNav({
               <span className={styles.mi} style={{ background: "rgba(110,231,183,0.16)", color: "#6ee7b7" }}>
                 <Icon id="i-income" />
               </span>
-              Додати дохід
+              {t("nav.addIncome")}
             </button>
             <div className={styles.menuDiv} />
             <button className={styles.addItem} onClick={() => openForm("expense")}>
               <span className={styles.mi} style={{ background: "rgba(124,92,255,0.16)", color: "#b9a8ff" }}>
                 <Icon id="i-edit" />
               </span>
-              Витрата вручну
+              {t("nav.addExpense")}
             </button>
             <button className={styles.addItem} onClick={() => openForm("expense")}>
               <span className={styles.mi} style={{ background: "rgba(59,180,245,0.16)", color: "#7cc8f5" }}>
                 <Icon id="i-scan" />
               </span>
-              Сканувати чек
+              {t("nav.scanReceipt")}
             </button>
           </div>
         </>
@@ -67,7 +67,7 @@ export default function BottomNav({
             <Icon id="i-menu" />{t("nav.menu")}
           </Link>
         </div>
-        <button className={styles.cam} onClick={() => setMenuOpen((v) => !v)} aria-label="Додати">
+        <button className={styles.cam} onClick={() => setMenuOpen((v) => !v)} aria-label={t("nav.add")}>
           <span className={`${styles.camInner} ${menuOpen ? styles.camInnerOn : ""}`}>
             <Icon id="i-plus" />
           </span>

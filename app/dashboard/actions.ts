@@ -3,8 +3,14 @@
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { RATE_BASE_PER_HOME, USD_PER, isCurrency, type CurrencyCode } from "@/lib/currency";
-import { isLang } from "@/lib/i18n";
+import { isLang, translate, DEFAULT_LANG, type Lang } from "@/lib/i18n";
 import { revalidatePath } from "next/cache";
+
+// Мова користувача для текстів серверних помилок.
+function uLang(user: { user_metadata?: Record<string, unknown> } | null | undefined): Lang {
+  const lg = user?.user_metadata?.lang;
+  return isLang(lg) ? lg : DEFAULT_LANG;
+}
 
 export type AddTxResult = { ok: boolean; error?: string };
 
@@ -37,8 +43,8 @@ async function readRecurring() {
 
 export async function addRecurring(r: Omit<Recurring, "id" | "lastGenerated">): Promise<AddTxResult> {
   const { supabase, user, recs } = await readRecurring();
-  if (!user) return { ok: false, error: "Не авторизовано" };
-  if (!r.name.trim()) return { ok: false, error: "Введи назву" };
+  if (!user) return { ok: false, error: translate("err.noAuth", DEFAULT_LANG) };
+  if (!r.name.trim()) return { ok: false, error: translate("err.name", uLang(user)) };
   const item: Recurring = { ...r, name: r.name.trim(), id: crypto.randomUUID(), lastGenerated: null };
   const { error } = await supabase.auth.updateUser({ data: { recurring: [...recs, item] } });
   if (error) return { ok: false, error: error.message };
@@ -48,7 +54,7 @@ export async function addRecurring(r: Omit<Recurring, "id" | "lastGenerated">): 
 
 export async function updateRecurring(id: string, fields: Omit<Recurring, "id" | "lastGenerated">): Promise<AddTxResult> {
   const { supabase, user, recs } = await readRecurring();
-  if (!user) return { ok: false, error: "Не авторизовано" };
+  if (!user) return { ok: false, error: translate("err.noAuth", DEFAULT_LANG) };
   const next = recs.map((c) => (c.id === id ? { ...c, ...fields, name: fields.name.trim(), id } : c));
   const { error } = await supabase.auth.updateUser({ data: { recurring: next } });
   if (error) return { ok: false, error: error.message };
@@ -58,7 +64,7 @@ export async function updateRecurring(id: string, fields: Omit<Recurring, "id" |
 
 export async function deleteRecurring(id: string): Promise<AddTxResult> {
   const { supabase, user, recs } = await readRecurring();
-  if (!user) return { ok: false, error: "Не авторизовано" };
+  if (!user) return { ok: false, error: translate("err.noAuth", DEFAULT_LANG) };
   const { error } = await supabase.auth.updateUser({ data: { recurring: recs.filter((c) => c.id !== id) } });
   if (error) return { ok: false, error: error.message };
   revalidatePath("/", "layout");
@@ -144,12 +150,12 @@ export type PushSub = {
 // tzOffsetMin — зсув місцевого часу від UTC у хвилинах (напр. +120 для UTC+2),
 // щоб нагадування спрацьовували в правильну місцеву годину.
 export async function savePushSubscription(sub: PushSub, tzOffsetMin?: number): Promise<AddTxResult> {
-  if (!sub?.endpoint) return { ok: false, error: "Немає підписки" };
+  if (!sub?.endpoint) return { ok: false, error: translate("err.noSub", DEFAULT_LANG) };
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { ok: false, error: "Не авторизовано" };
+  if (!user) return { ok: false, error: translate("err.noAuth", DEFAULT_LANG) };
   const list: PushSub[] = Array.isArray(user.user_metadata?.push_subscriptions)
     ? user.user_metadata.push_subscriptions
     : [];
@@ -173,8 +179,8 @@ async function readReminders() {
 
 export async function addReminder(r: Omit<Reminder, "id">): Promise<AddTxResult> {
   const { supabase, user, items } = await readReminders();
-  if (!user) return { ok: false, error: "Не авторизовано" };
-  if (!r.name.trim()) return { ok: false, error: "Введи назву" };
+  if (!user) return { ok: false, error: translate("err.noAuth", DEFAULT_LANG) };
+  if (!r.name.trim()) return { ok: false, error: translate("err.name", uLang(user)) };
   const item: Reminder = { ...r, name: r.name.trim(), id: crypto.randomUUID() };
   const { error } = await supabase.auth.updateUser({ data: { reminders: [...items, item] } });
   if (error) return { ok: false, error: error.message };
@@ -184,7 +190,7 @@ export async function addReminder(r: Omit<Reminder, "id">): Promise<AddTxResult>
 
 export async function updateReminder(id: string, fields: Omit<Reminder, "id">): Promise<AddTxResult> {
   const { supabase, user, items } = await readReminders();
-  if (!user) return { ok: false, error: "Не авторизовано" };
+  if (!user) return { ok: false, error: translate("err.noAuth", DEFAULT_LANG) };
   const next = items.map((c) => (c.id === id ? { ...c, ...fields, name: fields.name.trim(), id } : c));
   const { error } = await supabase.auth.updateUser({ data: { reminders: next } });
   if (error) return { ok: false, error: error.message };
@@ -194,7 +200,7 @@ export async function updateReminder(id: string, fields: Omit<Reminder, "id">): 
 
 export async function toggleReminder(id: string, enabled: boolean): Promise<AddTxResult> {
   const { supabase, user, items } = await readReminders();
-  if (!user) return { ok: false, error: "Не авторизовано" };
+  if (!user) return { ok: false, error: translate("err.noAuth", DEFAULT_LANG) };
   const next = items.map((c) => (c.id === id ? { ...c, enabled } : c));
   const { error } = await supabase.auth.updateUser({ data: { reminders: next } });
   if (error) return { ok: false, error: error.message };
@@ -204,7 +210,7 @@ export async function toggleReminder(id: string, enabled: boolean): Promise<AddT
 
 export async function deleteReminder(id: string): Promise<AddTxResult> {
   const { supabase, user, items } = await readReminders();
-  if (!user) return { ok: false, error: "Не авторизовано" };
+  if (!user) return { ok: false, error: translate("err.noAuth", DEFAULT_LANG) };
   const { error } = await supabase.auth.updateUser({ data: { reminders: items.filter((c) => c.id !== id) } });
   if (error) return { ok: false, error: error.message };
   revalidatePath("/", "layout");
@@ -225,8 +231,8 @@ export async function addCategory(cat: Omit<UserCategory, "id">): Promise<AddTxR
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { ok: false, error: "Не авторизовано" };
-  if (!cat.name.trim()) return { ok: false, error: "Введи назву" };
+  if (!user) return { ok: false, error: translate("err.noAuth", DEFAULT_LANG) };
+  if (!cat.name.trim()) return { ok: false, error: translate("err.name", uLang(user)) };
 
   const current: UserCategory[] = Array.isArray(user.user_metadata?.categories)
     ? user.user_metadata.categories
@@ -246,7 +252,7 @@ export async function updateCategory(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { ok: false, error: "Не авторизовано" };
+  if (!user) return { ok: false, error: translate("err.noAuth", DEFAULT_LANG) };
 
   const current: UserCategory[] = Array.isArray(user.user_metadata?.categories)
     ? user.user_metadata.categories
@@ -263,7 +269,7 @@ export async function deleteCategory(id: string): Promise<AddTxResult> {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { ok: false, error: "Не авторизовано" };
+  if (!user) return { ok: false, error: translate("err.noAuth", DEFAULT_LANG) };
 
   const current: UserCategory[] = Array.isArray(user.user_metadata?.categories)
     ? user.user_metadata.categories
@@ -281,8 +287,8 @@ export async function updateProfileName(name: string): Promise<AddTxResult> {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { ok: false, error: "Не авторизовано" };
-  if (!name.trim()) return { ok: false, error: "Введи імʼя" };
+  if (!user) return { ok: false, error: translate("err.noAuth", DEFAULT_LANG) };
+  if (!name.trim()) return { ok: false, error: translate("err.nameProfile", uLang(user)) };
   const { error } = await supabase.auth.updateUser({ data: { full_name: name.trim() } });
   if (error) return { ok: false, error: error.message };
   revalidatePath("/", "layout");
@@ -295,7 +301,7 @@ export async function deleteUserAccount(): Promise<AddTxResult> {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { ok: false, error: "Не авторизовано" };
+  if (!user) return { ok: false, error: translate("err.noAuth", DEFAULT_LANG) };
 
   await supabase.from("transactions").delete().eq("user_id", user.id);
   await supabase.from("accounts").delete().eq("user_id", user.id);
@@ -325,7 +331,7 @@ export async function setHideCents(value: boolean): Promise<AddTxResult> {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { ok: false, error: "Не авторизовано" };
+  if (!user) return { ok: false, error: translate("err.noAuth", DEFAULT_LANG) };
   const { error } = await supabase.auth.updateUser({ data: { hide_cents: value } });
   if (error) return { ok: false, error: error.message };
   revalidatePath("/", "layout");
@@ -334,12 +340,12 @@ export async function setHideCents(value: boolean): Promise<AddTxResult> {
 
 // Основна (відображувана) валюта користувача.
 export async function setMainCurrency(code: string): Promise<AddTxResult> {
-  if (!isCurrency(code)) return { ok: false, error: "Невідома валюта" };
+  if (!isCurrency(code)) return { ok: false, error: translate("err.unknownCurrency", DEFAULT_LANG) };
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { ok: false, error: "Не авторизовано" };
+  if (!user) return { ok: false, error: translate("err.noAuth", DEFAULT_LANG) };
   const { error } = await supabase.auth.updateUser({ data: { main_currency: code } });
   if (error) return { ok: false, error: error.message };
   revalidatePath("/", "layout");
@@ -348,12 +354,12 @@ export async function setMainCurrency(code: string): Promise<AddTxResult> {
 
 // Мова інтерфейсу.
 export async function setLanguage(code: string): Promise<AddTxResult> {
-  if (!isLang(code)) return { ok: false, error: "Невідома мова" };
+  if (!isLang(code)) return { ok: false, error: translate("err.unknownLang", DEFAULT_LANG) };
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { ok: false, error: "Не авторизовано" };
+  if (!user) return { ok: false, error: translate("err.noAuth", DEFAULT_LANG) };
   const { error } = await supabase.auth.updateUser({ data: { lang: code } });
   if (error) return { ok: false, error: error.message };
   revalidatePath("/", "layout");
@@ -362,12 +368,12 @@ export async function setLanguage(code: string): Promise<AddTxResult> {
 
 // Конвертована (друга) валюта — для рядка "≈ ...".
 export async function setConvertCurrency(code: string): Promise<AddTxResult> {
-  if (!isCurrency(code)) return { ok: false, error: "Невідома валюта" };
+  if (!isCurrency(code)) return { ok: false, error: translate("err.unknownCurrency", DEFAULT_LANG) };
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { ok: false, error: "Не авторизовано" };
+  if (!user) return { ok: false, error: translate("err.noAuth", DEFAULT_LANG) };
   const { error } = await supabase.auth.updateUser({ data: { convert_currency: code } });
   if (error) return { ok: false, error: error.message };
   revalidatePath("/", "layout");
@@ -389,10 +395,10 @@ export async function addTransaction(input: {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { ok: false, error: "Не авторизовано" };
+  if (!user) return { ok: false, error: translate("err.noAuth", DEFAULT_LANG) };
 
   if (!input.amountHome || input.amountHome <= 0) {
-    return { ok: false, error: "Введи суму більше нуля" };
+    return { ok: false, error: translate("form.errAmount", uLang(user)) };
   }
 
   const mc: CurrencyCode = isCurrency(user.user_metadata?.main_currency)
@@ -441,9 +447,9 @@ export async function updateTransaction(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { ok: false, error: "Не авторизовано" };
+  if (!user) return { ok: false, error: translate("err.noAuth", DEFAULT_LANG) };
   if (!input.amountHome || input.amountHome <= 0) {
-    return { ok: false, error: "Введи суму більше нуля" };
+    return { ok: false, error: translate("form.errAmount", uLang(user)) };
   }
 
   const patch: Record<string, unknown> = {
@@ -477,8 +483,8 @@ export async function createAccount(input: {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { ok: false, error: "Не авторизовано" };
-  if (!input.name.trim()) return { ok: false, error: "Введи назву рахунку" };
+  if (!user) return { ok: false, error: translate("err.noAuth", DEFAULT_LANG) };
+  if (!input.name.trim()) return { ok: false, error: translate("err.nameAcc", uLang(user)) };
 
   const { data, error } = await supabase
     .from("accounts")
@@ -502,7 +508,7 @@ export async function updateTransactionItems(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { ok: false, error: "Не авторизовано" };
+  if (!user) return { ok: false, error: translate("err.noAuth", DEFAULT_LANG) };
 
   const { error } = await supabase
     .from("transactions")
@@ -534,7 +540,7 @@ export async function deleteTransaction(id: string): Promise<AddTxResult> {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { ok: false, error: "Не авторизовано" };
+  if (!user) return { ok: false, error: translate("err.noAuth", DEFAULT_LANG) };
 
   const { error } = await supabase.from("transactions").delete().eq("id", id);
   if (error) return { ok: false, error: error.message };
@@ -548,8 +554,8 @@ export async function renameAccount(id: string, name: string): Promise<AddTxResu
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { ok: false, error: "Не авторизовано" };
-  if (!name.trim()) return { ok: false, error: "Введи назву" };
+  if (!user) return { ok: false, error: translate("err.noAuth", DEFAULT_LANG) };
+  if (!name.trim()) return { ok: false, error: translate("err.name", uLang(user)) };
 
   const { error } = await supabase
     .from("accounts")
@@ -568,7 +574,7 @@ export async function deleteAccount(id: string): Promise<AddTxResult> {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { ok: false, error: "Не авторизовано" };
+  if (!user) return { ok: false, error: translate("err.noAuth", DEFAULT_LANG) };
 
   // відвʼязуємо транзакції від рахунку, щоб не впертись у FK
   await supabase.from("transactions").update({ account_id: null }).eq("account_id", id);
@@ -586,7 +592,7 @@ export async function deleteAllTransactions(): Promise<AddTxResult> {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { ok: false, error: "Не авторизовано" };
+  if (!user) return { ok: false, error: translate("err.noAuth", DEFAULT_LANG) };
 
   const { error } = await supabase.from("transactions").delete().eq("user_id", user.id);
   if (error) return { ok: false, error: error.message };

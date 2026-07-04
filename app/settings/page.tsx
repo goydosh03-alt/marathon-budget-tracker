@@ -4,6 +4,7 @@ import { IconSprite } from "@/components/IconSprite";
 import SubHeader from "@/components/SubHeader";
 import SettingsClient from "@/components/SettingsClient";
 import styles from "@/app/dashboard/dashboard.module.css";
+import { DEFAULT_LANG, isLang, translate } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +14,9 @@ export default async function SettingsPage() {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
+
+  const lg = user.user_metadata?.lang;
+  const lang = isLang(lg) ? lg : DEFAULT_LANG;
 
   const { data: accounts } = await supabase
     .from("accounts")
@@ -28,7 +32,7 @@ export default async function SettingsPage() {
   return (
     <div className={styles.screen}>
       <IconSprite />
-      <SubHeader title="Налаштування" back="/menu" />
+      <SubHeader title={translate("menu.settings", lang)} back="/menu" />
 
       <SettingsClient accounts={accounts ?? []} txCount={count ?? 0} />
     </div>

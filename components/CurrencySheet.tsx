@@ -5,11 +5,12 @@ import { useRouter } from "next/navigation";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon } from "@/components/IconSprite";
 import { CURRENCIES, currencyMeta, convert, formatMoney, type CurrencyCode } from "@/lib/currency";
-import { useCurrency, useConvertCurrency, useRates } from "@/components/SettingsProvider";
+import { useCurrency, useConvertCurrency, useRates, useT } from "@/components/SettingsProvider";
 import { setMainCurrency, setConvertCurrency } from "@/app/dashboard/actions";
 
 export default function CurrencySheet({ open, onClose }: { open: boolean; onClose: () => void }) {
   const router = useRouter();
+  const t = useT();
   const [saving, start] = useTransition();
   const ctxMain = useCurrency();
   const ctxConv = useConvertCurrency();
@@ -65,13 +66,13 @@ export default function CurrencySheet({ open, onClose }: { open: boolean; onClos
       <div className={styles.sheet}>
         <div className={styles.sheetBody}>
           <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span>Валюта</span>
-            <button className={styles.iconBtn} onClick={onClose} aria-label="Закрити">
+            <span>{t("menu.currency")}</span>
+            <button className={styles.iconBtn} onClick={onClose} aria-label={t("common.close")}>
               <Icon id="i-x" />
             </button>
           </div>
 
-          <div className={styles.fieldLabel}>Основна валюта</div>
+          <div className={styles.fieldLabel}>{t("menu.mainCurrency")}</div>
           {pick(main, setMain)}
 
           <div className={styles.curSwap}>
@@ -79,13 +80,13 @@ export default function CurrencySheet({ open, onClose }: { open: boolean; onClos
             <span className={styles.curSwapRate}>{rateText}</span>
           </div>
 
-          <div className={styles.fieldLabel}>Конвертується в</div>
+          <div className={styles.fieldLabel}>{t("cur.convTo")}</div>
           {pick(conv, setConv)}
         </div>
 
         <div className={styles.sheetActions}>
           <button className={styles.btnPrimary} onClick={apply} disabled={saving}>
-            {saving ? "Зберігаю…" : changed ? "Застосувати" : "Готово"}
+            {saving ? t("form.saving") : changed ? t("common.apply") : t("common.done")}
           </button>
         </div>
       </div>

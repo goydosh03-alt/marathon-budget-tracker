@@ -6,6 +6,7 @@ import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon, IconSprite } from "@/components/IconSprite";
 import SubHeader from "@/components/SubHeader";
 import EmptyState from "@/components/EmptyState";
+import { useT } from "@/components/SettingsProvider";
 import { addCategory, updateCategory, deleteCategory, type UserCategory } from "@/app/dashboard/actions";
 
 const EMOJIS = [
@@ -20,6 +21,7 @@ const COLORS = [
 ];
 
 export default function CategoriesClient({ categories }: { categories: UserCategory[] }) {
+  const t = useT();
   const [showAdd, setShowAdd] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [name, setName] = useState("");
@@ -62,7 +64,7 @@ export default function CategoriesClient({ categories }: { categories: UserCateg
   }
 
   function remove(id: string) {
-    if (!window.confirm("Видалити категорію?")) return;
+    if (!window.confirm(t("cats.confirmDel"))) return;
     start(async () => {
       await deleteCategory(id);
       router.refresh();
@@ -72,10 +74,10 @@ export default function CategoriesClient({ categories }: { categories: UserCateg
   return (
     <div className={styles.screen}>
       <IconSprite />
-      <SubHeader title="Категорії" back="/menu" />
+      <SubHeader title={t("menu.categories")} back="/menu" />
 
       {categories.length === 0 ? (
-        <EmptyState icon="i-list" title="Своїх категорій ще нема" hint="Додай першу — назва, колір та іконка." />
+        <EmptyState icon="i-list" title={t("cats.emptyTitle")} hint={t("cats.emptyHint")} />
       ) : (
         <div className={styles.setCard}>
           {categories.map((c) => (
@@ -83,12 +85,12 @@ export default function CategoriesClient({ categories }: { categories: UserCateg
               <span className={styles.catDot} style={{ background: c.color + "26" }}>{c.emoji}</span>
               <div className={styles.catMid2}>
                 <span className={styles.catName2}>{c.name}</span>
-                <span className={styles.catType2}>{c.type === "income" ? "Дохід" : "Витрата"}</span>
+                <span className={styles.catType2}>{c.type === "income" ? t("common.income") : t("common.expense")}</span>
               </div>
               <button
                 className={`${styles.setAccBtn} ${styles.setAccDel}`}
                 onClick={(e) => { e.stopPropagation(); remove(c.id); }}
-                aria-label="Видалити"
+                aria-label={t("common.delete")}
               >
                 <Icon id="i-trash" />
               </button>
@@ -98,7 +100,7 @@ export default function CategoriesClient({ categories }: { categories: UserCateg
       )}
 
       <button className={styles.addLineBtn} onClick={openNew}>
-        <Icon id="i-plus" /> Додати категорію
+        <Icon id="i-plus" /> {t("cats.add")}
       </button>
 
       {showAdd && (
@@ -107,48 +109,48 @@ export default function CategoriesClient({ categories }: { categories: UserCateg
           <div className={styles.sheet}>
             <div className={styles.sheetBody}>
               <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span>{editId ? "Редагувати категорію" : "Нова категорія"}</span>
-                <button className={styles.iconBtn} onClick={() => setShowAdd(false)} aria-label="Закрити">
+                <span>{editId ? t("cats.editTitle") : t("cats.newTitle")}</span>
+                <button className={styles.iconBtn} onClick={() => setShowAdd(false)} aria-label={t("common.close")}>
                   <Icon id="i-x" />
                 </button>
               </div>
 
               <div className={styles.preview}>
                 <span className={styles.catDot} style={{ background: color + "26" }}>{emoji}</span>
-                <span className={styles.previewName}>{name.trim() || "Назва категорії"}</span>
+                <span className={styles.previewName}>{name.trim() || t("cats.nameDefault")}</span>
               </div>
 
               <input
                 className={styles.confirmInput}
-                placeholder="Назва (напр. Кава)"
+                placeholder={t("cats.namePh")}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 autoFocus
               />
 
               <div className={styles.tabs}>
-                <button className={`${styles.tab} ${type === "expense" ? styles.tabOnExp : ""}`} onClick={() => setType("expense")}>Витрата</button>
-                <button className={`${styles.tab} ${type === "income" ? styles.tabOnInc : ""}`} onClick={() => setType("income")}>Дохід</button>
+                <button className={`${styles.tab} ${type === "expense" ? styles.tabOnExp : ""}`} onClick={() => setType("expense")}>{t("common.expense")}</button>
+                <button className={`${styles.tab} ${type === "income" ? styles.tabOnInc : ""}`} onClick={() => setType("income")}>{t("common.income")}</button>
               </div>
 
-              <div className={styles.fieldLabel}>Іконка</div>
+              <div className={styles.fieldLabel}>{t("cats.icon")}</div>
               <div className={styles.emojiGrid}>
                 {EMOJIS.map((e) => (
                   <button key={e} className={`${styles.emojiBtn} ${emoji === e ? styles.emojiBtnOn : ""}`} onClick={() => setEmoji(e)}>{e}</button>
                 ))}
               </div>
 
-              <div className={styles.fieldLabel}>Колір</div>
+              <div className={styles.fieldLabel}>{t("cats.color")}</div>
               <div className={styles.colorGrid}>
                 {COLORS.map((c) => (
-                  <button key={c} className={`${styles.colorBtn} ${color === c ? styles.colorBtnOn : ""}`} style={{ background: c }} onClick={() => setColor(c)} aria-label="Колір" />
+                  <button key={c} className={`${styles.colorBtn} ${color === c ? styles.colorBtnOn : ""}`} style={{ background: c }} onClick={() => setColor(c)} aria-label={t("cats.color")} />
                 ))}
               </div>
             </div>
 
             <div className={styles.sheetActions}>
               <button className={styles.btnPrimary} onClick={save} disabled={saving || !name.trim()}>
-                {saving ? "Зберігаю…" : editId ? "Зберегти" : "Створити"}
+                {saving ? t("form.saving") : editId ? t("common.save") : t("common.create")}
               </button>
             </div>
           </div>

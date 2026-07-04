@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import webpush from "web-push";
 import { USD_PER, isCurrency, type CurrencyCode } from "@/lib/currency";
+import { isLang, translate, DEFAULT_LANG } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -67,6 +68,9 @@ export async function GET(req: NextRequest) {
     const subs: PushSub[] = Array.isArray(meta.push_subscriptions) ? (meta.push_subscriptions as PushSub[]) : [];
     if (!subs.length) continue;
 
+    // мова користувача для текстів пушів
+    const lang = isLang(meta.lang) ? meta.lang : DEFAULT_LANG;
+
     // місцевий час користувача (зсув у хвилинах від UTC)
     const tz = typeof meta.push_tz === "number" ? (meta.push_tz as number) : 0;
     const local = new Date(now.getTime() + tz * 60000);
@@ -125,8 +129,8 @@ export async function GET(req: NextRequest) {
       notifications.push({
         title: "Snapcost",
         body: inserts.length === 1
-          ? `Регулярний платіж записано: ${first.merchant || first.category}`
-          : `Записано регулярних платежів: ${inserts.length}`,
+          ? `${translate("push.recurringOne", lang)} ${first.merchant || first.category}`
+          : `${translate("push.recurringMany", lang)} ${inserts.length}`,
         url: "/dashboard",
         tag: "recurring",
       });
@@ -144,7 +148,7 @@ export async function GET(req: NextRequest) {
         (rm.freq === "weekends" && isWeekend) ||
         (rm.freq === "weekly" && dow === 1);
       if (!freqOk || rm.lastSent === today) return rm;
-      notifications.push({ title: rm.name || "Нагадування", body: "Не забудь записати витрати 💸", url: "/dashboard", tag: "rem-" + rm.id });
+      notifications.push({ title: rm.name || translate("push.reminderTitle", lang), body: translate("push.reminderBody", lang), url: "/dashboard", tag: "rem-" + rm.id });
       metaChanged = true;
       return { ...rm, lastSent: today };
     });

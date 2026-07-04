@@ -155,6 +155,212 @@ export const STRINGS = {
   "form.errSave": { uk: "Помилка збереження", en: "Save error", ru: "Ошибка сохранения" },
   "form.errScan": { uk: "Не вдалося прочитати чек", en: "Couldn't read the receipt", ru: "Не удалось прочитать чек" },
   "form.errDelete": { uk: "Помилка видалення", en: "Delete error", ru: "Ошибка удаления" },
+
+  // спільне (нове)
+  "common.error": { uk: "Помилка", en: "Error", ru: "Ошибка" },
+  "common.create": { uk: "Створити", en: "Create", ru: "Создать" },
+  "common.creating": { uk: "Створюю…", en: "Creating…", ru: "Создаю…" },
+  "common.deleting": { uk: "Видаляю…", en: "Deleting…", ru: "Удаляю…" },
+  "common.type": { uk: "Тип", en: "Type", ru: "Тип" },
+  "common.incomes": { uk: "Доходи", en: "Income", ru: "Доходы" },
+  "confirm.yes": { uk: "так", en: "yes", ru: "да" },
+  "confirm.deleteWord": { uk: "видалити", en: "delete", ru: "удалить" },
+  "confirm.typeWord": { uk: "Щоб підтвердити, напиши слово", en: "To confirm, type the word", ru: "Чтобы подтвердить, напиши слово" },
+
+  // типи рахунків
+  "acc.cash": { uk: "Готівка", en: "Cash", ru: "Наличные" },
+  "acc.card": { uk: "Картка", en: "Card", ru: "Карта" },
+  "acc.savings": { uk: "Заощадження", en: "Savings", ru: "Сбережения" },
+
+  // налаштування
+  "set.accounts": { uk: "Рахунки", en: "Accounts", ru: "Счета" },
+  "set.addAccount": { uk: "Додати рахунок", en: "Add account", ru: "Добавить счёт" },
+  "set.data": { uk: "Дані", en: "Data", ru: "Данные" },
+  "set.total": { uk: "Усього транзакцій", en: "Total transactions", ru: "Всего транзакций" },
+  "set.irreversible": { uk: "Видалення безповоротне.", en: "Deletion is permanent.", ru: "Удаление необратимо." },
+  "set.deleteAll": { uk: "Видалити всі транзакції", en: "Delete all transactions", ru: "Удалить все транзакции" },
+  "set.clearTitle": { uk: "Видалити всі транзакції?", en: "Delete all transactions?", ru: "Удалить все транзакции?" },
+  "set.allWord": { uk: "Усі", en: "All", ru: "Все" },
+  "set.clearBody": { uk: "транзакцій буде видалено безповоротно. Рахунки залишаться.", en: "transactions will be permanently deleted. Accounts will remain.", ru: "транзакций будет удалено безвозвратно. Счета останутся." },
+  "set.newAccount": { uk: "Новий рахунок", en: "New account", ru: "Новый счёт" },
+  "set.accNamePh": { uk: "Назва (напр. Картка mBank)", en: "Name (e.g. mBank card)", ru: "Название (напр. карта mBank)" },
+  "set.delAccTitle": { uk: "Видалити рахунок?", en: "Delete account?", ru: "Удалить счёт?" },
+  "set.delAccPre": { uk: "Рахунок", en: "The account", ru: "Счёт" },
+  "set.delAccPost": { uk: "буде видалено. Транзакції залишаться, але без рахунку.", en: "will be deleted. Transactions will remain, but without an account.", ru: "будет удалён. Транзакции останутся, но без счёта." },
+
+  // нагадування
+  "rem.noticeTitle": { uk: "Зверни увагу:", en: "Note:", ru: "Обрати внимание:" },
+  "rem.noticeBody": { uk: "сповіщення дзвонять лише коли Snapcost встановлений як застосунок (PWA) на телефоні. У браузері — лише як налаштування.", en: "notifications only ring when Snapcost is installed as an app (PWA) on your phone. In the browser it's just a setting.", ru: "уведомления звонят только когда Snapcost установлен как приложение (PWA) на телефоне. В браузере — только как настройка." },
+  "rem.allow": { uk: "Дозволити сповіщення", en: "Allow notifications", ru: "Разрешить уведомления" },
+  "rem.blocked": { uk: "Сповіщення заблоковані. Увімкни їх у налаштуваннях браузера/телефону.", en: "Notifications are blocked. Enable them in your browser/phone settings.", ru: "Уведомления заблокированы. Включи их в настройках браузера/телефона." },
+  "rem.emptyTitle": { uk: "Ще немає нагадувань", en: "No reminders yet", ru: "Пока нет напоминаний" },
+  "rem.emptyHint": { uk: "Додай нагадування, щоб не забувати записувати витрати.", en: "Add a reminder so you don't forget to log expenses.", ru: "Добавь напоминание, чтобы не забывать записывать расходы." },
+  "rem.add": { uk: "Додати нагадування", en: "Add reminder", ru: "Добавить напоминание" },
+  "rem.editTitle": { uk: "Редагувати нагадування", en: "Edit reminder", ru: "Изменить напоминание" },
+  "rem.newTitle": { uk: "Нове нагадування", en: "New reminder", ru: "Новое напоминание" },
+  "rem.namePh": { uk: "Назва (напр. Записати витрати)", en: "Name (e.g. Log expenses)", ru: "Название (напр. Записать расходы)" },
+  "rem.time": { uk: "Час", en: "Time", ru: "Время" },
+  "rem.freq": { uk: "Частота", en: "Frequency", ru: "Частота" },
+  "freq.daily": { uk: "Щодня", en: "Daily", ru: "Ежедневно" },
+  "freq.weekdays": { uk: "Будні", en: "Weekdays", ru: "Будни" },
+  "freq.weekends": { uk: "Вихідні", en: "Weekends", ru: "Выходные" },
+  "freq.weekly": { uk: "Щотижня", en: "Weekly", ru: "Еженедельно" },
+  "freqL.daily": { uk: "Щодня", en: "Daily", ru: "Ежедневно" },
+  "freqL.weekdays": { uk: "По буднях", en: "On weekdays", ru: "По будням" },
+  "freqL.weekends": { uk: "У вихідні", en: "On weekends", ru: "По выходным" },
+  "freqL.weekly": { uk: "Щотижня", en: "Weekly", ru: "Еженедельно" },
+  "rem.enabled": { uk: "Увімкнено", en: "Enabled", ru: "Включено" },
+  "rem.activeSub": { uk: "Нагадування активне", en: "Reminder is active", ru: "Напоминание активно" },
+  "rem.offSub": { uk: "Вимкнено", en: "Off", ru: "Выключено" },
+  "rem.notifOn": { uk: "Сповіщення увімкнено ✓", en: "Notifications enabled ✓", ru: "Уведомления включены ✓" },
+  "rem.defaultName": { uk: "Записати витрати", en: "Log expenses", ru: "Записать расходы" },
+
+  // регулярні платежі
+  "rec.emptyTitle": { uk: "Ще немає регулярних", en: "No recurring yet", ru: "Пока нет регулярных" },
+  "rec.emptyHint": { uk: "Додай підписку чи рахунок — додаватиметься сам щомісяця.", en: "Add a subscription or bill — it will be added automatically every month.", ru: "Добавь подписку или счёт — будет добавляться сам каждый месяц." },
+  "rec.add": { uk: "Додати регулярний платіж", en: "Add recurring payment", ru: "Добавить регулярный платёж" },
+  "rec.editTitle": { uk: "Редагувати платіж", en: "Edit payment", ru: "Изменить платёж" },
+  "rec.newTitle": { uk: "Новий платіж", en: "New payment", ru: "Новый платёж" },
+  "rec.namePh": { uk: "Назва (напр. Netflix)", en: "Name (e.g. Netflix)", ru: "Название (напр. Netflix)" },
+  "rec.freqDay": { uk: "Частота · число", en: "Frequency · day", ru: "Частота · число" },
+  "rec.monthly": { uk: "Щомісяця", en: "Monthly", ru: "Ежемесячно" },
+  "rec.dayPre": { uk: "", en: "Day ", ru: "" },
+  "rec.dayPost": { uk: "-го числа", en: " of the month", ru: "-го числа" },
+  "rec.auto": { uk: "авто", en: "auto", ru: "авто" },
+  "rec.autoAdd": { uk: "Додати автоматично", en: "Add automatically", ru: "Добавлять автоматически" },
+  "rec.autoOn": { uk: "Транзакція створюється сама", en: "Transaction is created automatically", ru: "Транзакция создаётся сама" },
+  "rec.autoOff": { uk: "Лише нагадування", en: "Reminder only", ru: "Только напоминание" },
+  "rec.startDate": { uk: "Дата початку", en: "Start date", ru: "Дата начала" },
+
+  // профіль
+  "prof.title": { uk: "Профіль", en: "Profile", ru: "Профиль" },
+  "prof.name": { uk: "Імʼя", en: "Name", ru: "Имя" },
+  "prof.namePh": { uk: "Твоє імʼя", en: "Your name", ru: "Твоё имя" },
+  "prof.account": { uk: "Акаунт", en: "Account", ru: "Аккаунт" },
+  "prof.connected": { uk: "Підключено", en: "Connected", ru: "Подключено" },
+  "prof.viaGoogle": { uk: "Вхід через Google", en: "Signed in with Google", ru: "Вход через Google" },
+  "prof.viaApple": { uk: "Вхід через Apple", en: "Signed in with Apple", ru: "Вход через Apple" },
+  "prof.viaEmail": { uk: "Вхід через пошту", en: "Signed in with email", ru: "Вход через почту" },
+  "prof.signout": { uk: "Вийти з акаунта", en: "Sign out", ru: "Выйти из аккаунта" },
+  "prof.danger": { uk: "Небезпечна зона", en: "Danger zone", ru: "Опасная зона" },
+  "prof.deleteWarn": { uk: "Видалення акаунта стирає всі дані безповоротно.", en: "Deleting your account erases all data permanently.", ru: "Удаление аккаунта стирает все данные безвозвратно." },
+  "prof.deleteBtn": { uk: "Видалити акаунт", en: "Delete account", ru: "Удалить аккаунт" },
+  "prof.delTitle": { uk: "Видалити акаунт?", en: "Delete account?", ru: "Удалить аккаунт?" },
+  "prof.delBody": { uk: "Усі транзакції, рахунки й категорії будуть видалені", en: "All transactions, accounts and categories will be deleted", ru: "Все транзакции, счета и категории будут удалены" },
+  "prof.forever": { uk: "назавжди", en: "forever", ru: "навсегда" },
+  "prof.friend": { uk: "Друже", en: "Friend", ru: "Друг" },
+
+  // експорт
+  "exp.what": { uk: "Що експортувати", en: "What to export", ru: "Что экспортировать" },
+  "exp.all": { uk: "Усе", en: "All", ru: "Всё" },
+  "exp.allTime": { uk: "Весь час", en: "All time", ru: "Всё время" },
+  "exp.thisMonth": { uk: "Цей місяць", en: "This month", ru: "Этот месяц" },
+  "exp.thisYear": { uk: "Цей рік", en: "This year", ru: "Этот год" },
+  "exp.pickDates": { uk: "Обрати дати", en: "Pick dates", ru: "Выбрать даты" },
+  "exp.scopeAll": { uk: "Усі транзакції", en: "All transactions", ru: "Все транзакции" },
+  "exp.hintTail": { uk: "файл CSV (Excel / Google Sheets / Numbers).", en: "CSV file (Excel / Google Sheets / Numbers).", ru: "файл CSV (Excel / Google Sheets / Numbers)." },
+  "exp.preparing": { uk: "Готую файл…", en: "Preparing file…", ru: "Готовлю файл…" },
+  "exp.downloadCsv": { uk: "Завантажити CSV", en: "Download CSV", ru: "Скачать CSV" },
+  "exp.periodTitle": { uk: "Період експорту", en: "Export period", ru: "Период экспорта" },
+
+  // категорії (свої)
+  "cats.emptyTitle": { uk: "Своїх категорій ще нема", en: "No custom categories yet", ru: "Своих категорий пока нет" },
+  "cats.emptyHint": { uk: "Додай першу — назва, колір та іконка.", en: "Add the first one — name, color and icon.", ru: "Добавь первую — название, цвет и иконка." },
+  "cats.add": { uk: "Додати категорію", en: "Add category", ru: "Добавить категорию" },
+  "cats.newTitle": { uk: "Нова категорія", en: "New category", ru: "Новая категория" },
+  "cats.editTitle": { uk: "Редагувати категорію", en: "Edit category", ru: "Изменить категорию" },
+  "cats.namePh": { uk: "Назва (напр. Кава)", en: "Name (e.g. Coffee)", ru: "Название (напр. Кофе)" },
+  "cats.nameDefault": { uk: "Назва категорії", en: "Category name", ru: "Название категории" },
+  "cats.icon": { uk: "Іконка", en: "Icon", ru: "Иконка" },
+  "cats.color": { uk: "Колір", en: "Color", ru: "Цвет" },
+  "cats.confirmDel": { uk: "Видалити категорію?", en: "Delete category?", ru: "Удалить категорию?" },
+
+  // валюта
+  "cur.info": { uk: "В основній валюті ти вводиш і бачиш суми. Валюта конвертації показується поряд як «≈» — перерахована з основної за курсом. Курс оновлюється автоматично щогодини.", en: "You enter and see amounts in the main currency. The conversion currency is shown next to it as “≈” — converted from the main at the current rate. The rate updates automatically every hour.", ru: "В основной валюте ты вводишь и видишь суммы. Валюта конвертации показывается рядом как «≈» — пересчитанная из основной по курсу. Курс обновляется автоматически каждый час." },
+  "cur.mainSub": { uk: "У ній вводиш і бачиш суми", en: "You enter and see amounts in it", ru: "В ней вводишь и видишь суммы" },
+  "cur.convLabel": { uk: "Валюта конвертації · ≈", en: "Conversion currency · ≈", ru: "Валюта конвертации · ≈" },
+  "cur.convSub": { uk: "Показується поряд, перерахована з основної", en: "Shown next to it, converted from the main", ru: "Показывается рядом, пересчитанная из основной" },
+  "cur.convTo": { uk: "Конвертується в", en: "Converts to", ru: "Конвертируется в" },
+
+  // калькулятор
+  "calc.sum": { uk: "Сума", en: "Amount", ru: "Сумма" },
+  "calc.erase": { uk: "Стерти", en: "Erase", ru: "Стереть" },
+
+  // сповіщення (дзвіночок)
+  "notif.title": { uk: "Сповіщення", en: "Notifications", ru: "Уведомления" },
+  "notif.emptyTitle": { uk: "Сповіщень поки немає", en: "No notifications yet", ru: "Уведомлений пока нет" },
+  "notif.emptyHint": { uk: "Тут зʼявлятимуться нагадування та записані регулярні платежі.", en: "Reminders and logged recurring payments will appear here.", ru: "Здесь будут появляться напоминания и записанные регулярные платежи." },
+  "notif.markAll": { uk: "Позначити всі прочитаними", en: "Mark all as read", ru: "Отметить все прочитанными" },
+
+  // перегляд транзакції / тости
+  "tv.deleted": { uk: "Видалено", en: "Deleted", ru: "Удалено" },
+  "tv.record": { uk: "запис", en: "entry", ru: "запись" },
+
+  // "скоро"
+  "soon.title": { uk: "Скоро тут зʼявиться", en: "Coming soon", ru: "Скоро здесь появится" },
+  "soon.body": { uk: "ще в розробці. Ми працюємо над цим — невдовзі буде готово.", en: "is still in development. We're working on it — it'll be ready soon.", ru: "ещё в разработке. Мы работаем над этим — скоро будет готово." },
+  "soon.thisFeature": { uk: "Ця функція", en: "This feature", ru: "Эта функция" },
+
+  // донат
+  "don.title": { uk: "Підтримати автора 💛", en: "Support the author 💛", ru: "Поддержать автора 💛" },
+  "don.text": { uk: "Snapcost безкоштовний, без реклами й підписок. Якщо хочеш віддячити — будь-яка сума на свій розсуд. Тапни рядок, щоб скопіювати. Дякую 🙏", en: "Snapcost is free, with no ads or subscriptions. If you'd like to say thanks — any amount you wish. Tap a row to copy. Thank you 🙏", ru: "Snapcost бесплатный, без рекламы и подписок. Если хочешь отблагодарить — любая сумма на твоё усмотрение. Тапни строку, чтобы скопировать. Спасибо 🙏" },
+  "don.crypto": { uk: "Крипто", en: "Crypto", ru: "Крипто" },
+  "don.bank": { uk: "Банк · EUR (Wise)", en: "Bank · EUR (Wise)", ru: "Банк · EUR (Wise)" },
+  "don.recipient": { uk: "Отримувач", en: "Recipient", ru: "Получатель" },
+  "don.bankAddr": { uk: "Адреса банку", en: "Bank address", ru: "Адрес банка" },
+
+  // календар
+  "cal.reset": { uk: "Скинути", en: "Reset", ru: "Сбросить" },
+  "cal.prev": { uk: "Попередній місяць", en: "Previous month", ru: "Предыдущий месяц" },
+  "cal.next": { uk: "Наступний місяць", en: "Next month", ru: "Следующий месяц" },
+
+  // приховування сум
+  "eye.show": { uk: "Показати суми", en: "Show amounts", ru: "Показать суммы" },
+  "eye.hide": { uk: "Сховати суми", en: "Hide amounts", ru: "Скрыть суммы" },
+
+  // навбар — меню "+"
+  "nav.addIncome": { uk: "Додати дохід", en: "Add income", ru: "Добавить доход" },
+  "nav.addExpense": { uk: "Витрата вручну", en: "Expense manually", ru: "Расход вручную" },
+  "nav.scanReceipt": { uk: "Сканувати чек", en: "Scan receipt", ru: "Сканировать чек" },
+
+  // логін
+  "login.tagline": { uk: "Клац чек — бачиш витрати у своїй валюті", en: "Snap a receipt — see expenses in your currency", ru: "Щёлкни чек — видишь расходы в своей валюте" },
+  "login.google": { uk: "Увійти через Google", en: "Sign in with Google", ru: "Войти через Google" },
+  "login.orEmail": { uk: "або поштою", en: "or with email", ru: "или по почте" },
+  "login.sentPre": { uk: "✉️ Лист із посиланням надіслано на", en: "✉️ A sign-in link has been sent to", ru: "✉️ Письмо со ссылкой отправлено на" },
+  "login.sentPost": { uk: "Відкрий пошту і натисни на посилання.", en: "Open your inbox and tap the link.", ru: "Открой почту и нажми на ссылку." },
+  "login.emailPh": { uk: "твій@email.com", en: "you@email.com", ru: "твой@email.com" },
+  "login.sending": { uk: "Надсилаю…", en: "Sending…", ru: "Отправляю…" },
+  "login.sendLink": { uk: "Надіслати посилання", en: "Send link", ru: "Отправить ссылку" },
+  "login.googleErr": { uk: "Не вдалося отримати посилання Google", en: "Couldn't get the Google sign-in link", ru: "Не удалось получить ссылку Google" },
+
+  // серверні помилки (actions)
+  "err.noAuth": { uk: "Не авторизовано", en: "Not signed in", ru: "Не авторизован" },
+  "err.name": { uk: "Введи назву", en: "Enter a name", ru: "Введи название" },
+  "err.nameAcc": { uk: "Введи назву рахунку", en: "Enter an account name", ru: "Введи название счёта" },
+  "err.nameProfile": { uk: "Введи імʼя", en: "Enter a name", ru: "Введи имя" },
+  "err.noSub": { uk: "Немає підписки", en: "No subscription", ru: "Нет подписки" },
+  "err.unknownCurrency": { uk: "Невідома валюта", en: "Unknown currency", ru: "Неизвестная валюта" },
+  "err.unknownLang": { uk: "Невідома мова", en: "Unknown language", ru: "Неизвестный язык" },
+
+  // push-повідомлення
+  "push.recurringOne": { uk: "Регулярний платіж записано:", en: "Recurring payment logged:", ru: "Регулярный платёж записан:" },
+  "push.recurringMany": { uk: "Записано регулярних платежів:", en: "Recurring payments logged:", ru: "Записано регулярных платежей:" },
+  "push.reminderTitle": { uk: "Нагадування", en: "Reminder", ru: "Напоминание" },
+  "push.reminderBody": { uk: "Не забудь записати витрати 💸", en: "Don't forget to log your expenses 💸", ru: "Не забудь записать расходы 💸" },
+
+  // правові сторінки
+  "legal.privacy": { uk: "Політика конфіденційності", en: "Privacy Policy", ru: "Политика конфиденциальности" },
+  "legal.privacy.sub": { uk: "Як ми поводимося з даними", en: "How we handle your data", ru: "Как мы обращаемся с данными" },
+
+  // CSV-експорт
+  "csv.date": { uk: "Дата", en: "Date", ru: "Дата" },
+  "csv.type": { uk: "Тип", en: "Type", ru: "Тип" },
+  "csv.category": { uk: "Категорія", en: "Category", ru: "Категория" },
+  "csv.place": { uk: "Місце / опис", en: "Place / description", ru: "Место / описание" },
+  "csv.amount": { uk: "Сума", en: "Amount", ru: "Сумма" },
+  "csv.currency": { uk: "Валюта", en: "Currency", ru: "Валюта" },
+  "csv.note": { uk: "Нотатка", en: "Note", ru: "Заметка" },
 } satisfies Record<string, Entry>;
 
 export type StringKey = keyof typeof STRINGS;

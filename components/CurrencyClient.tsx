@@ -6,7 +6,7 @@ import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon, IconSprite } from "@/components/IconSprite";
 import SubHeader from "@/components/SubHeader";
 import { CURRENCIES, currencyMeta, type CurrencyCode } from "@/lib/currency";
-import { useConv } from "@/components/SettingsProvider";
+import { useConv, useT } from "@/components/SettingsProvider";
 import { setMainCurrency, setConvertCurrency } from "@/app/dashboard/actions";
 
 export default function CurrencyClient({
@@ -17,6 +17,7 @@ export default function CurrencyClient({
   convert: CurrencyCode;
 }) {
   const router = useRouter();
+  const t = useT();
   const [, start] = useTransition();
   const [main, setMain] = useState<CurrencyCode>(current);
   const [conv, setConv] = useState<CurrencyCode>(convert);
@@ -58,27 +59,25 @@ export default function CurrencyClient({
   return (
     <div className={styles.screen}>
       <IconSprite />
-      <SubHeader title="Валюта" back="/menu" />
+      <SubHeader title={t("menu.currency")} back="/menu" />
 
       <div className={styles.notice}>
         <Icon id="i-wallet" />
-        <div>
-          В <b>основній</b> валюті ти вводиш і бачиш суми. <b>Валюта конвертації</b> показується поряд як «≈» — перерахована з основної за курсом. Курс оновлюється автоматично щогодини.
-        </div>
+        <div>{t("cur.info")}</div>
       </div>
 
       <div className={styles.curRateLine}>
         1 {currencyMeta(current).symbol} ≈ {convFmt(1, 2)}
       </div>
 
-      <div className={styles.curGroupLabel}>Основна валюта</div>
-      <div className={styles.curGroupSub}>У ній вводиш і бачиш суми</div>
+      <div className={styles.curGroupLabel}>{t("menu.mainCurrency")}</div>
+      <div className={styles.curGroupSub}>{t("cur.mainSub")}</div>
       <div className={styles.setCard}>
         {CURRENCIES.map((c) => row(c, main === c.code, () => pickMain(c.code)))}
       </div>
 
-      <div className={styles.curGroupLabel}>Валюта конвертації · ≈</div>
-      <div className={styles.curGroupSub}>Показується поряд, перерахована з основної</div>
+      <div className={styles.curGroupLabel}>{t("cur.convLabel")}</div>
+      <div className={styles.curGroupSub}>{t("cur.convSub")}</div>
       <div className={styles.setCard}>
         {CURRENCIES.map((c) => row(c, conv === c.code, () => pickConv(c.code)))}
       </div>

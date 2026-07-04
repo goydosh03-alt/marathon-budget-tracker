@@ -128,6 +128,17 @@ export default async function MenuPage() {
           </span>
           <span className={styles.menuSoon}>{t("common.soon")}</span>
         </Link>
+
+        <Link href="/privacy" className={styles.menuItem}>
+          <span className={styles.menuIco} style={{ background: "rgba(148,163,184,0.16)", color: "#cbd5e1" }}>
+            <Icon id="i-person" />
+          </span>
+          <span className={styles.menuMid}>
+            <span className={styles.menuName}>{t("legal.privacy")}</span>
+            <span className={styles.menuSub}>{t("legal.privacy.sub")}</span>
+          </span>
+          <span className={styles.menuChev}><Icon id="i-arrow-right" /></span>
+        </Link>
       </div>
 
       <BottomNav active="profile" accounts={accounts ?? []} />

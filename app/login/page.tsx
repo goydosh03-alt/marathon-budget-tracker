@@ -1,10 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import styles from "./login.module.css";
+import { translate, type Lang, type StringKey, DEFAULT_LANG } from "@/lib/i18n";
 
 export default function LoginPage() {
+  // мова з браузера (на екрані логіну ще немає профілю)
+  const [lang, setLang] = useState<Lang>(DEFAULT_LANG);
+  useEffect(() => {
+    const nav = (navigator.language || "").toLowerCase();
+    if (nav.startsWith("uk")) setLang("uk");
+    else if (nav.startsWith("ru")) setLang("ru");
+    else setLang("en");
+  }, []);
+  const t = (k: StringKey) => translate(k, lang);
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
@@ -27,7 +37,7 @@ export default function LoginPage() {
     if (data?.url) {
       window.location.href = data.url;
     } else {
-      setError("Не вдалося отримати посилання Google");
+      setError(t("login.googleErr"));
     }
   }
 
@@ -51,7 +61,7 @@ export default function LoginPage() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/icon-192.png" alt="Snapcost" className={styles.logo} />
         <h1 className={styles.title}>Snapcost</h1>
-        <p className={styles.sub}>Клац чек — бачиш витрати у своїй валюті</p>
+        <p className={styles.sub}>{t("login.tagline")}</p>
 
         <button onClick={handleGoogle} className={styles.google}>
           <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
@@ -60,16 +70,16 @@ export default function LoginPage() {
             <path fill="#4CAF50" d="M24 43.5c5.2 0 9.6-1.7 12.9-4.6l-6.2-5.1c-1.9 1.4-4.3 2.2-6.7 2.2-5.3 0-9.7-3.4-11.3-8l-6.5 5c3.3 5.9 9.9 10.5 17.8 10.5z" />
             <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4-4 5.3l6.2 5.1c-.4.4 6.8-4.9 6.8-14.4 0-1.2-.1-2.4-.4-3.5z" />
           </svg>
-          Увійти через Google
+          {t("login.google")}
         </button>
 
         <div className={styles.divider}>
-          <span />або поштою<span />
+          <span />{t("login.orEmail")}<span />
         </div>
 
         {sent ? (
           <div className={styles.sentBox}>
-            ✉️ Лист із посиланням надіслано на <b>{email}</b>. Відкрий пошту і натисни на посилання.
+            {t("login.sentPre")} <b>{email}</b>. {t("login.sentPost")}
           </div>
         ) : (
           <form onSubmit={handleLogin}>
@@ -77,16 +87,22 @@ export default function LoginPage() {
               className={styles.input}
               type="email"
               required
-              placeholder="твій@email.com"
+              placeholder={t("login.emailPh")}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <button className={styles.submit} type="submit" disabled={loading}>
-              {loading ? "Надсилаю…" : "Надіслати посилання"}
+              {loading ? t("login.sending") : t("login.sendLink")}
             </button>
           </form>
         )}
         {error && <p className={styles.err}>{error}</p>}
+
+        <p style={{ marginTop: 18, textAlign: "center" }}>
+          <a href="/privacy" style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, textDecoration: "underline" }}>
+            {t("legal.privacy")}
+          </a>
+        </p>
       </div>
     </main>
   );
