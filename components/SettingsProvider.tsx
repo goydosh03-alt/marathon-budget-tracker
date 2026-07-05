@@ -58,6 +58,13 @@ export function SettingsProvider({
       setHidden(localStorage.getItem("sc_hide_amounts") === "1");
     } catch {}
   }, []);
+
+  // Service worker реєструємо одразу (офлайн-кеш працює і без дозволу на пуші).
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js").catch(() => {});
+    }
+  }, []);
   const toggleHidden = useCallback(() => {
     setHidden((h) => {
       const n = !h;

@@ -129,7 +129,7 @@ export default function CategoryView({
                   <div className={styles.emo} style={{ background: catBg(t.category) }}>
                     {catEmoji(t.category, isIncome)}
                   </div>
-                  <div>
+                  <div className={styles.txMid}>
                     <span className={styles.txName}>{t.merchant || dataLabel(t.category, lang)}</span>
                     <span className={styles.txMeta}>{fmtDateL(t.date, t.createdAt, lang)}</span>
                   </div>

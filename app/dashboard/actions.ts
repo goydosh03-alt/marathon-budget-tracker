@@ -352,6 +352,23 @@ export async function setMainCurrency(code: string): Promise<AddTxResult> {
   return { ok: true };
 }
 
+// Місячний бюджет (null = прибрати).
+export async function setMonthlyBudget(amount: number | null): Promise<AddTxResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: translate("err.noAuth", DEFAULT_LANG) };
+  const value = amount && amount > 0 ? amount : null;
+  const { error } = await supabase
+    .from("user_settings")
+    .update({ monthly_budget: value })
+    .eq("user_id", user.id);
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/dashboard");
+  return { ok: true };
+}
+
 // Мова інтерфейсу.
 export async function setLanguage(code: string): Promise<AddTxResult> {
   if (!isLang(code)) return { ok: false, error: translate("err.unknownLang", DEFAULT_LANG) };

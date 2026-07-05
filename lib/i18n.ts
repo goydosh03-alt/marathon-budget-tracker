@@ -349,6 +349,26 @@ export const STRINGS = {
   "push.reminderTitle": { uk: "Нагадування", en: "Reminder", ru: "Напоминание" },
   "push.reminderBody": { uk: "Не забудь записати витрати 💸", en: "Don't forget to log your expenses 💸", ru: "Не забудь записать расходы 💸" },
 
+  // бюджет
+  "dash.setBudget": { uk: "Встановити бюджет", en: "Set a budget", ru: "Установить бюджет" },
+  "dash.budgetTitle": { uk: "Місячний бюджет", en: "Monthly budget", ru: "Месячный бюджет" },
+
+  // онбординг
+  "onb.welcome": { uk: "Вітаю в Snapcost!", en: "Welcome to Snapcost!", ru: "Добро пожаловать в Snapcost!" },
+  "onb.sub": { uk: "Три кроки — і все запрацює:", en: "Three steps to get going:", ru: "Три шага — и всё заработает:" },
+  "onb.step1": { uk: "Сканни чек", en: "Scan a receipt", ru: "Сканируй чек" },
+  "onb.step1.sub": { uk: "Кнопка «+» унизу → Сканувати чек. Суму й позиції розпізнає сам.", en: "Tap “+” below → Scan receipt. It reads the total and items itself.", ru: "Кнопка «+» внизу → Сканировать чек. Сумму и позиции распознает сам." },
+  "onb.step2": { uk: "Вибери валюту", en: "Pick your currency", ru: "Выбери валюту" },
+  "onb.step2.sub": { uk: "Тапни валюту вгорі — основна і конвертація «≈».", en: "Tap the currency at the top — main and “≈” conversion.", ru: "Тапни валюту вверху — основная и конвертация «≈»." },
+  "onb.step3": { uk: "Встанови бюджет", en: "Set a budget", ru: "Установи бюджет" },
+  "onb.step3.sub": { uk: "Місячний ліміт на головній — і видно, скільки лишилось.", en: "A monthly limit on the home screen — see what's left.", ru: "Месячный лимит на главной — видно, сколько осталось." },
+  "onb.start": { uk: "Почати", en: "Let's go", ru: "Начать" },
+
+  // офлайн
+  "off.title": { uk: "Немає інтернету", en: "You're offline", ru: "Нет интернета" },
+  "off.hint": { uk: "Перевір зʼєднання і спробуй ще раз.", en: "Check your connection and try again.", ru: "Проверь соединение и попробуй ещё раз." },
+  "off.retry": { uk: "Спробувати ще", en: "Try again", ru: "Попробовать ещё" },
+
   // правові сторінки
   "legal.privacy": { uk: "Політика конфіденційності", en: "Privacy Policy", ru: "Политика конфиденциальности" },
   "legal.privacy.sub": { uk: "Як ми поводимося з даними", en: "How we handle your data", ru: "Как мы обращаемся с данными" },

@@ -171,7 +171,7 @@ export default function HistoryList({
                   <div className={styles.emo} style={{ background: catBg(t.category) }}>
                     {catEmoji(t.category, !isExpenses)}
                   </div>
-                  <div>
+                  <div className={styles.txMid}>
                     <span className={styles.txName}>{t.merchant || dataLabel(t.category, lang)}</span>
                     <span className={styles.txMeta}>{dataLabel(t.category, lang)} · {fmtDateL(t.date, t.createdAt, lang)}</span>
                   </div>
