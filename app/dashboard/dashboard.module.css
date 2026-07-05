@@ -550,3 +550,16 @@
 .treeAmt { text-align: right; flex-shrink: 0; }
 .treeVal { display: block; font-size: 14px; font-weight: 600; line-height: 1.2; }
 .treeSub { display: block; font-size: 11px; color: rgba(255,255,255,0.35); line-height: 1.2; margin-top: 2px; }
+
+/* Нагадування: великий час зверху шита (як сума у формі транзакції).
+   Це справжній input type="time" — тап відкриває системний пікер. */
+.remTimeWrap { text-align: center; padding: 18px 0 14px; }
+.remTimeInput {
+  background: none; border: none; outline: none; padding: 0;
+  color: #eaf2f0; font-size: 46px; font-weight: 700; letter-spacing: -1px;
+  font-family: inherit; text-align: center; cursor: pointer;
+  appearance: none; -webkit-appearance: none; width: auto;
+}
+.remTimeInput::-webkit-calendar-picker-indicator { display: none; }
+.remTimeInput::-webkit-date-and-time-value { text-align: center; }
+.remTimeHint { display: block; margin-top: 2px; font-size: 12px; color: rgba(255,255,255,0.38); }

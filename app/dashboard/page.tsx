@@ -90,6 +90,7 @@ export default async function DashboardPage() {
   }));
 
   const name = user.email ? user.email.split("@")[0] : "друже";
+  const reminders = Array.isArray(user.user_metadata?.reminders) ? user.user_metadata.reminders : [];
 
   return (
     <Dashboard
@@ -98,6 +99,7 @@ export default async function DashboardPage() {
       totalHome={totalHome}
       budgetHome={settings?.monthly_budget ?? null}
       txs={allTx}
+      reminders={reminders}
     />
   );
 }

@@ -161,15 +161,24 @@ export default function RemindersClient({ reminders }: { reminders: Reminder[] }
                 </button>
               </div>
 
+              {/* Час — головний елемент, як сума у формі транзакції. Тап = системний пікер. */}
+              <div className={styles.remTimeWrap}>
+                <input
+                  className={styles.remTimeInput}
+                  type="time"
+                  value={time}
+                  onChange={(e) => e.target.value && setTime(e.target.value)}
+                  aria-label={t("rem.time")}
+                />
+                <span className={styles.remTimeHint}>{t("rem.time")}</span>
+              </div>
+
               <div className={styles.fcard}>
                 <div className={styles.fcIcon} style={{ background: "rgba(245,180,90,0.16)", color: "#f5c87c" }}>
                   <Icon id="i-bell" />
                 </div>
                 <input placeholder={t("rem.namePh")} value={name} onChange={(e) => setName(e.target.value)} />
               </div>
-
-              <div className={styles.fieldLabel}>{t("rem.time")}</div>
-              <input className={styles.confirmInput} type="time" value={time} onChange={(e) => setTime(e.target.value)} />
 
               <div className={styles.fieldLabel}>{t("rem.freq")}</div>
               <div className={styles.chips2}>

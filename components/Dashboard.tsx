@@ -9,6 +9,8 @@ import TransactionViewer from "@/components/TransactionViewer";
 import CalendarSheet from "@/components/CalendarSheet";
 import EmptyState from "@/components/EmptyState";
 import RecurringRunner from "@/components/RecurringRunner";
+import ReminderWatcher from "@/components/ReminderWatcher";
+import type { Reminder } from "@/app/dashboard/actions";
 import { periods, catEmoji, catBg } from "@/lib/txui";
 import { useDec, useMoney, useConv, useT, useLang } from "@/components/SettingsProvider";
 import { dataLabel, fmtDateL, type StringKey } from "@/lib/i18n";
@@ -43,12 +45,14 @@ export default function Dashboard({
   totalHome,
   budgetHome,
   txs,
+  reminders = [],
 }: {
   name?: string;
   accounts: Account[];
   totalHome: number;
   budgetHome: number | null;
   txs: Tx[];
+  reminders?: Reminder[];
 }) {
   const [tab, setTab] = useState<"expenses" | "income">("expenses");
   const [period, setPeriod] = useState("month");
@@ -98,6 +102,7 @@ export default function Dashboard({
     <div className={styles.screen}>
       <IconSprite />
       <RecurringRunner />
+      <ReminderWatcher reminders={reminders} />
 
       <TopBar>
         <div className={styles.brand}>
