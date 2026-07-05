@@ -27,6 +27,16 @@ export default function ProfileClient({
   const canDelete = delWord.trim().toLowerCase() === t("confirm.deleteWord");
   const initial = (val || email || "U").charAt(0).toUpperCase();
 
+  // При виході/видаленні чистимо локальні дані пристрою —
+  // наступний акаунт має починати з чистого аркуша (дзвіночок, онбординг тощо).
+  function clearLocal() {
+    try {
+      ["sc_notifs", "sc_onboarded", "sc_rem_sent", "sc_hide_amounts"].forEach((k) =>
+        localStorage.removeItem(k)
+      );
+    } catch {}
+  }
+
   const providerLabel =
     provider === "google" ? t("prof.viaGoogle") :
     provider === "apple" ? t("prof.viaApple") :
@@ -51,6 +61,7 @@ export default function ProfileClient({
   function confirmDelete() {
     if (!canDelete) return;
     setDeleting(true);
+    clearLocal();
     start(async () => {
       await deleteUserAccount();
       router.push("/login");
@@ -87,7 +98,7 @@ export default function ProfileClient({
         </div>
       </div>
 
-      <form action="/auth/signout" method="post">
+      <form action="/auth/signout" method="post" onSubmit={clearLocal}>
         <button className={styles.logoutBtn} type="submit">{t("prof.signout")}</button>
       </form>
 

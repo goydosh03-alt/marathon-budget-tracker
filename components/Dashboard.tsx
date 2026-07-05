@@ -73,7 +73,9 @@ export default function Dashboard({
   const now = new Date();
   now.setHours(0, 0, 0, 0);
   const ofTab = txs.filter((tx) => (isExpenses ? tx.type === "expense" : tx.type === "income"));
-  const avail = availOffsets(period, ofTab.map((tx) => tx.date), now);
+  // зсуви рахуємо по ВСІХ транзакціях (не лише поточної вкладки),
+  // щоб свайп назад працював однаково на витратах і доходах
+  const avail = availOffsets(period, txs.map((tx) => tx.date), now);
   const idx = Math.min(navIdx, avail.length - 1);
   const offset = avail[idx] ?? 0;
   const curRange = range ? { start: range.from, end: range.to } : periodRange(period, offset, now);

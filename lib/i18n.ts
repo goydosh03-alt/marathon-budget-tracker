@@ -363,6 +363,18 @@ export const STRINGS = {
   "onb.step3": { uk: "Дивись звіти", en: "See your reports", ru: "Смотри отчёты" },
   "onb.step3.sub": { uk: "Вкладка «Звіти» показує, куди йдуть гроші по категоріях.", en: "The Reports tab shows where your money goes by category.", ru: "Вкладка «Отчёты» показывает, куда уходят деньги по категориям." },
   "onb.start": { uk: "Почати", en: "Let's go", ru: "Начать" },
+  "onb.skip": { uk: "Пропустити", en: "Skip", ru: "Пропустить" },
+  "onb.next": { uk: "Далі", en: "Next", ru: "Далее" },
+  "onb.s1.title": { uk: "Додай першу витрату", en: "Add your first expense", ru: "Добавь первый расход" },
+  "onb.s1.sub": { uk: "Тапни зелену кнопку «+» у правому нижньому куті.", en: "Tap the green “+” button in the bottom-right corner.", ru: "Тапни зелёную кнопку «+» в правом нижнем углу." },
+  "onb.s2.title": { uk: "Сканни чек", en: "Scan a receipt", ru: "Сканируй чек" },
+  "onb.s2.sub": { uk: "Вибери «Сканувати чек» і сфотографуй — суму, позиції та категорію розпізнає сам.", en: "Choose “Scan receipt” and take a photo — it reads the total, items and category itself.", ru: "Выбери «Сканировать чек» и сфотографируй — сумму, позиции и категорию распознает сам." },
+  "onb.s3.title": { uk: "Готово — все порахувалось", en: "Done — it all adds up", ru: "Готово — всё посчиталось" },
+  "onb.s3.sub": { uk: "Транзакція вже в списку, а вкладка «Звіти» покаже, куди йдуть гроші.", en: "The transaction is in your list, and the Reports tab shows where the money goes.", ru: "Транзакция уже в списке, а вкладка «Отчёты» покажет, куда уходят деньги." },
+  "onb.scanning": { uk: "Читаю чек…", en: "Reading receipt…", ru: "Читаю чек…" },
+  "onb.item1": { uk: "Молоко", en: "Milk", ru: "Молоко" },
+  "onb.item2": { uk: "Хліб", en: "Bread", ru: "Хлеб" },
+  "onb.moreItems": { uk: "…ще 6 позицій", en: "…6 more items", ru: "…ещё 6 позиций" },
 
   // офлайн
   "off.title": { uk: "Немає інтернету", en: "You're offline", ru: "Нет интернета" },

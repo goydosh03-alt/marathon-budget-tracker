@@ -53,17 +53,22 @@ export function periodLabel(period: string, off: number, now: Date, lang: Lang):
 }
 
 // Послідовні зсуви від поточного (0) до періоду найстарішої транзакції.
-// Гортаємо день за днем / місяць за місяцем у межах наявних даних — порожні
-// періоди всередині лишаються (для пустого стану), але далі найстарішої не йдемо.
+// Гортаємо день за днем / місяць за місяцем — порожні періоди всередині
+// лишаються (для пустого стану). Свайп назад можливий ЗАВЖДИ мінімум на
+// 1 період (подивитись «вчора»/минулий місяць, навіть якщо там порожньо).
 export function availOffsets(period: string, dates: string[], now: Date): number[] {
-  if (!dates.length) return [0];
-  let oldest = dates[0];
-  for (const d of dates) if (d < oldest) oldest = d;
-  const SCAN = period === "day" ? 400 : period === "week" ? 110 : period === "month" ? 48 : 20;
-  let maxOff = 0;
-  for (let o = 0; o <= SCAN; o++) {
-    maxOff = o;
-    if (periodRange(period, o, now).start <= oldest) break;
+  let maxOff = 1; // мінімум: поточний + один назад
+  if (dates.length) {
+    let oldest = dates[0];
+    for (const d of dates) if (d < oldest) oldest = d;
+    const SCAN = period === "day" ? 400 : period === "week" ? 110 : period === "month" ? 48 : 20;
+    for (let o = 0; o <= SCAN; o++) {
+      if (periodRange(period, o, now).start <= oldest) {
+        maxOff = Math.max(maxOff, o);
+        break;
+      }
+      maxOff = Math.max(maxOff, o);
+    }
   }
   return Array.from({ length: maxOff + 1 }, (_, i) => i);
 }

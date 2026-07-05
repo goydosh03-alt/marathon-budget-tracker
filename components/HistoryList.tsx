@@ -71,7 +71,8 @@ export default function HistoryList({
   const now = new Date();
   now.setHours(0, 0, 0, 0);
   const ofTab = txs.filter((x) => (isExpenses ? x.type === "expense" : x.type === "income"));
-  const avail = availOffsets(period, ofTab.map((x) => x.date), now);
+  // зсуви по ВСІХ транзакціях — свайп назад працює незалежно від вкладки
+  const avail = availOffsets(period, txs.map((x) => x.date), now);
   const idx = Math.min(navIdx, avail.length - 1);
   const offset = avail[idx] ?? 0;
   const curRange = range ? { start: range.from, end: range.to } : periodRange(period, offset, now);
