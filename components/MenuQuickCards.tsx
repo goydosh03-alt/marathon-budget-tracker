@@ -6,12 +6,14 @@ import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon } from "@/components/IconSprite";
 import { setHideCents } from "@/app/dashboard/actions";
 import { currencyMeta, type CurrencyCode } from "@/lib/currency";
-import { useT } from "@/components/SettingsProvider";
+import { useT, useLang } from "@/components/SettingsProvider";
+import { currencyName } from "@/lib/i18n";
 import CurrencySheet from "@/components/CurrencySheet";
 
 export default function MenuQuickCards({ hideCents, currency }: { hideCents: boolean; currency: CurrencyCode }) {
   const cur = currencyMeta(currency);
   const t = useT();
+  const lang = useLang();
   const [on, setOn] = useState(hideCents);
   const [curOpen, setCurOpen] = useState(false);
   const [, start] = useTransition();
@@ -51,10 +53,9 @@ export default function MenuQuickCards({ hideCents, currency }: { hideCents: boo
           <span className={styles.quickIco} style={{ background: "rgba(74,222,180,0.14)", color: "#6ee7b7" }}>
             <Icon id="i-wallet" />
           </span>
-          <span className={styles.quickCur}>{cur.symbol}</span>
         </div>
         <div className={styles.quickName}>{t("menu.currency")}</div>
-        <div className={styles.quickSub}>{cur.label}</div>
+        <div className={styles.quickSub}>{currencyName(cur.code, lang)}</div>
       </button>
 
       <CurrencySheet open={curOpen} onClose={() => setCurOpen(false)} />

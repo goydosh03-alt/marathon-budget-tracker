@@ -131,7 +131,7 @@ export default async function MenuPage() {
 
         <Link href="/privacy" className={styles.menuItem}>
           <span className={styles.menuIco} style={{ background: "rgba(148,163,184,0.16)", color: "#cbd5e1" }}>
-            <Icon id="i-person" />
+            <Icon id="i-doc" />
           </span>
           <span className={styles.menuMid}>
             <span className={styles.menuName}>{t("legal.privacy")}</span>

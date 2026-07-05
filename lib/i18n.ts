@@ -360,8 +360,8 @@ export const STRINGS = {
   "onb.step1.sub": { uk: "Кнопка «+» унизу → Сканувати чек. Суму й позиції розпізнає сам.", en: "Tap “+” below → Scan receipt. It reads the total and items itself.", ru: "Кнопка «+» внизу → Сканировать чек. Сумму и позиции распознает сам." },
   "onb.step2": { uk: "Вибери валюту", en: "Pick your currency", ru: "Выбери валюту" },
   "onb.step2.sub": { uk: "Тапни валюту вгорі — основна і конвертація «≈».", en: "Tap the currency at the top — main and “≈” conversion.", ru: "Тапни валюту вверху — основная и конвертация «≈»." },
-  "onb.step3": { uk: "Встанови бюджет", en: "Set a budget", ru: "Установи бюджет" },
-  "onb.step3.sub": { uk: "Місячний ліміт на головній — і видно, скільки лишилось.", en: "A monthly limit on the home screen — see what's left.", ru: "Месячный лимит на главной — видно, сколько осталось." },
+  "onb.step3": { uk: "Дивись звіти", en: "See your reports", ru: "Смотри отчёты" },
+  "onb.step3.sub": { uk: "Вкладка «Звіти» показує, куди йдуть гроші по категоріях.", en: "The Reports tab shows where your money goes by category.", ru: "Вкладка «Отчёты» показывает, куда уходят деньги по категориям." },
   "onb.start": { uk: "Почати", en: "Let's go", ru: "Начать" },
 
   // офлайн
@@ -414,6 +414,20 @@ const DATA_LABELS: Record<string, Entry> = {
 export function dataLabel(name: string, lang: Lang): string {
   const e = DATA_LABELS[name];
   return e ? e[lang] || e.uk : name;
+}
+
+// Назви валют трьома мовами (у lib/currency.ts label лишається укр. як fallback).
+const CURRENCY_NAMES: Record<string, Entry> = {
+  PLN: { uk: "Польський злотий", en: "Polish złoty", ru: "Польский злотый" },
+  UAH: { uk: "Гривня", en: "Ukrainian hryvnia", ru: "Гривна" },
+  USD: { uk: "Долар США", en: "US dollar", ru: "Доллар США" },
+  EUR: { uk: "Євро", en: "Euro", ru: "Евро" },
+  GBP: { uk: "Фунт стерлінгів", en: "British pound", ru: "Фунт стерлингов" },
+};
+
+export function currencyName(code: string, lang: Lang): string {
+  const e = CURRENCY_NAMES[code];
+  return e ? e[lang] || e.uk : code;
 }
 
 export const MONTHS_SHORT: Record<Lang, string[]> = {

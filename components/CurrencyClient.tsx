@@ -6,7 +6,8 @@ import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon, IconSprite } from "@/components/IconSprite";
 import SubHeader from "@/components/SubHeader";
 import { CURRENCIES, currencyMeta, type CurrencyCode } from "@/lib/currency";
-import { useConv, useT } from "@/components/SettingsProvider";
+import { useConv, useT, useLang } from "@/components/SettingsProvider";
+import { currencyName } from "@/lib/i18n";
 import { setMainCurrency, setConvertCurrency } from "@/app/dashboard/actions";
 
 export default function CurrencyClient({
@@ -18,6 +19,7 @@ export default function CurrencyClient({
 }) {
   const router = useRouter();
   const t = useT();
+  const lang = useLang();
   const [, start] = useTransition();
   const [main, setMain] = useState<CurrencyCode>(current);
   const [conv, setConv] = useState<CurrencyCode>(convert);
@@ -49,7 +51,7 @@ export default function CurrencyClient({
     >
       <span className={styles.curBadge}>{c.symbol}</span>
       <div className={styles.curMid}>
-        <span className={styles.catName2}>{c.label}</span>
+        <span className={styles.catName2}>{currencyName(c.code, lang)}</span>
         <span className={styles.catType2}>{c.code}</span>
       </div>
       {active && <span className={styles.curCheck}>✓</span>}

@@ -7,13 +7,11 @@ import BottomNav from "@/components/BottomNav";
 import TopBar from "@/components/TopBar";
 import TransactionViewer from "@/components/TransactionViewer";
 import CalendarSheet from "@/components/CalendarSheet";
-import CalcSheet from "@/components/CalcSheet";
 import EmptyState from "@/components/EmptyState";
 import RecurringRunner from "@/components/RecurringRunner";
 import ReminderWatcher from "@/components/ReminderWatcher";
 import WelcomeSheet from "@/components/WelcomeSheet";
-import { setMonthlyBudget, type Reminder } from "@/app/dashboard/actions";
-import { useRouter } from "next/navigation";
+import type { Reminder } from "@/app/dashboard/actions";
 import { periods, catEmoji, catBg } from "@/lib/txui";
 import { useDec, useMoney, useConv, useT, useLang } from "@/components/SettingsProvider";
 import { dataLabel, fmtDateL, type StringKey } from "@/lib/i18n";
@@ -63,9 +61,7 @@ export default function Dashboard({
   const [viewId, setViewId] = useState<string | null>(null);
   const [range, setRange] = useState<{ from: string; to: string } | null>(null);
   const [calOpen, setCalOpen] = useState(false);
-  const [budgetOpen, setBudgetOpen] = useState(false);
   const touch = useRef({ x: 0, y: 0 });
-  const router = useRouter();
 
   const dec = useDec();
   const money = useMoney();
@@ -205,23 +201,12 @@ export default function Dashboard({
           )}
         </div>
         {pct !== null && (
-          // тап по бюджету → змінити суму (0 = прибрати)
-          <div className={styles.clickable} onClick={() => setBudgetOpen(true)} style={{ cursor: "pointer" }}>
+          <>
             <div className={styles.pbar}>
               <span className={styles.pbarFill} style={{ width: `${pct}%` }} />
             </div>
             <div className={styles.pmeta}>{t("dash.budgetPre")} {money(budgetHome!, 0)} {t("dash.budgetPost")}</div>
-          </div>
-        )}
-        {pct === null && isExpenses && period === "month" && offset === 0 && !range && (
-          <div className={styles.pmeta} style={{ marginTop: 6 }}>
-            <button
-              onClick={() => setBudgetOpen(true)}
-              style={{ background: "none", border: "none", color: "rgba(255,255,255,0.45)", fontSize: "inherit", fontFamily: "inherit", cursor: "pointer", padding: 0, textDecoration: "underline", textUnderlineOffset: 3 }}
-            >
-              + {t("dash.setBudget")}
-            </button>
-          </div>
+          </>
         )}
 
         <div className={styles.fulldiv} />
@@ -269,19 +254,6 @@ export default function Dashboard({
 
       {viewId && (
         <TransactionViewer id={viewId} accounts={accountsForForm} onClose={() => setViewId(null)} />
-      )}
-
-      {budgetOpen && (
-        <CalcSheet
-          title={t("dash.budgetTitle")}
-          initial={budgetHome ?? 0}
-          showSplit={false}
-          onApply={(value) => {
-            setBudgetOpen(false);
-            setMonthlyBudget(value > 0 ? value : null).then(() => router.refresh());
-          }}
-          onClose={() => setBudgetOpen(false)}
-        />
       )}
 
       {calOpen && (

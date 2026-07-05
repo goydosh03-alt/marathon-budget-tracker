@@ -55,13 +55,13 @@ export default function WelcomeSheet({ txCount }: { txCount: number }) {
 
           <div className={styles.setCard} style={{ marginTop: 10 }}>
             {steps.map((s, i) => (
-              <div className={styles.catRow2} key={i}>
-                <span className={styles.catDot} style={{ background: s.bg, color: s.color }}>
+              <div className={styles.onbRow} key={i}>
+                <span className={styles.onbIco} style={{ background: s.bg, color: s.color }}>
                   <Icon id={s.icon} />
                 </span>
-                <div className={styles.catMid2}>
-                  <span className={styles.catName2}>{i + 1}. {s.title}</span>
-                  <span className={styles.catType2}>{s.sub}</span>
+                <div className={styles.onbMid}>
+                  <span className={styles.onbName}>{i + 1}. {s.title}</span>
+                  <span className={styles.onbSub}>{s.sub}</span>
                 </div>
               </div>
             ))}

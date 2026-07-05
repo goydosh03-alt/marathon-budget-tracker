@@ -564,3 +564,13 @@
 .remTimeInput::-webkit-calendar-picker-indicator { display: none; }
 .remTimeInput::-webkit-date-and-time-value { text-align: center; }
 .remTimeHint { display: block; margin-top: 2px; font-size: 12px; color: rgba(255,255,255,0.38); }
+
+/* Онбординг: іконки як у меню (20px у боксі 40), підпис у 2 рядки без обрізання,
+   розділювач рівняється по тексту (після іконки) — як у списку транзакцій. */
+.onbRow { position: relative; display: flex; align-items: flex-start; gap: 12px; padding: 12px 8px; }
+.onbRow + .onbRow::before { content: ""; position: absolute; top: 0; left: 60px; right: 8px; height: 1px; background: rgba(255,255,255,0.06); }
+.onbIco { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.onbIco svg { width: 20px; height: 20px; }
+.onbMid { flex: 1; min-width: 0; }
+.onbName { display: block; font-size: 15px; font-weight: 500; line-height: 1.2; }
+.onbSub { display: block; font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.45; margin-top: 3px; }
