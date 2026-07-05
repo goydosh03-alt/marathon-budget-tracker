@@ -1,0 +1,13 @@
+{
+  "appId": "app.snapcost",
+  "appName": "Snapcost",
+  "webDir": "public",
+  "server": {
+    "url": "https://snapcost-finance.vercel.app",
+    "allowNavigation": ["*.supabase.co", "accounts.google.com"]
+  },
+  "ios": {
+    "contentInset": "automatic",
+    "backgroundColor": "#05090b"
+  }
+}
