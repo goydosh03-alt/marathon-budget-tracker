@@ -595,11 +595,11 @@
 .onbShot { display: block; width: 100%; height: 258px; object-fit: contain; object-position: center; background: #0a1014; border: 1px solid rgba(255,255,255,0.07); border-radius: 18px; }
 
 /* Привітання з аватаром у шапці головної */
-.hello { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; min-width: 0; }
-.helloAva { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg,#4ade9f,#3bb4f5); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #04211a; flex-shrink: 0; overflow: hidden; }
+.hello { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; min-width: 0; }
+.helloAva { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg,#4ade9f,#3bb4f5); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #04211a; flex-shrink: 0; overflow: hidden; }
 .helloAva img { width: 100%; height: 100%; object-fit: cover; }
-.helloHi { display: block; font-size: 11px; color: rgba(255,255,255,0.45); line-height: 1.1; }
-.helloName { display: block; font-size: 15px; font-weight: 600; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 180px; }
+.helloHi { display: block; font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.2; }
+.helloName { display: block; font-size: 18px; font-weight: 600; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px; }
 
 /* Баланс періоду: два рядки витрати/доходи під великою цифрою */
 .psumSplit { display: flex; gap: 14px; margin-top: 6px; font-size: 12px; }

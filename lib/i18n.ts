@@ -350,7 +350,7 @@ export const STRINGS = {
   "push.reminderBody": { uk: "Не забудь записати витрати 💸", en: "Don't forget to log your expenses 💸", ru: "Не забудь записать расходы 💸" },
 
   // головна: привітання + баланс періоду
-  "dash.hello": { uk: "Привіт,", en: "Hi,", ru: "Привет," },
+  "dash.hello": { uk: "Привіт 👋", en: "Hi 👋", ru: "Привет 👋" },
   "dash.balance": { uk: "Баланс", en: "Balance", ru: "Баланс" },
 
   // профіль: аватар
