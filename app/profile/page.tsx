@@ -24,5 +24,7 @@ export default async function ProfilePage() {
     (user.identities?.[0]?.provider as string | undefined) ||
     "email";
 
-  return <ProfileClient name={fullName} email={user.email ?? ""} provider={provider} />;
+  const avatarUrl = (user.user_metadata?.avatar_url as string | undefined) ?? null;
+
+  return <ProfileClient name={fullName} email={user.email ?? ""} provider={provider} avatarUrl={avatarUrl} />;
 }

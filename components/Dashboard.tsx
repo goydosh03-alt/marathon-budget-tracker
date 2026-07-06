@@ -42,6 +42,8 @@ const ACC_STYLE = [
 ];
 
 export default function Dashboard({
+  name,
+  avatarUrl,
   accounts,
   totalHome,
   budgetHome,
@@ -49,13 +51,13 @@ export default function Dashboard({
   reminders = [],
 }: {
   name?: string;
+  avatarUrl?: string | null;
   accounts: Account[];
   totalHome: number;
   budgetHome: number | null;
   txs: Tx[];
   reminders?: Reminder[];
 }) {
-  const [tab, setTab] = useState<"expenses" | "income">("expenses");
   const [period, setPeriod] = useState("month");
   const [navIdx, setNavIdx] = useState(0);
   const [viewId, setViewId] = useState<string | null>(null);
@@ -68,24 +70,23 @@ export default function Dashboard({
   const conv = useConv();
   const t = useT();
   const lang = useLang();
-  const isExpenses = tab === "expenses";
 
   const now = new Date();
   now.setHours(0, 0, 0, 0);
-  const ofTab = txs.filter((tx) => (isExpenses ? tx.type === "expense" : tx.type === "income"));
-  // зсуви рахуємо по ВСІХ транзакціях (не лише поточної вкладки),
-  // щоб свайп назад працював однаково на витратах і доходах
   const avail = availOffsets(period, txs.map((tx) => tx.date), now);
   const idx = Math.min(navIdx, avail.length - 1);
   const offset = avail[idx] ?? 0;
   const curRange = range ? { start: range.from, end: range.to } : periodRange(period, offset, now);
 
-  const filtered = ofTab.filter((tx) => tx.date >= curRange.start && tx.date <= curRange.end);
-  const total = filtered.reduce((s, tx) => s + tx.amountHome, 0);
+  // головна показує ВСЕ разом: баланс періоду = доходи − витрати
+  const filtered = txs.filter((tx) => tx.date >= curRange.start && tx.date <= curRange.end);
+  const totExp = filtered.filter((tx) => tx.type === "expense").reduce((s, tx) => s + tx.amountHome, 0);
+  const totInc = filtered.filter((tx) => tx.type === "income").reduce((s, tx) => s + tx.amountHome, 0);
+  const balance = totInc - totExp;
   const list = filtered.slice(0, 5);
   const periodText = range ? `${dmShort(range.from)} – ${dmShort(range.to)}` : periodLabel(period, offset, now, lang);
 
-  const showBudget = isExpenses && budgetHome && period === "month" && offset === 0 && !range;
+  const showBudget = budgetHome && period === "month" && offset === 0 && !range;
 
   const canOlder = !range && idx < avail.length - 1;
   const canNewer = !range && idx > 0;
@@ -97,7 +98,7 @@ export default function Dashboard({
     if (Math.abs(dx) < 35 || Math.abs(dx) < Math.abs(dy)) return;
     if (dx < 0) { if (canOlder) setNavIdx(idx + 1); } else { if (canNewer) setNavIdx(idx - 1); }
   }
-  const pct = showBudget ? Math.min(100, (total / budgetHome!) * 100) : null;
+  const pct = showBudget ? Math.min(100, (totExp / budgetHome!) * 100) : null;
 
   const accountsForForm = accounts.map((a) => ({ id: a.id, name: a.name, type: a.type }));
 
@@ -109,18 +110,20 @@ export default function Dashboard({
       <WelcomeSheet txCount={txs.length} />
 
       <TopBar>
-        <div className={styles.brand}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/logo.png"
-            alt="Snapcost"
-            className={styles.brandLogo}
-            onError={(e) => {
-              e.currentTarget.src = "/icon-192.png";
-              e.currentTarget.classList.add(styles.brandLogoFallback);
-            }}
-          />
-        </div>
+        <a href="/profile" className={styles.hello}>
+          <span className={styles.helloAva}>
+            {avatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={avatarUrl} alt="" />
+            ) : (
+              (name || "U").charAt(0).toUpperCase()
+            )}
+          </span>
+          <span style={{ minWidth: 0 }}>
+            <span className={styles.helloHi}>{t("dash.hello")}</span>
+            <span className={styles.helloName}>{name || t("prof.friend")}</span>
+          </span>
+        </a>
       </TopBar>
 
       <section className={styles.totbal}>
@@ -148,15 +151,6 @@ export default function Dashboard({
           );
         })}
       </section>
-
-      <div className={styles.tabs}>
-        <button className={`${styles.tab} ${isExpenses ? styles.tabOnExp : ""}`} onClick={() => { setTab("expenses"); setNavIdx(0); }}>
-          {t("common.expenses")}
-        </button>
-        <button className={`${styles.tab} ${!isExpenses ? styles.tabOnInc : ""}`} onClick={() => { setTab("income"); setNavIdx(0); }}>
-          {t("common.income")}
-        </button>
-      </div>
 
       <section className={styles.periodcard} onTouchStart={swipeStart} onTouchEnd={swipeEnd}>
         <div className={styles.pfilter}>
@@ -186,11 +180,17 @@ export default function Dashboard({
         <div className={styles.psumHead}>
           <div className={styles.psum}>
             <span className={styles.psumLabel}>
-              {isExpenses ? t("common.expenses") : t("common.income")} · {periodText}
+              {t("dash.balance")} · {periodText}
             </span>
             <div className={styles.psumRow}>
-              <span className={styles.psumAmt}>{money(total, 0)}</span>
-              <span className={styles.pr}>≈ {conv(total, 0)}</span>
+              <span className={`${styles.psumAmt} ${balance > 0 ? styles.inc : ""}`}>
+                {balance > 0 ? "+" : balance < 0 ? "−" : ""}{money(Math.abs(balance), 0)}
+              </span>
+              <span className={styles.pr}>≈ {conv(Math.abs(balance), 0)}</span>
+            </div>
+            <div className={styles.psumSplit}>
+              <span className={styles.psumExp}>↓ {t("dash.spent")} {money(totExp, 0)}</span>
+              <span className={styles.psumInc}>↑ {t("dash.earned")} {money(totInc, 0)}</span>
             </div>
           </div>
           {!range && avail.length > 1 && avail.length <= 12 && (
@@ -218,17 +218,17 @@ export default function Dashboard({
           <a className={styles.secLink} href="/history">{t("dash.all")} →</a>
         </div>
         {list.length === 0 ? (
-          offset === 0 && !range && ofTab.length === 0 ? (
+          offset === 0 && !range && txs.length === 0 ? (
             <EmptyState
-              icon={isExpenses ? "i-wallet" : "i-income"}
-              title={isExpenses ? t("dash.empty.exp") : t("dash.empty.inc")}
-              hint={isExpenses ? t("dash.empty.expHint") : t("dash.empty.incHint")}
+              icon="i-wallet"
+              title={t("dash.empty.exp")}
+              hint={t("dash.empty.expHint")}
             />
           ) : (
             <EmptyState
               icon="i-cal"
               title={t("hist.emptyPeriod")}
-              hint={isExpenses ? t("rep.noDataExp") : t("rep.noDataInc")}
+              hint={t("hist.emptyPeriodHint")}
             />
           )
         ) : (

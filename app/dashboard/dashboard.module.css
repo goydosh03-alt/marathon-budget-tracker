@@ -590,3 +590,24 @@
 .onbDots { display: flex; justify-content: center; gap: 6px; margin-top: 10px; }
 .onbDot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.16); border: none; padding: 0; cursor: pointer; }
 .onbDotOn { background: #4ade9f; }
+
+/* Онбординг v3: реальні скріншоти застосунку як мокапи */
+.onbShot { display: block; width: 100%; height: 258px; object-fit: contain; object-position: center; background: #0a1014; border: 1px solid rgba(255,255,255,0.07); border-radius: 18px; }
+
+/* Привітання з аватаром у шапці головної */
+.hello { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; min-width: 0; }
+.helloAva { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg,#4ade9f,#3bb4f5); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #04211a; flex-shrink: 0; overflow: hidden; }
+.helloAva img { width: 100%; height: 100%; object-fit: cover; }
+.helloHi { display: block; font-size: 11px; color: rgba(255,255,255,0.45); line-height: 1.1; }
+.helloName { display: block; font-size: 15px; font-weight: 600; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 180px; }
+
+/* Баланс періоду: два рядки витрати/доходи під великою цифрою */
+.psumSplit { display: flex; gap: 14px; margin-top: 6px; font-size: 12px; }
+.psumExp { color: #ff9090; }
+.psumInc { color: #6ee7b7; }
+
+/* Аватар у профілі: бейдж камери + завантаження */
+.profAvaWrap { position: relative; cursor: pointer; border: none; background: none; padding: 0; }
+.profAvaWrap img { width: 88px; height: 88px; border-radius: 50%; object-fit: cover; display: block; }
+.profAvaBadge { position: absolute; right: -2px; bottom: 12px; width: 28px; height: 28px; border-radius: 50%; background: #1c2a33; border: 2px solid #05090b; color: #cfe8de; display: flex; align-items: center; justify-content: center; }
+.profAvaBadge svg { width: 14px; height: 14px; }

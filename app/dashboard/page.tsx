@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Dashboard from "@/components/Dashboard";
+import { DEFAULT_LANG, isLang, translate } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 
@@ -89,12 +90,19 @@ export default async function DashboardPage() {
     accountId: t.account_id ?? "",
   }));
 
-  const name = user.email ? user.email.split("@")[0] : "друже";
+  const lg = user.user_metadata?.lang;
+  const lang = isLang(lg) ? lg : DEFAULT_LANG;
+  const name =
+    (user.user_metadata?.full_name as string | undefined) ||
+    (user.user_metadata?.name as string | undefined) ||
+    (user.email ? user.email.split("@")[0] : translate("prof.friend", lang));
+  const avatarUrl = (user.user_metadata?.avatar_url as string | undefined) ?? null;
   const reminders = Array.isArray(user.user_metadata?.reminders) ? user.user_metadata.reminders : [];
 
   return (
     <Dashboard
       name={name}
+      avatarUrl={avatarUrl}
       accounts={accountsOut}
       totalHome={totalHome}
       budgetHome={settings?.monthly_budget ?? null}

@@ -352,6 +352,20 @@ export async function setMainCurrency(code: string): Promise<AddTxResult> {
   return { ok: true };
 }
 
+// URL аватарки (Supabase Storage) у метадані користувача.
+export async function saveAvatarUrl(url: string): Promise<AddTxResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: translate("err.noAuth", DEFAULT_LANG) };
+  if (typeof url !== "string" || url.length > 500) return { ok: false, error: "Bad URL" };
+  const { error } = await supabase.auth.updateUser({ data: { avatar_url: url } });
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/", "layout");
+  return { ok: true };
+}
+
 // Місячний бюджет (null = прибрати).
 export async function setMonthlyBudget(amount: number | null): Promise<AddTxResult> {
   const supabase = await createClient();
