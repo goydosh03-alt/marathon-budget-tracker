@@ -32,6 +32,7 @@ export default async function MenuPage() {
     (user.user_metadata?.name as string | undefined) ||
     (user.email ? user.email.split("@")[0] : "Друже");
   const initial = fullName.charAt(0).toUpperCase();
+  const avatarUrl = (user.user_metadata?.avatar_url as string | undefined) ?? null;
   const hideCents = !!user.user_metadata?.hide_cents;
   const mc = user.user_metadata?.main_currency;
   const currency = isCurrency(mc) ? mc : DEFAULT_CURRENCY;
@@ -49,7 +50,14 @@ export default async function MenuPage() {
       <DonateBanner />
 
       <Link href="/profile" className={styles.profCardLink}>
-        <div className={styles.profCardAv}>{initial}</div>
+        <div className={styles.profCardAv} style={{ overflow: "hidden" }}>
+          {avatarUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={avatarUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          ) : (
+            initial
+          )}
+        </div>
         <div className={styles.profCardMid}>
           <span className={styles.profCardName}>{fullName}</span>
           <span className={styles.profCardSub}>{user.email}</span>

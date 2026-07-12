@@ -88,9 +88,9 @@ export default function CategoryView({
       <section className={styles.periodcard}>
         <div className={styles.catBoxHead}>
           <span className={styles.catBoxLabel}>{isIncome ? tt("common.income") : tt("common.expenses")}</span>
-          <span className={styles.catBoxSum}>{money(total, 0)}</span>
+          <span className={styles.catBoxSum}>{money(total, dec)}</span>
           <span className={styles.catBoxSub}>
-            ≈ {conv(total, 0)} · {txs.length} {opsLabel(txs.length, lang)}
+            ≈ {conv(total, dec)} · {txs.length} {opsLabel(txs.length, lang)}
           </span>
         </div>
 

@@ -120,8 +120,8 @@ export default function Dashboard({
       <section className={styles.totbal}>
         <span className={styles.totLabel}>{t("dash.totalBalance")}</span>
         <div className={styles.balrow}>
-          <span className={styles.big}>{money(totalHome, 0)}</span>
-          <span className={styles.eq}>≈ {conv(totalHome, 0)}</span>
+          <span className={styles.big}>{money(totalHome, dec)}</span>
+          <span className={styles.eq}>≈ {conv(totalHome, dec)}</span>
         </div>
       </section>
 
@@ -136,8 +136,8 @@ export default function Dashboard({
                 </div>
                 <span className={styles.accName}>{dataLabel(a.name, lang)}</span>
               </div>
-              <span className={styles.accBal}>{money(a.balanceHome, 0)}</span>
-              <span className={styles.cur}>≈ {conv(a.balanceHome, 0)}</span>
+              <span className={styles.accBal}>{money(a.balanceHome, dec)}</span>
+              <span className={styles.cur}>≈ {conv(a.balanceHome, dec)}</span>
             </div>
           );
         })}
@@ -146,6 +146,7 @@ export default function Dashboard({
       <section className={styles.periodcard}>
         <div className={styles.sec}>
           <h3 className={styles.secTitle}>{t("dash.recent")}</h3>
+          <a className={styles.secLink} href="/history">{t("dash.all")} →</a>
         </div>
 
         {feed.length === 0 ? (

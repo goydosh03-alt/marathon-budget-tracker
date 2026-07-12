@@ -214,8 +214,8 @@ export default function HistoryList({
               {isExpenses ? t("common.expenses") : t("common.income")} · {periodText}
             </span>
             <div className={styles.psumRow}>
-              <span className={styles.psumAmt}>{money(total, 0)}</span>
-              <span className={styles.pr}>≈ {conv(total, 0)}</span>
+              <span className={styles.psumAmt}>{money(total, dec)}</span>
+              <span className={styles.pr}>≈ {conv(total, dec)}</span>
             </div>
           </div>
           {!range && avail.length > 1 && avail.length <= 12 && (
@@ -254,14 +254,14 @@ export default function HistoryList({
                     <div className={styles.catMid}>
                       <div className={styles.catHead}>
                         <span className={styles.catName}>{dataLabel(c.cat, lang)}</span>
-                        <span className={`${styles.catSum} ${!isExpenses ? styles.inc : ""}`}>{money(c.sum, 0)}</span>
+                        <span className={`${styles.catSum} ${!isExpenses ? styles.inc : ""}`}>{money(c.sum, dec)}</span>
                       </div>
                       <div className={styles.catBar}>
                         <span className={styles.catBarFill} style={{ width: `${share}%` }} />
                       </div>
                       <div className={styles.catSub}>
                         <span>{c.count} {opsLabel(c.count, lang)} · {Math.round(share)}%</span>
-                        <span>≈ {conv(c.sum, 0)}</span>
+                        <span>≈ {conv(c.sum, dec)}</span>
                       </div>
                     </div>
                   </div>
