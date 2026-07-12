@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon } from "@/components/IconSprite";
@@ -22,6 +22,17 @@ export default function BottomNav({
     setMenuOpen(false);
     setFormType(t);
   }
+
+  // відкриття форми ззовні (напр., тап по нагадуванню в дзвіночку)
+  useEffect(() => {
+    function onOpenAdd(e: Event) {
+      const type = (e as CustomEvent).detail?.type;
+      setMenuOpen(false);
+      setFormType(type === "income" ? "income" : "expense");
+    }
+    window.addEventListener("sc:open-add", onOpenAdd);
+    return () => window.removeEventListener("sc:open-add", onOpenAdd);
+  }, []);
 
   return (
     <>

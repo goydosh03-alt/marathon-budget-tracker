@@ -4,7 +4,8 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Snapcost",
     short_name: "Snapcost",
-    description: "Трекер витрат по фото чеків — бачиш витрати у своїй валюті",
+    // англійською як нейтральний дефолт (маніфест статичний, мову юзера не знає)
+    description: "Snap a receipt — see your spending in your currency",
     start_url: "/dashboard",
     display: "standalone",
     orientation: "portrait",

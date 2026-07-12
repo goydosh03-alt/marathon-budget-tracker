@@ -13,6 +13,7 @@ type Reminder = {
   name: string;
   time: string;
   freq: "daily" | "weekdays" | "weekends" | "weekly";
+  weekday?: number; // 0=Пн … 6=Нд для freq="weekly"
   enabled: boolean;
   lastSent?: string;
 };
@@ -23,6 +24,7 @@ type Recurring = {
   type: "expense" | "income";
   category: string;
   accountId: string;
+  time?: string; // HH:MM — сьогоднішній платіж не раніше цієї години
   dayOfMonth: number;
   startDate: string;
   autoAdd: boolean;
@@ -76,7 +78,9 @@ export async function GET(req: NextRequest) {
     const local = new Date(now.getTime() + tz * 60000);
     const today = isoDate(local);
     const hourLocal = local.getUTCHours();
+    const hhmmLocal = `${String(hourLocal).padStart(2, "0")}:${String(local.getUTCMinutes()).padStart(2, "0")}`;
     const dow = local.getUTCDay(); // 0 нд .. 6 сб
+    const mondayIdx = (dow + 6) % 7; // 0=Пн … 6=Нд
     const isWeekend = dow === 0 || dow === 6;
 
     const notifications: Notif[] = [];
@@ -99,6 +103,8 @@ export async function GET(req: NextRequest) {
         const occ = new Date(y, m, Math.min(r.dayOfMonth, dim));
         occ.setHours(0, 0, 0, 0);
         if (occ > t0) break;
+        // сьогоднішній платіж — не раніше вказаної години (місцевий час)
+        if (isoDate(occ) === today && r.time && hhmmLocal < r.time) break;
         const afterLast = lastGen ? occ > lastGen : occ >= start;
         if (afterLast && occ >= start) {
           inserts.push({
@@ -137,37 +143,41 @@ export async function GET(req: NextRequest) {
     }
 
     // --- Нагадування: спрацьовують у свою годину (UTC), раз на день ---
+    // ВАЖЛИВО: lastSent ставимо ПІСЛЯ успішної відправки, а не до —
+    // якщо всі підписки мертві, нагадування не «згорає» даремно.
     const reminders: Reminder[] = Array.isArray(meta.reminders) ? (meta.reminders as Reminder[]) : [];
-    const nextRem = reminders.map((rm) => {
-      if (!rm.enabled) return rm;
+    const fireIds: string[] = [];
+    for (const rm of reminders) {
+      if (!rm.enabled) continue;
       const h = parseInt((rm.time || "20:00").split(":")[0], 10);
-      if (h !== hourLocal) return rm;
+      if (h !== hourLocal) continue;
       const freqOk =
         rm.freq === "daily" ||
         (rm.freq === "weekdays" && !isWeekend) ||
         (rm.freq === "weekends" && isWeekend) ||
-        (rm.freq === "weekly" && dow === 1);
-      if (!freqOk || rm.lastSent === today) return rm;
+        (rm.freq === "weekly" && mondayIdx === (rm.weekday ?? 0));
+      if (!freqOk || rm.lastSent === today) continue;
       notifications.push({ title: rm.name || translate("push.reminderTitle", lang), body: translate("push.reminderBody", lang), url: "/dashboard", tag: "rem-" + rm.id });
-      metaChanged = true;
-      return { ...rm, lastSent: today };
-    });
+      fireIds.push(rm.id);
+    }
 
     if (!notifications.length) {
       if (metaChanged) {
-        await admin.auth.admin.updateUserById(u.id, { user_metadata: { ...meta, recurring: nextRecs, reminders: nextRem } });
+        await admin.auth.admin.updateUserById(u.id, { user_metadata: { ...meta, recurring: nextRecs } });
       }
       continue;
     }
 
     // --- Розсилка пушів + чистка мертвих підписок ---
     const dead = new Set<string>();
+    let userSent = 0;
     for (const n of notifications) {
       const payload = JSON.stringify(n);
       for (const s of subs) {
         try {
           await webpush.sendNotification({ endpoint: s.endpoint, keys: s.keys }, payload);
           sent++;
+          userSent++;
         } catch (e) {
           const code = (e as { statusCode?: number })?.statusCode;
           if (code === 404 || code === 410) dead.add(s.endpoint);
@@ -175,6 +185,10 @@ export async function GET(req: NextRequest) {
       }
     }
     const cleanSubs = subs.filter((s) => !dead.has(s.endpoint));
+    // lastSent — лише якщо користувачу реально щось доставили
+    const nextRem = userSent > 0
+      ? reminders.map((rm) => (fireIds.includes(rm.id) ? { ...rm, lastSent: today } : rm))
+      : reminders;
     await admin.auth.admin.updateUserById(u.id, {
       user_metadata: { ...meta, recurring: nextRecs, reminders: nextRem, push_subscriptions: cleanSubs },
     });

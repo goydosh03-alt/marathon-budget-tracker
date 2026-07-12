@@ -37,10 +37,23 @@ export default function NotificationsBell() {
 
   const unread = items.filter((n) => !n.read).length;
 
-  function markAllRead() {
-    const next = items.map((n) => ({ ...n, read: true }));
+  function persist(next: Notif[]) {
     setItems(next);
     try { localStorage.setItem("sc_notifs", JSON.stringify(next)); } catch {}
+  }
+
+  function markAllRead() {
+    persist(items.map((n) => ({ ...n, read: true })));
+  }
+
+  // тап по сповіщенню: читаємо його; нагадування «запиши витрати» —
+  // одразу відкриває форму додавання витрати
+  function tapNotif(n: Notif) {
+    persist(items.map((x) => (x.id === n.id ? { ...x, read: true } : x)));
+    if (n.id.startsWith("rem-")) {
+      setOpen(false);
+      window.dispatchEvent(new CustomEvent("sc:open-add", { detail: { type: "expense" } }));
+    }
   }
 
   return (
@@ -55,33 +68,43 @@ export default function NotificationsBell() {
           <div className={styles.sheetBack} onClick={() => setOpen(false)} />
           <div className={styles.sheet}>
             <div className={styles.sheetBody}>
-              <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
                 <span>{t("notif.title")}</span>
-                <button className={styles.iconBtn} onClick={() => setOpen(false)} aria-label={t("common.close")}>
-                  <Icon id="i-x" />
-                </button>
+                <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  {unread > 0 && (
+                    <button
+                      onClick={markAllRead}
+                      style={{ background: "none", border: "none", color: "#6ee7b7", fontSize: 13, fontWeight: 600, cursor: "pointer", padding: "4px 6px" }}
+                    >
+                      {t("notif.markAll")}
+                    </button>
+                  )}
+                  <button className={styles.iconBtn} onClick={() => setOpen(false)} aria-label={t("common.close")}>
+                    <Icon id="i-x" />
+                  </button>
+                </span>
               </div>
 
               {items.length === 0 ? (
                 <EmptyState icon="i-bell" title={t("notif.emptyTitle")} hint={t("notif.emptyHint")} />
               ) : (
-                <>
-                  {unread > 0 && (
-                    <button className={styles.notifMarkAll} onClick={markAllRead}>{t("notif.markAll")}</button>
-                  )}
-                  <div className={styles.setCard}>
-                    {items.map((n) => (
-                      <div key={n.id} className={`${styles.notifRow} ${n.read ? "" : styles.notifUnread}`}>
-                        {!n.read && <span className={styles.notifDot2} />}
-                        <div className={styles.curMid}>
-                          <span className={styles.catName2}>{n.title}</span>
-                          <span className={styles.catType2}>{n.body}</span>
-                        </div>
-                        <span className={styles.notifDate}>{n.date}</span>
+                <div className={styles.setCard}>
+                  {items.map((n) => (
+                    <div
+                      key={n.id}
+                      className={`${styles.notifRow} ${n.read ? "" : styles.notifUnread} ${styles.clickable}`}
+                      onClick={() => tapNotif(n)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {!n.read && <span className={styles.notifDot2} />}
+                      <div className={styles.curMid}>
+                        <span className={styles.catName2}>{n.title}</span>
+                        <span className={styles.catType2}>{n.body}</span>
                       </div>
-                    ))}
-                  </div>
-                </>
+                      <span className={styles.notifDate}>{n.date}</span>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
           </div>

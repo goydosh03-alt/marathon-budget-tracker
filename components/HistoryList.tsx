@@ -49,17 +49,6 @@ export default function HistoryList({
 
   const q = query.trim().toLowerCase();
   const searching = q.length > 0;
-  const searchResults = searching
-    ? txs
-        .filter((t) => (tab === "expenses" ? t.type === "expense" : t.type === "income"))
-        .filter(
-          (t) =>
-            t.merchant.toLowerCase().includes(q) ||
-            t.category.toLowerCase().includes(q) ||
-            (t.items ?? []).some((n) => n.toLowerCase().includes(q))
-        )
-    : [];
-  const searchTotal = searchResults.reduce((s, t) => s + t.amountHome, 0);
 
   const dec = useDec();
   const money = useMoney();
@@ -67,6 +56,21 @@ export default function HistoryList({
   const t = useT();
   const lang = useLang();
   const isExpenses = tab === "expenses";
+
+  // пошук: збігаємось і з сирою назвою категорії (у базі укр.),
+  // і з ПЕРЕКЛАДЕНОЮ — щоб EN/RU користувач знаходив "food"/"еда"
+  const searchResults = searching
+    ? txs
+        .filter((x) => (tab === "expenses" ? x.type === "expense" : x.type === "income"))
+        .filter(
+          (x) =>
+            x.merchant.toLowerCase().includes(q) ||
+            x.category.toLowerCase().includes(q) ||
+            dataLabel(x.category, lang).toLowerCase().includes(q) ||
+            (x.items ?? []).some((n) => n.toLowerCase().includes(q))
+        )
+    : [];
+  const searchTotal = searchResults.reduce((s, x) => s + x.amountHome, 0);
 
   const now = new Date();
   now.setHours(0, 0, 0, 0);

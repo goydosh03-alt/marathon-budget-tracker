@@ -28,6 +28,7 @@ export default function ReminderWatcher({ reminders }: { reminders: Reminder[] }
       const today = isoToday();
       const hhmm = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
       const dow = now.getDay(); // 0 нд .. 6 сб
+      const mondayIdx = (dow + 6) % 7; // 0=Пн … 6=Нд
       const isWeekend = dow === 0 || dow === 6;
 
       let sent: Record<string, string> = {};
@@ -44,7 +45,7 @@ export default function ReminderWatcher({ reminders }: { reminders: Reminder[] }
           r.freq === "daily" ||
           (r.freq === "weekdays" && !isWeekend) ||
           (r.freq === "weekends" && isWeekend) ||
-          (r.freq === "weekly" && dow === 1);
+          (r.freq === "weekly" && mondayIdx === (r.weekday ?? 0));
         if (!freqOk) continue;
         if (hhmm < r.time) continue; // час ще не настав
 

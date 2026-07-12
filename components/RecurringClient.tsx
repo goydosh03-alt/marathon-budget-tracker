@@ -60,6 +60,7 @@ export default function RecurringClient({
   const [type, setType] = useState<"expense" | "income">("expense");
   const [category, setCategory] = useState("Комунальні");
   const [accountId, setAccountId] = useState(accounts[0]?.id ?? "");
+  const [time, setTime] = useState("09:00");
   const [startDate, setStartDate] = useState(iso(new Date()));
   const [autoAdd, setAutoAdd] = useState(true);
 
@@ -84,6 +85,7 @@ export default function RecurringClient({
     setType("expense");
     setCategory("Комунальні");
     setAccountId(accounts[0]?.id ?? "");
+    setTime("09:00");
     setStartDate(iso(new Date()));
     setAutoAdd(true);
     setOpen(true);
@@ -96,6 +98,7 @@ export default function RecurringClient({
     setType(r.type);
     setCategory(r.category);
     setAccountId(r.accountId);
+    setTime(r.time ?? "09:00");
     setStartDate(r.startDate || iso(new Date()));
     setAutoAdd(r.autoAdd ?? true);
     setOpen(true);
@@ -110,6 +113,7 @@ export default function RecurringClient({
       type,
       category,
       accountId,
+      time,
       startDate,
       dayOfMonth: Number(startDate.split("-")[2]),
       autoAdd,
@@ -146,7 +150,7 @@ export default function RecurringClient({
               <span className={styles.catDot} style={{ background: bgFor(r.category) }}>{iconFor(r.category)}</span>
               <div className={styles.catMid2}>
                 <span className={styles.catName2}>{r.name}</span>
-                <span className={styles.catType2}>{t("rec.dayPre")}{r.dayOfMonth}{t("rec.dayPost")}{r.autoAdd ? ` · ${t("rec.auto")}` : ""}</span>
+                <span className={styles.catType2}>{t("rec.dayPre")}{r.dayOfMonth}{t("rec.dayPost")}{r.time ? ` · ${r.time}` : ""}{r.autoAdd ? ` · ${t("rec.auto")}` : ""}</span>
               </div>
               <span className={`${styles.recAmt} ${r.type === "income" ? styles.inc : ""}`}>
                 {r.type === "income" ? "+" : "−"}{money(r.amountHome, dec)}
@@ -226,6 +230,9 @@ export default function RecurringClient({
                   <Icon id="i-cal" />
                 </button>
               </div>
+
+              <div className={styles.fieldLabel}>{t("rem.time")}</div>
+              <input className={styles.confirmInput} type="time" value={time} onChange={(e) => e.target.value && setTime(e.target.value)} />
 
               <div className={styles.autoRow}>
                 <div>

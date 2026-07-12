@@ -21,6 +21,7 @@ export type Recurring = {
   type: "expense" | "income";
   category: string;
   accountId: string;
+  time?: string; // HH:MM — сьогоднішній платіж записується не раніше цієї години
   dayOfMonth: number; // 1..31 (день із startDate)
   startDate: string; // YYYY-MM-DD
   autoAdd: boolean; // створювати транзакцію автоматично
@@ -72,7 +73,9 @@ export async function deleteRecurring(id: string): Promise<AddTxResult> {
 }
 
 // Автостворення: створює транзакції за регулярними платежами, що настали (раз на відкриття).
-export async function processRecurring(): Promise<{ created: number }> {
+// clientTime — місцевий час користувача "HH:MM": сьогоднішні платежі з полем
+// time створюються лише коли година настала (сервер свого часу не знає).
+export async function processRecurring(clientTime?: string): Promise<{ created: number }> {
   const { supabase, user, recs } = await readRecurring();
   if (!user || !recs.length) return { created: 0 };
 
@@ -98,6 +101,8 @@ export async function processRecurring(): Promise<{ created: number }> {
       const occ = new Date(y, m, Math.min(r.dayOfMonth, dim));
       occ.setHours(0, 0, 0, 0);
       if (occ > today) break;
+      // сьогоднішній платіж — не раніше вказаної години
+      if (occ.getTime() === today.getTime() && r.time && clientTime && clientTime < r.time) break;
       const afterLast = lastGen ? occ > lastGen : occ >= start;
       if (afterLast && occ >= start) {
         inserts.push({
@@ -137,6 +142,7 @@ export type Reminder = {
   name: string;
   time: string; // HH:MM
   freq: "daily" | "weekdays" | "weekends" | "weekly";
+  weekday?: number; // 0=Пн … 6=Нд — день для freq="weekly" (без нього = Пн)
   enabled: boolean;
   lastSent?: string; // YYYY-MM-DD — щоб не слати двічі на день
 };
@@ -305,6 +311,11 @@ export async function deleteUserAccount(): Promise<AddTxResult> {
 
   await supabase.from("transactions").delete().eq("user_id", user.id);
   await supabase.from("accounts").delete().eq("user_id", user.id);
+  await supabase.from("user_settings").delete().eq("user_id", user.id);
+  // аватарка зі сховища (best-effort)
+  try {
+    await supabase.storage.from("avatars").remove([`${user.id}/avatar.jpg`]);
+  } catch {}
 
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (key) {
@@ -314,8 +325,17 @@ export async function deleteUserAccount(): Promise<AddTxResult> {
       });
       await admin.auth.admin.deleteUser(user.id);
     } catch {
-      // якщо не вдалось — хоча б очистимо метадані
-      await supabase.auth.updateUser({ data: { categories: [], recurring: [], hide_cents: false } });
+      // якщо не вдалось — хоча б очистимо ВСІ метадані
+      await supabase.auth.updateUser({
+        data: {
+          categories: [],
+          recurring: [],
+          reminders: [],
+          push_subscriptions: [],
+          hide_cents: false,
+          avatar_url: null,
+        },
+      });
     }
   } else {
     await supabase.auth.updateUser({ data: { categories: [], recurring: [], hide_cents: false } });

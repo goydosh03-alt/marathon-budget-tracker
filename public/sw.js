@@ -15,6 +15,16 @@ self.addEventListener("activate", (event) => {
   );
 });
 
+// Вихід з акаунта → чистимо кешовані сторінки (приватність на спільному
+// пристрої), але одразу повертаємо precache (offline.html, іконки).
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "sc-clear-cache") {
+    event.waitUntil(
+      caches.delete(CACHE).then(() => caches.open(CACHE)).then((c) => c.addAll(PRECACHE))
+    );
+  }
+});
+
 // Офлайн-стратегія:
 // - сторінки (navigate): мережа → кеш → offline.html
 // - статика (_next/static, картинки): кеш → мережа (і докешовуємо)

@@ -66,6 +66,10 @@ export default function ProfileClient({
         localStorage.removeItem(k)
       );
     } catch {}
+    // і офлайн-кеш сторінок — щоб наступний користувач не побачив чужі дані
+    try {
+      navigator.serviceWorker?.controller?.postMessage({ type: "sc-clear-cache" });
+    } catch {}
   }
 
   const providerLabel =

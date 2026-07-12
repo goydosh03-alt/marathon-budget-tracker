@@ -290,7 +290,7 @@ export const STRINGS = {
   "notif.title": { uk: "Сповіщення", en: "Notifications", ru: "Уведомления" },
   "notif.emptyTitle": { uk: "Сповіщень поки немає", en: "No notifications yet", ru: "Уведомлений пока нет" },
   "notif.emptyHint": { uk: "Тут зʼявлятимуться нагадування та записані регулярні платежі.", en: "Reminders and logged recurring payments will appear here.", ru: "Здесь будут появляться напоминания и записанные регулярные платежи." },
-  "notif.markAll": { uk: "Позначити всі прочитаними", en: "Mark all as read", ru: "Отметить все прочитанными" },
+  "notif.markAll": { uk: "Прочитати всі", en: "Read all", ru: "Прочитать все" },
 
   // перегляд транзакції / тости
   "tv.deleted": { uk: "Видалено", en: "Deleted", ru: "Удалено" },

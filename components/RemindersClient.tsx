@@ -6,8 +6,8 @@ import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon, IconSprite } from "@/components/IconSprite";
 import SubHeader from "@/components/SubHeader";
 import EmptyState from "@/components/EmptyState";
-import { useT } from "@/components/SettingsProvider";
-import type { StringKey } from "@/lib/i18n";
+import { useT, useLang } from "@/components/SettingsProvider";
+import { WEEKDAYS_SHORT, type StringKey } from "@/lib/i18n";
 import {
   addReminder,
   updateReminder,
@@ -24,6 +24,7 @@ const FREQ_IDS = ["daily", "weekdays", "weekends", "weekly"] as const;
 export default function RemindersClient({ reminders }: { reminders: Reminder[] }) {
   const router = useRouter();
   const t = useT();
+  const lang = useLang();
   const [, start] = useTransition();
   const [items, setItems] = useState(reminders);
   const [perm, setPerm] = useState<NotificationPermission | "unsupported">("default");
@@ -34,6 +35,7 @@ export default function RemindersClient({ reminders }: { reminders: Reminder[] }
   const [name, setName] = useState("");
   const [time, setTime] = useState("20:00");
   const [freq, setFreq] = useState<Reminder["freq"]>("daily");
+  const [weekday, setWeekday] = useState(0); // 0=Пн … 6=Нд (для «Щотижня»)
   const [enabled, setEnabled] = useState(true);
 
   useEffect(() => setItems(reminders), [reminders]);
@@ -67,6 +69,7 @@ export default function RemindersClient({ reminders }: { reminders: Reminder[] }
     setName(t("rem.defaultName"));
     setTime("20:00");
     setFreq("daily");
+    setWeekday((new Date().getDay() + 6) % 7); // за замовч. — сьогоднішній день
     setEnabled(true);
     setOpen(true);
   }
@@ -75,6 +78,7 @@ export default function RemindersClient({ reminders }: { reminders: Reminder[] }
     setName(r.name);
     setTime(r.time);
     setFreq(r.freq);
+    setWeekday(r.weekday ?? 0);
     setEnabled(r.enabled);
     setOpen(true);
   }
@@ -82,7 +86,7 @@ export default function RemindersClient({ reminders }: { reminders: Reminder[] }
     if (!name.trim()) return;
     setSaving(true);
     start(async () => {
-      const payload = { name, time, freq, enabled };
+      const payload = { name, time, freq, weekday, enabled };
       if (editId) await updateReminder(editId, payload);
       else await addReminder(payload);
       setSaving(false);
@@ -135,7 +139,11 @@ export default function RemindersClient({ reminders }: { reminders: Reminder[] }
             <div className={styles.remRow} key={r.id}>
               <div className={`${styles.catMid2} ${styles.clickable}`} onClick={() => openEdit(r)} style={{ cursor: "pointer" }}>
                 <span className={styles.catName2}>{r.name}</span>
-                <span className={styles.catType2}>{r.enabled ? `${r.time} · ${t(("freqL." + r.freq) as StringKey)}` : t("rem.offSub")}</span>
+                <span className={styles.catType2}>
+                  {r.enabled
+                    ? `${r.time} · ${t(("freqL." + r.freq) as StringKey)}${r.freq === "weekly" ? ` (${WEEKDAYS_SHORT[lang][r.weekday ?? 0]})` : ""}`
+                    : t("rem.offSub")}
+                </span>
               </div>
               <button type="button" className={`${styles.toggle} ${r.enabled ? styles.toggleOn : ""}`} onClick={() => flip(r)} aria-label={t("rem.enabled")}>
                 <span className={styles.toggleKnob} />
@@ -188,6 +196,16 @@ export default function RemindersClient({ reminders }: { reminders: Reminder[] }
                   </button>
                 ))}
               </div>
+
+              {freq === "weekly" && (
+                <div className={styles.chips2} style={{ marginTop: 8 }}>
+                  {WEEKDAYS_SHORT[lang].map((w, i) => (
+                    <button key={w} className={`${styles.chip2} ${weekday === i ? styles.chip2On : ""}`} onClick={() => setWeekday(i)}>
+                      {w}
+                    </button>
+                  ))}
+                </div>
+              )}
 
               <div className={styles.autoRow}>
                 <div>

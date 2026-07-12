@@ -18,7 +18,9 @@ export default function RecurringRunner() {
   useEffect(() => {
     if (ran.current) return;
     ran.current = true;
-    processRecurring()
+    const nowT = new Date();
+    const clientTime = `${String(nowT.getHours()).padStart(2, "0")}:${String(nowT.getMinutes()).padStart(2, "0")}`;
+    processRecurring(clientTime)
       .then((r) => {
         if (r.created > 0) {
           // додаємо запис у дзвіночок

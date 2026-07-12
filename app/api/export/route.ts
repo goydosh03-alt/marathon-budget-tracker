@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { isLang, translate, DEFAULT_LANG, type StringKey } from "@/lib/i18n";
+import { isLang, translate, dataLabel, DEFAULT_LANG, type StringKey } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 
@@ -59,7 +59,7 @@ export async function GET(req: NextRequest) {
   const body = rows.map((r) => [
     r.tx_date,
     r.type === "income" ? t("common.income") : t("common.expense"),
-    r.category ?? "",
+    r.category ? dataLabel(r.category, lang) : "",
     r.merchant ?? "",
     typeof r.amount_home === "number" ? r.amount_home.toFixed(2) : "",
     r.home_currency ?? "",

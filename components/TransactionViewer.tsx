@@ -25,6 +25,9 @@ export default function TransactionViewer({
   const [editing, setEditing] = useState(false);
   const [pendingDel, setPendingDel] = useState<{ name: string } | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // id транзакції, що чекає на видалення: якщо компонент розмонтують під час
+  // відліку — видалення все одно виконається (інакше «Видалено» було б брехнею)
+  const pendingIdRef = useRef<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -37,27 +40,38 @@ export default function TransactionViewer({
     };
   }, [id]);
 
-  // якщо попап закрили/розмонтували під час відліку — прибираємо таймер
+  // розмонтували під час відліку → комітимо видалення одразу (не скасовуємо!)
   useEffect(() => {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
+      if (pendingIdRef.current) {
+        deleteTransaction(pendingIdRef.current).catch(() => {});
+        pendingIdRef.current = null;
+      }
     };
   }, []);
+
+  function commitDelete() {
+    const delId = pendingIdRef.current;
+    if (!delId) return;
+    pendingIdRef.current = null;
+    timerRef.current = null;
+    deleteTransaction(delId).then(() => router.refresh()).catch(() => {});
+    onClose();
+  }
 
   function handleDelete() {
     if (!tx) return;
     const name = (tx.merchant as string) || (tx.category as string) || t("tv.record");
+    pendingIdRef.current = String(tx.id);
     setPendingDel({ name });
-    timerRef.current = setTimeout(() => {
-      deleteTransaction(String(tx.id)).then(() => router.refresh());
-      timerRef.current = null;
-      onClose();
-    }, 5000);
+    timerRef.current = setTimeout(commitDelete, 5000);
   }
 
   function undoDelete() {
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = null;
+    pendingIdRef.current = null; // скасовано — cleanup нічого не видалить
     setPendingDel(null);
     onClose();
   }
