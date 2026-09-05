@@ -1,16 +1,19 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { IconSprite, Icon } from "@/components/IconSprite";
-import TopBar from "@/components/TopBar";
+import { IconSprite } from "@/components/IconSprite";
 import BottomNav from "@/components/BottomNav";
+import AmountsEyeButton from "@/components/AmountsEyeButton";
+import NotificationsBell from "@/components/NotificationsBell";
 import MenuQuickCards from "@/components/MenuQuickCards";
 import DonateBanner from "@/components/DonateBanner";
 import ExportMenuItem from "@/components/ExportMenuItem";
 import LangMenuItem from "@/components/LangMenuItem";
+import MenuRow from "@/components/ds/MenuRow";
 import { DEFAULT_CURRENCY, isCurrency } from "@/lib/currency";
 import { DEFAULT_LANG, isLang, translate, type StringKey } from "@/lib/i18n";
-import styles from "@/app/dashboard/dashboard.module.css";
+import ds from "@/app/dashboard/ds.module.css";
+import m from "@/app/menu/menu.module.css";
 
 export const dynamic = "force-dynamic";
 
@@ -41,114 +44,76 @@ export default async function MenuPage() {
   const t = (k: StringKey) => translate(k, lang);
 
   return (
-    <div className={styles.screen}>
+    <div className={ds.screen}>
       <IconSprite />
-      <TopBar>
-        <span className={styles.barTitle}>{t("menu.title")}</span>
-      </TopBar>
 
-      <DonateBanner />
+      <div className={ds.content}>
+        <header className={ds.headerbar}>
+          <h1 className={m.title}>{t("menu.title")}</h1>
+          <div className={`${ds.actions} ${ds.glass}`}>
+            <AmountsEyeButton />
+            <NotificationsBell />
+          </div>
+        </header>
 
-      <Link href="/profile" className={styles.profCardLink}>
-        <div className={styles.profCardAv} style={{ overflow: "hidden" }}>
-          {avatarUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={avatarUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-          ) : (
-            initial
-          )}
-        </div>
-        <div className={styles.profCardMid}>
-          <span className={styles.profCardName}>{fullName}</span>
-          <span className={styles.profCardSub}>{user.email}</span>
-        </div>
-        <span className={styles.profCardChev}><Icon id="i-arrow-right" /></span>
-      </Link>
+        <DonateBanner />
 
-      <MenuQuickCards hideCents={hideCents} currency={currency} />
-
-      <div className={styles.menuGroupLabel}>{t("menu.group.manage")}</div>
-      <div className={styles.menuList}>
-        <Link href="/settings" className={styles.menuItem}>
-          <span className={styles.menuIco} style={{ background: "rgba(124,92,255,0.16)", color: "#b9a8ff" }}>
-            <Icon id="i-cog" />
+        <Link href="/profile" className={m.profile}>
+          <span className={m.profAva}>
+            {avatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={avatarUrl} alt="" />
+            ) : (
+              initial
+            )}
           </span>
-          <span className={styles.menuMid}>
-            <span className={styles.menuName}>{t("menu.settings")}</span>
-            <span className={styles.menuSub}>{t("menu.settings.sub")}</span>
+          <span className={m.mid}>
+            <span className={m.name}>{fullName}</span>
+            <span className={m.sub}>{user.email}</span>
           </span>
-          <span className={styles.menuChev}><Icon id="i-arrow-right" /></span>
+          <span className={m.chev}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M9 5l7 7-7 7" />
+            </svg>
+          </span>
         </Link>
 
-        <Link href="/categories" className={styles.menuItem}>
-          <span className={styles.menuIco} style={{ background: "rgba(124,92,255,0.16)", color: "#b9a8ff" }}>
-            <Icon id="i-list" />
-          </span>
-          <span className={styles.menuMid}>
-            <span className={styles.menuName}>{t("menu.categories")}</span>
-            <span className={styles.menuSub}>{t("menu.categories.sub")}</span>
-          </span>
-          <span className={styles.menuChev}><Icon id="i-arrow-right" /></span>
-        </Link>
+        <MenuQuickCards hideCents={hideCents} currency={currency} />
+
+        <section className={m.group}>
+          <span className={m.groupLabel}>{t("menu.group.manage")}</span>
+          <div className={m.list}>
+            <MenuRow icon="OwnSettingsGear" href="/settings" title={t("menu.settings")} sub={t("menu.settings.sub")} />
+            <MenuRow icon="BoldEssentionalUIHamburgerMenu" href="/categories" title={t("menu.categories")} sub={t("menu.categories.sub")} />
+          </div>
+        </section>
+
+        <section className={m.group}>
+          <span className={m.groupLabel}>{t("menu.group.finance")}</span>
+          <div className={m.list}>
+            <ExportMenuItem />
+          </div>
+        </section>
+
+        <section className={m.group}>
+          <span className={m.groupLabel}>{t("menu.group.automation")}</span>
+          <div className={m.list}>
+            <MenuRow icon="BoldArrowsTransferHorizontal" href="/recurring" title={t("menu.recurring")} sub={t("menu.recurring.sub")} />
+            <MenuRow icon="BoldNotificationsBell" href="/reminders" title={t("menu.reminders")} sub={t("menu.reminders.sub")} />
+          </div>
+        </section>
+
+        <section className={m.group}>
+          <span className={m.groupLabel}>{t("menu.group.app")}</span>
+          <div className={m.list}>
+            <LangMenuItem />
+            <MenuRow icon="BoldAstronomyStarsMinimalistic" href="/soon?f=rate" title={t("menu.rate")} sub={t("menu.rate.sub")} badge={t("common.soon")} />
+            <MenuRow icon="BoldEssentionalUICopy" href="/privacy" title={t("legal.privacy")} sub={t("legal.privacy.sub")} />
+          </div>
+        </section>
       </div>
 
-      <div className={styles.menuGroupLabel}>{t("menu.group.finance")}</div>
-      <div className={styles.menuList}>
-        <ExportMenuItem />
-      </div>
-
-      <div className={styles.menuGroupLabel}>{t("menu.group.automation")}</div>
-      <div className={styles.menuList}>
-        <Link href="/recurring" className={styles.menuItem}>
-          <span className={styles.menuIco} style={{ background: "rgba(110,231,183,0.14)", color: "#6ee7b7" }}>
-            <Icon id="i-repeat" />
-          </span>
-          <span className={styles.menuMid}>
-            <span className={styles.menuName}>{t("menu.recurring")}</span>
-            <span className={styles.menuSub}>{t("menu.recurring.sub")}</span>
-          </span>
-          <span className={styles.menuChev}><Icon id="i-arrow-right" /></span>
-        </Link>
-
-        <Link href="/reminders" className={styles.menuItem}>
-          <span className={styles.menuIco} style={{ background: "rgba(245,180,90,0.16)", color: "#f5c87c" }}>
-            <Icon id="i-bell" />
-          </span>
-          <span className={styles.menuMid}>
-            <span className={styles.menuName}>{t("menu.reminders")}</span>
-            <span className={styles.menuSub}>{t("menu.reminders.sub")}</span>
-          </span>
-          <span className={styles.menuChev}><Icon id="i-arrow-right" /></span>
-        </Link>
-      </div>
-
-      <div className={styles.menuGroupLabel}>{t("menu.group.app")}</div>
-      <div className={styles.menuList}>
-        <LangMenuItem />
-
-        <Link href="/soon?f=rate" className={styles.menuItem}>
-          <span className={styles.menuIco} style={{ background: "rgba(255,205,90,0.16)", color: "#ffd45a" }}>
-            <Icon id="i-star" />
-          </span>
-          <span className={styles.menuMid}>
-            <span className={styles.menuName}>{t("menu.rate")}</span>
-            <span className={styles.menuSub}>{t("menu.rate.sub")}</span>
-          </span>
-          <span className={styles.menuSoon}>{t("common.soon")}</span>
-        </Link>
-
-        <Link href="/privacy" className={styles.menuItem}>
-          <span className={styles.menuIco} style={{ background: "rgba(148,163,184,0.16)", color: "#cbd5e1" }}>
-            <Icon id="i-doc" />
-          </span>
-          <span className={styles.menuMid}>
-            <span className={styles.menuName}>{t("legal.privacy")}</span>
-            <span className={styles.menuSub}>{t("legal.privacy.sub")}</span>
-          </span>
-          <span className={styles.menuChev}><Icon id="i-arrow-right" /></span>
-        </Link>
-      </div>
-
+      <div className={ds.scrimbar} />
       <BottomNav active="profile" accounts={accounts ?? []} />
     </div>
   );

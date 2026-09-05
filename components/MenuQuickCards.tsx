@@ -2,8 +2,8 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import styles from "@/app/dashboard/dashboard.module.css";
-import { Icon } from "@/components/IconSprite";
+import styles from "@/app/menu/menu.module.css";
+import DsIcon from "@/components/ds/Icon";
 import { setHideCents } from "@/app/dashboard/actions";
 import { currencyMeta, type CurrencyCode } from "@/lib/currency";
 import { useT, useLang } from "@/components/SettingsProvider";
@@ -29,33 +29,34 @@ export default function MenuQuickCards({ hideCents, currency }: { hideCents: boo
   }
 
   return (
-    <div className={styles.quickCards}>
+    <div className={styles.quick}>
       <div className={styles.quickCard}>
         <div className={styles.quickTop}>
-          <span className={styles.quickIco} style={{ background: "rgba(59,180,245,0.14)", color: "#7cc8f5" }}>
-            <Icon id="i-card" />
+          <span className={styles.tile}>
+            <DsIcon name="BoldSecurityEye" size={20} />
           </span>
           <button
             type="button"
             className={`${styles.toggle} ${on ? styles.toggleOn : ""}`}
             onClick={toggle}
             aria-label={t("menu.hideCents")}
+            aria-pressed={on}
           >
-            <span className={styles.toggleKnob} />
+            <span className={styles.knob} />
           </button>
         </div>
-        <div className={styles.quickName}>{t("menu.hideCents")}</div>
-        <div className={styles.quickSub}>{on ? t("menu.hideCents.on") : t("menu.hideCents.off")}</div>
+        <span className={styles.quickName}>{t("menu.hideCents")}</span>
+        <span className={styles.quickSub}>{on ? t("menu.hideCents.on") : t("menu.hideCents.off")}</span>
       </div>
 
-      <button type="button" className={styles.quickCard} onClick={() => setCurOpen(true)} style={{ textAlign: "left" }}>
+      <button type="button" className={styles.quickCard} onClick={() => setCurOpen(true)}>
         <div className={styles.quickTop}>
-          <span className={styles.quickIco} style={{ background: "rgba(74,222,180,0.14)", color: "#6ee7b7" }}>
-            <Icon id="i-wallet" />
+          <span className={styles.tile}>
+            <DsIcon name="BoldMoneyWallet" size={20} />
           </span>
         </div>
-        <div className={styles.quickName}>{t("menu.currency")}</div>
-        <div className={styles.quickSub}>{currencyName(cur.code, lang)}</div>
+        <span className={styles.quickName}>{t("menu.currency")}</span>
+        <span className={styles.quickSub}>{currencyName(cur.code, lang)}</span>
       </button>
 
       <CurrencySheet open={curOpen} onClose={() => setCurOpen(false)} />
