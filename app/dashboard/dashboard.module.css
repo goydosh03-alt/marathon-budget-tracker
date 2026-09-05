@@ -12,9 +12,9 @@
     linear-gradient(180deg, #0c1a1d 0%, #091316 55%, var(--sc-bg) 100%);
 }
 
-.topbar { display: flex; align-items: center; justify-content: space-between; height: 56px; }
+.topbar { display: flex; align-items: center; gap: var(--sc-header-arrow-gap); justify-content: space-between; min-height: 56px; }
 /* Підсторінки: завжди 24px від хедера (‹ назад + назва) до контенту */
-.subHead { margin-bottom: 24px; }
+.subHead { margin-bottom: var(--sc-header-gap); }
 .subHead + * { margin-top: 0 !important; }
 .hi { display: flex; align-items: center; gap: 12px; }
 .brand { display: flex; align-items: center; }
@@ -194,7 +194,7 @@
 
 /* history page */
 .pageTitle { font-size: 22px; font-weight: 700; padding: 8px 0 4px; }
-.barTitle { font-size: 22px; font-weight: 700; }
+.barTitle { font: var(--sc-type-page); letter-spacing: var(--sc-tracking-page); }
 
 /* profile */
 .profCard { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 24px 20px; text-align: center; margin-top: 16px; }

@@ -107,6 +107,8 @@
   --sc-safe-top: 56px;
   --sc-nav-bottom: 34px;
   --sc-section-gap: 24px;
+  --sc-header-gap: 24px;      /* [ours] заголовок сторінки -> контент. ОДНЕ значення на весь застосунок */
+  --sc-header-arrow-gap: 12px;/* [ours] стрілка «назад» -> заголовок */
   --sc-row-inset: 16px;      /* [ours] row padding on all four sides */
   --sc-row-divider-left: 66px; /* [ours] 16 inset + 40 disc + 10 gap */
 
