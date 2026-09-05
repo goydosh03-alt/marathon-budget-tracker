@@ -2,10 +2,19 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import styles from "@/app/dashboard/dashboard.module.css";
+import styles from "@/app/dashboard/ds.module.css";
+import legacy from "@/app/dashboard/dashboard.module.css";
+import DsIcon from "@/components/ds/Icon";
 import { Icon } from "@/components/IconSprite";
 import { useT } from "@/components/SettingsProvider";
 import AddTransactionForm from "@/components/AddTransactionForm";
+
+const TABS = [
+  { key: "home", href: "/dashboard", icon: "BoldEssentionalUIHome2", label: "nav.home" },
+  { key: "history", href: "/history", icon: "BoldTimeHistory", label: "nav.history" },
+  { key: "reports", href: "/reports", icon: "BoldBusinessStatisticChart2", label: "nav.reports" },
+  { key: "profile", href: "/menu", icon: "BoldEssentionalUIHamburgerMenu", label: "nav.menu" },
+] as const;
 
 export default function BottomNav({
   active,
@@ -16,19 +25,22 @@ export default function BottomNav({
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [formType, setFormType] = useState<"expense" | "income" | null>(null);
+  const [autoScan, setAutoScan] = useState(false);
   const t = useT();
 
-  function openForm(t: "expense" | "income") {
+  function openForm(type: "expense" | "income", scan = false) {
     setMenuOpen(false);
-    setFormType(t);
+    setAutoScan(scan);
+    setFormType(type);
   }
 
-  // відкриття форми ззовні (напр., тап по нагадуванню в дзвіночку)
+  // відкриття форми ззовні: дзвіночок, швидкі дії на головній
   useEffect(() => {
     function onOpenAdd(e: Event) {
-      const type = (e as CustomEvent).detail?.type;
+      const detail = (e as CustomEvent).detail ?? {};
       setMenuOpen(false);
-      setFormType(type === "income" ? "income" : "expense");
+      setAutoScan(!!detail.scan);
+      setFormType(detail.type === "income" ? "income" : "expense");
     }
     window.addEventListener("sc:open-add", onOpenAdd);
     return () => window.removeEventListener("sc:open-add", onOpenAdd);
@@ -38,23 +50,23 @@ export default function BottomNav({
     <>
       {menuOpen && (
         <>
-          <div className={styles.backdrop} onClick={() => setMenuOpen(false)} />
-          <div className={styles.addmenu}>
-            <button className={styles.addItem} onClick={() => openForm("income")}>
-              <span className={styles.mi} style={{ background: "rgba(110,231,183,0.16)", color: "#6ee7b7" }}>
+          <div className={legacy.backdrop} onClick={() => setMenuOpen(false)} />
+          <div className={legacy.addmenu}>
+            <button className={legacy.addItem} onClick={() => openForm("income")}>
+              <span className={legacy.mi} style={{ background: "rgba(95,179,127,0.16)", color: "var(--sc-accent-text)" }}>
                 <Icon id="i-income" />
               </span>
               {t("nav.addIncome")}
             </button>
-            <div className={styles.menuDiv} />
-            <button className={styles.addItem} onClick={() => openForm("expense")}>
-              <span className={styles.mi} style={{ background: "rgba(124,92,255,0.16)", color: "#b9a8ff" }}>
+            <div className={legacy.menuDiv} />
+            <button className={legacy.addItem} onClick={() => openForm("expense")}>
+              <span className={legacy.mi} style={{ background: "rgba(181,123,238,0.16)", color: "var(--sc-cat-purple)" }}>
                 <Icon id="i-edit" />
               </span>
               {t("nav.addExpense")}
             </button>
-            <button className={styles.addItem} onClick={() => openForm("expense")}>
-              <span className={styles.mi} style={{ background: "rgba(59,180,245,0.16)", color: "#7cc8f5" }}>
+            <button className={legacy.addItem} onClick={() => openForm("expense", true)}>
+              <span className={legacy.mi} style={{ background: "rgba(47,123,255,0.16)", color: "var(--sc-cat-blue)" }}>
                 <Icon id="i-scan" />
               </span>
               {t("nav.scanReceipt")}
@@ -64,29 +76,38 @@ export default function BottomNav({
       )}
 
       <nav className={styles.dock}>
-        <div className={styles.navbar}>
-          <Link href="/dashboard" className={`${styles.navItem} ${active === "home" ? styles.navOn : ""}`}>
-            <Icon id="i-home" />{t("nav.home")}
-          </Link>
-          <Link href="/history" className={`${styles.navItem} ${active === "history" ? styles.navOn : ""}`}>
-            <Icon id="i-list" />{t("nav.history")}
-          </Link>
-          <Link href="/reports" className={`${styles.navItem} ${active === "reports" ? styles.navOn : ""}`}>
-            <Icon id="i-bars" />{t("nav.reports")}
-          </Link>
-          <Link href="/menu" className={`${styles.navItem} ${active === "profile" ? styles.navOn : ""}`}>
-            <Icon id="i-menu" />{t("nav.menu")}
-          </Link>
+        <div className={`${styles.navpill} ${styles.glass}`}>
+          {TABS.map((tab) => (
+            <Link
+              key={tab.key}
+              href={tab.href}
+              aria-label={t(tab.label)}
+              aria-current={active === tab.key ? "page" : undefined}
+              className={`${styles.navtab} ${active === tab.key ? styles.navtabOn : ""}`}
+            >
+              <DsIcon name={tab.icon} size={23} />
+            </Link>
+          ))}
         </div>
-        <button className={styles.cam} onClick={() => setMenuOpen((v) => !v)} aria-label={t("nav.add")}>
-          <span className={`${styles.camInner} ${menuOpen ? styles.camInnerOn : ""}`}>
-            <Icon id="i-plus" />
-          </span>
+        <button
+          className={`${styles.fab} ${menuOpen ? styles.fabOn : ""}`}
+          onClick={() => setMenuOpen((v) => !v)}
+          aria-label={t("nav.add")}
+        >
+          <DsIcon name="BoldEssentionalUIAddCircle" size={28} />
         </button>
       </nav>
 
       {formType && (
-        <AddTransactionForm initialType={formType} accounts={accounts} onClose={() => setFormType(null)} />
+        <AddTransactionForm
+          initialType={formType}
+          autoScan={autoScan}
+          accounts={accounts}
+          onClose={() => {
+            setFormType(null);
+            setAutoScan(false);
+          }}
+        />
       )}
     </>
   );

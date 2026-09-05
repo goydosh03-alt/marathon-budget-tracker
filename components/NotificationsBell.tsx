@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon } from "@/components/IconSprite";
+import DsIcon from "@/components/ds/Icon";
 import EmptyState from "@/components/EmptyState";
 import { useT } from "@/components/SettingsProvider";
 
@@ -59,7 +60,7 @@ export default function NotificationsBell() {
   return (
     <>
       <button className={styles.iconBtn} onClick={() => setOpen(true)} aria-label={t("notif.title")} style={{ position: "relative" }}>
-        <Icon id="i-bell" />
+        <DsIcon name="BoldNotificationsBell" size={20} />
         {unread > 0 && <span className={styles.notifDot} />}
       </button>
 

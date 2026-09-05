@@ -319,6 +319,10 @@ export const STRINGS = {
   "eye.hide": { uk: "Сховати суми", en: "Hide amounts", ru: "Скрыть суммы" },
 
   // навбар — меню "+"
+  "qa.income": { uk: "Дохід", en: "Income", ru: "Доход" },
+  "qa.expense": { uk: "Витрата", en: "Expense", ru: "Расход" },
+  "qa.scan": { uk: "Сканувати", en: "Scan", ru: "Сканировать" },
+  "qa.more": { uk: "Ще", en: "More", ru: "Ещё" },
   "nav.addIncome": { uk: "Додати дохід", en: "Add income", ru: "Добавить доход" },
   "nav.addExpense": { uk: "Витрата вручну", en: "Expense manually", ru: "Расход вручную" },
   "nav.scanReceipt": { uk: "Сканувати чек", en: "Scan receipt", ru: "Сканировать чек" },

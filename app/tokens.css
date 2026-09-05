@@ -1,0 +1,121 @@
+/* ============================================================
+   Snapcost — design tokens (dark "stone" theme)
+   Source: snapcash-design-system/tokens/*.css
+   Deviations agreed with the user are marked [ours].
+   Change a value here and it propagates through the whole app.
+   NOTE: --sc-font must only ever be redefined on :root — the type
+   composites below substitute it where they are declared.
+   ============================================================ */
+:root {
+  /* Base palette */
+  --sc-stone-950: #1A1B19;
+  --sc-stone-900: #1C1D1B;   /* canvas */
+  --sc-stone-850: #232421;
+  --sc-stone-800: #262725;   /* sheet base */
+  --sc-stone-750: #2D2E2B;
+  --sc-stone-700: #31322F;   /* card */
+  --sc-stone-600: #4E504B;
+  --sc-stone-300: #8E918C;
+  --sc-stone-200: #A9ACA6;
+  --sc-stone-50:  #F1EFEA;
+
+  /* Surfaces */
+  --sc-bg: var(--sc-stone-900);
+  --sc-bg-gradient: linear-gradient(180deg, #2D2E2B 0%, #232421 40%, #1A1B19 100%);
+  --sc-bg-glow:
+    radial-gradient(380px 320px at 6% 0%, rgba(78,80,75,.92), transparent 70%),
+    radial-gradient(360px 300px at 94% 4%, rgba(59,61,57,.92), transparent 70%),
+    radial-gradient(440px 340px at 55% 30%, rgba(63,65,61,.62), transparent 75%);
+  --sc-bg-dots: radial-gradient(rgba(241,239,234,.14) 1px, transparent 1.2px);
+  --sc-bg-dots-size: 22px;
+  --sc-surface-glass: rgba(255,255,255,.09);
+  --sc-surface-glass-active: rgba(255,255,255,.10);
+  --sc-surface-sheet: rgba(38,39,37,.58);   /* [ours] was .94 — blur was invisible */
+  --sc-surface-card: rgba(255,255,255,.07); /* [ours] was solid #31322F */
+  --sc-surface-inverse: var(--sc-stone-50);
+  --sc-scrim: linear-gradient(rgba(28,29,27,0), rgba(28,29,27,.55) 45%, rgba(28,29,27,.93));
+
+  /* Ink */
+  --sc-ink: var(--sc-stone-50);
+  --sc-ink-secondary: var(--sc-stone-200);
+  --sc-ink-tertiary: var(--sc-stone-300);
+  --sc-ink-muted: rgba(241,239,234,.5);
+  --sc-ink-inverse: var(--sc-stone-900);
+
+  /* Lines */
+  --sc-hairline: rgba(255,255,255,.08);
+  --sc-glass-edge: rgba(255,255,255,.12);
+  --sc-glass-highlight: rgba(255,255,255,.18);
+  --sc-sheet-edge: rgba(255,255,255,.12);
+
+  /* Accent — one green. The old blue accent is retired. */
+  --sc-accent: #5FB37F;
+  --sc-accent-text: #7FCB9A;
+  --sc-danger: #E5533D;
+
+  /* Category colours */
+  --sc-cat-blue: #2F7BFF;
+  --sc-cat-orange: #F28337;
+  --sc-cat-green: #739F46;
+  --sc-cat-purple: #B57BEE;
+  --sc-cat-red: #E5533D;
+  --sc-cat-teal: #2BA7A0;
+
+  /* Effects */
+  --sc-blur-glass: blur(24px) saturate(140%);
+  --sc-blur-sheet: blur(28px) saturate(140%);
+  --sc-blur-card: blur(20px) saturate(140%);
+  --sc-shadow-glass: 0 8px 24px rgba(0,0,0,.25), inset 0 0 0 .5px var(--sc-glass-edge), inset 0 1px 0 var(--sc-glass-highlight);
+  --sc-shadow-sheet: inset 0 1px 0 rgba(255,255,255,.08), 0 -8px 30px rgba(0,0,0,.3);
+  --sc-shadow-card: 0 6px 20px rgba(0,0,0,.18), inset 0 0 0 .5px var(--sc-glass-edge), inset 0 1px 0 rgba(255,255,255,.14);
+  --sc-shadow-fab: 0 8px 24px rgba(0,0,0,.35);
+
+  --sc-ease: cubic-bezier(.2, 0, 0, 1);
+  --sc-duration-fast: 150ms;
+  --sc-duration-base: 220ms;
+  --sc-duration-sheet: 320ms;
+  --sc-press-scale: .96;
+
+  /* Type — Inter stays (system ships Hanken Grotesk; we keep ours) */
+  --sc-font: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --sc-weight-regular: 400;
+  --sc-weight-medium: 500;
+  --sc-weight-semibold: 600;
+  --sc-text-display: 44px;   /* [ours] was 48 */
+  --sc-text-title: 20px;
+  --sc-text-heading: 17px;
+  --sc-text-body: 15px;
+  --sc-text-caption: 13px;
+  --sc-leading-display: 1;
+  --sc-leading-tight: 1.2;
+  --sc-leading-body: 1.35;
+  --sc-tracking-display: -1.6px; /* [ours] scaled with the smaller display */
+  --sc-type-display: var(--sc-weight-semibold) var(--sc-text-display)/var(--sc-leading-display) var(--sc-font);
+  --sc-type-title: var(--sc-weight-semibold) var(--sc-text-title)/var(--sc-leading-tight) var(--sc-font);
+  --sc-type-heading: var(--sc-weight-semibold) var(--sc-text-heading)/var(--sc-leading-tight) var(--sc-font);
+  --sc-type-body: var(--sc-weight-regular) var(--sc-text-body)/var(--sc-leading-body) var(--sc-font);
+  --sc-type-body-medium: var(--sc-weight-medium) var(--sc-text-body)/var(--sc-leading-body) var(--sc-font); /* [ours] */
+  --sc-type-body-strong: var(--sc-weight-semibold) var(--sc-text-body)/var(--sc-leading-body) var(--sc-font);
+  --sc-type-caption: var(--sc-weight-regular) var(--sc-text-caption)/var(--sc-leading-body) var(--sc-font);
+  --sc-type-caption-medium: var(--sc-weight-medium) var(--sc-text-caption)/var(--sc-leading-body) var(--sc-font);
+
+  /* Spacing / layout — 2px base */
+  --sc-page-inset: 20px;
+  --sc-safe-top: 56px;
+  --sc-nav-bottom: 34px;
+  --sc-section-gap: 24px;
+  --sc-row-inset: 16px;      /* [ours] row padding on all four sides */
+  --sc-row-divider-left: 66px; /* [ours] 16 inset + 40 disc + 10 gap */
+
+  /* Radius */
+  --sc-radius-sm: 11px;
+  --sc-radius-row: 14px;
+  --sc-radius-card: 22px;
+  --sc-radius-sheet: 24px;
+  --sc-radius-group: 24px;
+  --sc-radius-pill: 100px;
+
+  /* Legacy aliases so untouched screens follow the new palette */
+  --background: var(--sc-bg);
+  --foreground: var(--sc-ink);
+}

@@ -43,12 +43,14 @@ function dm(iso: string): string {
 
 export default function AddTransactionForm({
   initialType,
+  autoScan = false,
   accounts,
   editTx,
   initialCategory,
   onClose,
 }: {
   initialType: "expense" | "income";
+  autoScan?: boolean;
   accounts: { id: string; name: string; type: string }[];
   editTx?: EditTx;
   initialCategory?: string;
@@ -71,6 +73,11 @@ export default function AddTransactionForm({
     editTx?.items && editTx.items.length ? editTx.items : null
   );
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // «Сканувати» на головній відкриває камеру одразу
+  useEffect(() => {
+    if (autoScan) fileRef.current?.click();
+  }, [autoScan]);
 
   // undo для видалення позиції
   const [itemUndo, setItemUndo] = useState<{ items: Item[]; amount: string } | null>(null);
