@@ -1,6 +1,6 @@
 /* Меню — класи екрана. Спільні (screen/content/glass/dock) беруться з ds.module.css. */
 
-.title { margin: 0; font: var(--sc-type-title); letter-spacing: var(--sc-tracking-title, -0.4px); color: var(--sc-ink); }
+.title { margin: 0; font: var(--sc-type-page); letter-spacing: var(--sc-tracking-page); color: var(--sc-ink); }
 
 /* ---------- банер донату ---------- */
 .donate {

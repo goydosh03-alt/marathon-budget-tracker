@@ -6,7 +6,6 @@ import BottomNav from "@/components/BottomNav";
 import AmountsEyeButton from "@/components/AmountsEyeButton";
 import NotificationsBell from "@/components/NotificationsBell";
 import MenuQuickCards from "@/components/MenuQuickCards";
-import DonateBanner from "@/components/DonateBanner";
 import ExportMenuItem from "@/components/ExportMenuItem";
 import LangMenuItem from "@/components/LangMenuItem";
 import MenuRow from "@/components/ds/MenuRow";
@@ -55,8 +54,6 @@ export default async function MenuPage() {
             <NotificationsBell />
           </div>
         </header>
-
-        <DonateBanner />
 
         <Link href="/profile" className={m.profile}>
           <span className={m.profAva}>
