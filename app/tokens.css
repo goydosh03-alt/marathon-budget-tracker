@@ -82,7 +82,7 @@
   --sc-weight-medium: 500;
   --sc-weight-semibold: 600;
   --sc-text-display: 44px;   /* [ours] was 48 */
-  --sc-text-page: 28px;    /* [ours] заголовок верхньорівневої сторінки (iOS large title) */
+  --sc-text-page: 20px;    /* [ours] заголовок БУДЬ-ЯКОЇ сторінки. Був 28 — завеликий, надто контрастив */
   --sc-text-title: 20px;
   --sc-text-heading: 17px;
   --sc-text-body: 15px;
@@ -90,7 +90,7 @@
   --sc-leading-display: 1;
   --sc-leading-tight: 1.2;
   --sc-leading-body: 1.35;
-  --sc-tracking-page: -0.6px;
+  --sc-tracking-page: -0.4px;
   --sc-tracking-display: -1.6px; /* [ours] scaled with the smaller display */
   --sc-type-display: var(--sc-weight-semibold) var(--sc-text-display)/var(--sc-leading-display) var(--sc-font);
   --sc-type-page: var(--sc-weight-semibold) var(--sc-text-page)/var(--sc-leading-tight) var(--sc-font);
