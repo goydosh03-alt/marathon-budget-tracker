@@ -2,20 +2,30 @@
 
 import { useState, useRef } from "react";
 import Link from "next/link";
-import styles from "@/app/dashboard/dashboard.module.css";
+import styles from "@/app/dashboard/ds.module.css";
+import DsIcon from "@/components/ds/Icon";
+import { IconSprite } from "@/components/IconSprite";
 import { useDec, useMoney, useConv, useT, useLang } from "@/components/SettingsProvider";
-import { Icon, IconSprite } from "@/components/IconSprite";
 import BottomNav from "@/components/BottomNav";
-import TopBar from "@/components/TopBar";
+import AmountsEyeButton from "@/components/AmountsEyeButton";
+import NotificationsBell from "@/components/NotificationsBell";
 import CalendarSheet from "@/components/CalendarSheet";
-import EmptyState from "@/components/EmptyState";
 import { periods, catEmoji } from "@/lib/txui";
+import { catVisual } from "@/lib/catIcon";
 import { dataLabel, MONTHS_SHORT, MONTHS_FULL, MONTHS_GEN, type StringKey } from "@/lib/i18n";
 
 type Tx = { type: string; amountHome: number; category: string; date: string };
 
-// чітко різні відтінки (без двох зелених/синіх поряд)
-const COLORS = ["#4ade9f", "#3bb4f5", "#b9a8ff", "#f5a86a", "#ff8a8a", "#ffd45a", "#7c6cff", "#f5a3d0", "#5ad1c4", "#a0a0a0"];
+// Кольори сегментів — тільки з палітри категорій у tokens.css.
+// Донат і легенда беруть колір з ОДНОГО місця, тому вони завжди збігаються.
+const SEG_COLORS = [
+  "var(--sc-cat-orange)",
+  "var(--sc-cat-blue)",
+  "var(--sc-cat-green)",
+  "var(--sc-cat-purple)",
+  "var(--sc-cat-teal)",
+  "var(--sc-cat-red)",
+];
 
 function iso(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -36,7 +46,7 @@ function catList(txs: Tx[]) {
   return Array.from(map.entries())
     .map(([cat, v]) => ({ cat, ...v }))
     .sort((a, b) => b.sum - a.sum)
-    .map((c, i) => ({ ...c, color: COLORS[i % COLORS.length] }));
+    .map((c, i) => ({ ...c, color: SEG_COLORS[i % SEG_COLORS.length] }));
 }
 
 function Donut({ data }: { data: { sum: number; color: string }[] }) {
@@ -45,14 +55,23 @@ function Donut({ data }: { data: { sum: number; color: string }[] }) {
   const c = 2 * Math.PI * r;
   let acc = 0;
   return (
-    <svg viewBox="0 0 140 140" className={styles.donutSvg}>
+    <svg viewBox="0 0 140 140" className={styles.repDonutSvg}>
       <g transform="rotate(-90 70 70)">
-        <circle cx="70" cy="70" r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="15" />
+        <circle cx="70" cy="70" r={r} fill="none" strokeWidth="15" style={{ stroke: "var(--sc-hairline)" }} />
         {data.map((d, i) => {
           const len = (d.sum / total) * c;
           const seg = (
-            <circle key={i} cx="70" cy="70" r={r} fill="none" stroke={d.color} strokeWidth="15"
-              strokeDasharray={`${len} ${c - len}`} strokeDashoffset={-acc} />
+            <circle
+              key={i}
+              cx="70"
+              cy="70"
+              r={r}
+              fill="none"
+              strokeWidth="15"
+              strokeDasharray={`${len} ${c - len}`}
+              strokeDashoffset={-acc}
+              style={{ stroke: d.color }}
+            />
           );
           acc += len;
           return seg;
@@ -61,6 +80,36 @@ function Donut({ data }: { data: { sum: number; color: string }[] }) {
     </svg>
   );
 }
+
+/* Гліфи, яких немає в наборі Solar Bold. Малюємо інлайн — так само,
+   як Dashboard.tsx малює стрілки. Заливка, currentColor. */
+const PieGlyph = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style={{ display: "block" }}>
+    <path d="M11 2.05A10 10 0 1021.95 13H11z" />
+    <path opacity="0.5" d="M13 2.05V11h8.95A10 10 0 0013 2.05z" />
+  </svg>
+);
+const CalGlyph = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style={{ display: "block" }}>
+    <path d="M8 2v2H6a2 2 0 00-2 2v2h16V6a2 2 0 00-2-2h-2V2h-2v2H10V2zm12 8H4v9a2 2 0 002 2h12a2 2 0 002-2z" />
+  </svg>
+);
+const ChevGlyph = () => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.4"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+    style={{ display: "block" }}
+  >
+    <path d="M9 6l6 6-6 6" />
+  </svg>
+);
 
 export default function ReportsView({
   accounts,
@@ -185,120 +234,168 @@ export default function ReportsView({
   }
   function changePeriod(id: string) { setRange(null); setNavIdx(0); setPeriod(id); }
 
+  const showDots = !range && avail.length > 1 && avail.length <= 12;
+  const dots = showDots ? (
+    <div className={styles.repDots}>
+      {avail.map((_, i) => {
+        const di = avail.length - 1 - i; // праворуч — найновіший (idx 0)
+        return (
+          <button
+            key={i}
+            className={`${styles.repDot} ${idx === di ? styles.repDotOn : ""}`}
+            onClick={() => setNavIdx(di)}
+            aria-label={`${t("common.period")} ${di + 1}`}
+          />
+        );
+      })}
+    </div>
+  ) : null;
+
   return (
     <div className={styles.screen}>
       <IconSprite />
-      <TopBar><span className={styles.barTitle}>{t("nav.reports")}</span></TopBar>
 
-      <div className={styles.tabs}>
-        <button className={`${styles.tab} ${isExpenses ? styles.tabOnExp : ""}`} onClick={() => { setTab("expenses"); setNavIdx(0); }}>
-          {t("common.expenses")}
-        </button>
-        <button className={`${styles.tab} ${!isExpenses ? styles.tabOnInc : ""}`} onClick={() => { setTab("income"); setNavIdx(0); }}>
-          {t("common.income")}
-        </button>
-      </div>
+      <div className={styles.content}>
+        <header className={styles.headerbar}>
+          <h1 className={styles.repTitle}>{t("nav.reports")}</h1>
+          <div className={`${styles.actions} ${styles.glass}`}>
+            <AmountsEyeButton />
+            <NotificationsBell />
+          </div>
+        </header>
 
-      <section className={styles.periodcard} onTouchStart={swipeStart} onTouchEnd={swipeEnd}>
-        <div className={styles.pfilter}>
-          {periods.map((p) => (
-            <button
-              key={p.id}
-              className={`${styles.pf} ${!range && period === p.id ? styles.pfOn : ""}`}
-              onClick={() => changePeriod(p.id)}
-            >
-              {t(`period.${p.id}` as StringKey)}
-            </button>
-          ))}
-          <span className={styles.vdiv} />
-          <button className={`${styles.cal} ${range ? styles.calActive : ""}`} aria-label={t("common.period")} onClick={() => setCalOpen(true)}>
-            <Icon id="i-cal" />
+        <div className={`${styles.repSeg} ${styles.glass}`}>
+          <button
+            className={`${styles.repSegBtn} ${isExpenses ? styles.repSegOn : ""}`}
+            onClick={() => { setTab("expenses"); setNavIdx(0); }}
+          >
+            {t("common.expenses")}
+          </button>
+          <button
+            className={`${styles.repSegBtn} ${!isExpenses ? styles.repSegOn : ""}`}
+            onClick={() => { setTab("income"); setNavIdx(0); }}
+          >
+            {t("common.income")}
           </button>
         </div>
 
-        <div className={styles.repSubRow}>
-          <span className={styles.repDate}>{view === "months" ? barsLabel : instanceLabel()}</span>
-          <div className={styles.viewIconsSeg}>
-            <button className={`${styles.viewIcon} ${view === "cats" ? styles.viewIconOn : ""}`} onClick={() => setView("cats")} aria-label={t("rep.donut")}>
-              <Icon id="i-pie" />
-            </button>
-            <button className={`${styles.viewIcon} ${view === "months" ? styles.viewIconOn : ""}`} onClick={() => setView("months")} aria-label={t("rep.bars")}>
-              <Icon id="i-bars" />
+        <section className={styles.repSheet}>
+          <div className={`${styles.repCtl} ${styles.glass}`}>
+            {periods.map((p) => (
+              <button
+                key={p.id}
+                className={`${styles.repPf} ${!range && period === p.id ? styles.repPfOn : ""}`}
+                onClick={() => changePeriod(p.id)}
+              >
+                {t(`period.${p.id}` as StringKey)}
+              </button>
+            ))}
+            <span className={styles.repVdiv} />
+            <button
+              className={`${styles.repCal} ${range ? styles.repCalOn : ""}`}
+              aria-label={t("common.period")}
+              onClick={() => setCalOpen(true)}
+            >
+              <CalGlyph />
             </button>
           </div>
-        </div>
 
-        {isEmpty ? (
-          <EmptyState icon="i-bars" title={t("rep.noData")} hint={isExpenses ? t("rep.noDataExp") : t("rep.noDataInc")} />
-        ) : view === "cats" ? (
-          <>
-            <div className={styles.donutWrap}>
-              <Donut data={cats} />
-              <div className={styles.donutCenter}>
-                <span className={styles.donutSum}>{money(big, dec)}</span>
-                <span className={styles.donutLbl}>≈ {conv(big, dec)}</span>
-              </div>
+          <div className={styles.repLegendHead}>
+            <span className={styles.repDate}>{view === "months" ? barsLabel : instanceLabel()}</span>
+            <div className={styles.repViewSeg}>
+              <button
+                className={`${styles.repViewBtn} ${view === "cats" ? styles.repViewOn : ""}`}
+                onClick={() => setView("cats")}
+                aria-label={t("rep.donut")}
+              >
+                <PieGlyph />
+              </button>
+              <button
+                className={`${styles.repViewBtn} ${view === "months" ? styles.repViewOn : ""}`}
+                onClick={() => setView("months")}
+                aria-label={t("rep.bars")}
+              >
+                <DsIcon name="BoldBusinessStatisticChart2" size={18} />
+              </button>
             </div>
-            {!range && avail.length > 1 && avail.length <= 12 && (
-              <div className={styles.monthDots}>
-                {avail.map((_, i) => {
-                  const di = avail.length - 1 - i; // праворуч — найновіший (idx 0)
-                  return <button key={i} className={`${styles.mDot} ${idx === di ? styles.mDotOn : ""}`} onClick={() => setNavIdx(di)} aria-label={`період ${di}`} />;
-                })}
-              </div>
-            )}
-            <div className={styles.fulldiv} />
-          </>
-        ) : (
-          <>
-            <div className={styles.repLeft}>
-              <span className={styles.repBig2}>{money(total6, dec)}</span>
-              <span className={styles.repSub}>≈ {conv(total6, dec)}</span>
+          </div>
+
+          {isEmpty ? (
+            <div className={styles.empty}>
+              <span className={styles.emptyTitle}>{t("rep.noData")}</span>
+              <span className={styles.emptyHint}>{isExpenses ? t("rep.noDataExp") : t("rep.noDataInc")}</span>
             </div>
-            <div className={styles.bars}>
-              {barsData.map((d, i) => (
-                <div className={styles.barCol} key={i}>
-                  <div className={styles.barWrap}>
-                    <div className={styles.barFill} style={{ height: `${(d.sum / maxBar) * 100}%` }} />
+          ) : (
+            <>
+              <div className={styles.repCard} onTouchStart={swipeStart} onTouchEnd={swipeEnd}>
+                {view === "cats" ? (
+                  <div className={styles.repDonutWrap}>
+                    <Donut data={cats} />
+                    <div className={styles.repDonutCenter}>
+                      <span className={styles.repDonutSum}>{money(big, dec)}</span>
+                      <span className={styles.repDonutSub}>≈ {conv(big, dec)}</span>
+                    </div>
                   </div>
-                  <span className={styles.barLbl}>{d.label}</span>
-                </div>
-              ))}
-            </div>
-            {!range && avail.length > 1 && avail.length <= 12 && (
-              <div className={styles.monthDots}>
-                {avail.map((_, i) => {
-                  const di = avail.length - 1 - i; // праворуч — найновіший (idx 0)
-                  return <button key={i} className={`${styles.mDot} ${idx === di ? styles.mDotOn : ""}`} onClick={() => setNavIdx(di)} aria-label={`період ${di}`} />;
+                ) : (
+                  <>
+                    <div className={styles.repBarsHead}>
+                      <span className={styles.repBarsBig}>{money(total6, dec)}</span>
+                      <span className={styles.repBarsSub}>≈ {conv(total6, dec)}</span>
+                    </div>
+                    <div className={styles.repBars}>
+                      {barsData.map((d, i) => (
+                        <div className={styles.repBarCol} key={i}>
+                          <div className={styles.repBarWrap}>
+                            <div className={styles.repBarFill} style={{ height: `${(d.sum / maxBar) * 100}%` }} />
+                          </div>
+                          <span className={styles.repBarLbl}>{d.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+                {dots}
+              </div>
+
+              <div className={styles.repLegendHead}>
+                <span>{isExpenses ? t("common.expenses") : t("common.income")}</span>
+                <span>{money(big, dec)}</span>
+              </div>
+
+              <div className={`${styles.repLegend} ${legendCats.length === 1 ? styles.repLegendSingle : ""}`}>
+                {legendCats.map((c, i) => {
+                  const share = big > 0 ? Math.round((c.sum / big) * 100) : 0;
+                  const vis = catVisual(c.cat, !isExpenses);
+                  return (
+                    <div key={c.cat}>
+                      {i > 0 && <div className={styles.hair} />}
+                      <Link
+                        className={styles.repLegRow}
+                        href={`/category?cat=${encodeURIComponent(c.cat)}&from=${drillFrom}&to=${drillTo}&type=${isExpenses ? "expense" : "income"}`}
+                      >
+                        <span className={styles.repLegDisc} style={{ background: c.color }}>
+                          {vis.icon ? <DsIcon name={vis.icon} size={20} /> : catEmoji(c.cat, !isExpenses)}
+                        </span>
+                        <span className={styles.repLegMid}>
+                          <span className={styles.repLegName}>{dataLabel(c.cat, lang)}</span>
+                          <span className={styles.repLegMeta}>{share}%</span>
+                        </span>
+                        <span className={styles.repLegRight}>
+                          <span className={styles.repLegSum}>{money(c.sum, dec)}</span>
+                          <span className={styles.repLegSub}>≈ {conv(c.sum, dec)}</span>
+                        </span>
+                        <span className={styles.repLegChev}><ChevGlyph /></span>
+                      </Link>
+                    </div>
+                  );
                 })}
               </div>
-            )}
-            <div className={styles.fulldiv} />
-          </>
-        )}
+            </>
+          )}
+        </section>
+      </div>
 
-        {!isEmpty && (
-          <div className={styles.legend}>
-            {legendCats.map((c) => {
-              const share = big > 0 ? Math.round((c.sum / big) * 100) : 0;
-              return (
-                <Link
-                  className={styles.legRow}
-                  key={c.cat}
-                  href={`/category?cat=${encodeURIComponent(c.cat)}&from=${drillFrom}&to=${drillTo}&type=${isExpenses ? "expense" : "income"}`}
-                >
-                  <span className={styles.legDot} style={{ background: c.color }} />
-                  <span className={styles.legName}>{catEmoji(c.cat, !isExpenses)} {dataLabel(c.cat, lang)}</span>
-                  <span className={styles.legPct}>{share}%</span>
-                  <span className={styles.legSum}>{money(c.sum, dec)}</span>
-                  <span className={styles.legChev}><Icon id="i-arrow-right" /></span>
-                </Link>
-              );
-            })}
-          </div>
-        )}
-      </section>
-
+      <div className={styles.scrimbar} />
       <BottomNav active="reports" accounts={accounts} />
 
       {calOpen && (

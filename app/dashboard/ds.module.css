@@ -216,3 +216,164 @@
 .emptyHint { font: var(--sc-type-caption); color: var(--sc-ink-tertiary); max-width: 260px; }
 
 .screen :focus-visible { outline: 2px solid var(--sc-accent); outline-offset: 2px; }
+
+/* ============================================================
+   ЗВІТИ (/reports). Дописано в кінець — наявні класи не чіпав.
+   Усі значення з app/tokens.css.
+   ============================================================ */
+
+/* ---------- шапка екрана ---------- */
+.repTitle { margin: 0; font: var(--sc-type-title); color: var(--sc-ink); }
+
+/* ---------- сегмент Витрати / Дохід ---------- */
+.repSeg {
+  display: flex; gap: 4px; padding: 4px;
+  border-radius: var(--sc-radius-pill);
+}
+.repSegBtn {
+  flex: 1; height: 40px; border: 0; border-radius: var(--sc-radius-pill);
+  background: transparent; color: var(--sc-ink-muted);
+  font: var(--sc-type-body-medium); cursor: pointer;
+  transition: background var(--sc-duration-fast) var(--sc-ease),
+              color var(--sc-duration-fast) var(--sc-ease);
+}
+.repSegOn { background: var(--sc-surface-glass-active); color: var(--sc-ink); }
+
+/* ---------- фільтр періоду + календар ---------- */
+.repCtl {
+  display: flex; align-items: center; gap: 2px; padding: 4px;
+  border-radius: var(--sc-radius-pill);
+}
+.repPf {
+  flex: 1; min-width: 0; height: 34px; border: 0; border-radius: var(--sc-radius-pill);
+  background: transparent; color: var(--sc-ink-muted);
+  font: var(--sc-type-caption-medium); cursor: pointer;
+  transition: background var(--sc-duration-fast) var(--sc-ease),
+              color var(--sc-duration-fast) var(--sc-ease);
+}
+.repPfOn { background: var(--sc-surface-glass-active); color: var(--sc-ink); }
+.repVdiv {
+  flex: 0 0 1px; width: 1px; height: 16px; margin: 0 4px;
+  background: var(--sc-glass-edge); border-radius: 1px;
+}
+.repCal {
+  flex: 0 0 34px; height: 34px; border: 0; border-radius: 50%;
+  background: transparent; color: var(--sc-ink-muted);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  transition: background var(--sc-duration-fast) var(--sc-ease),
+              color var(--sc-duration-fast) var(--sc-ease);
+}
+.repCalOn { background: var(--sc-surface-glass-active); color: var(--sc-accent-text); }
+
+/* ---------- рядок «період + перемикач вигляду» ---------- */
+.repDate { font: var(--sc-type-body-medium); color: var(--sc-ink); font-variant-numeric: tabular-nums; }
+.repViewSeg {
+  display: inline-flex; gap: 2px; padding: 3px; flex-shrink: 0;
+  border-radius: var(--sc-radius-pill);
+  background: var(--sc-surface-glass);
+  box-shadow: inset 0 0 0 .5px var(--sc-glass-edge);
+}
+.repViewBtn {
+  width: 40px; height: 30px; border: 0; border-radius: var(--sc-radius-pill);
+  background: transparent; color: var(--sc-ink-muted);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  transition: background var(--sc-duration-fast) var(--sc-ease),
+              color var(--sc-duration-fast) var(--sc-ease);
+}
+.repViewOn { background: var(--sc-surface-glass-active); color: var(--sc-ink); }
+
+/* ---------- картка графіка ---------- */
+.repCard {
+  margin-top: 12px; padding: 16px;
+  border-radius: var(--sc-radius-card);
+  background: var(--sc-surface-card);
+  -webkit-backdrop-filter: var(--sc-blur-card);
+  backdrop-filter: var(--sc-blur-card);
+  box-shadow: var(--sc-shadow-card);
+  touch-action: pan-y;
+}
+
+/* донат */
+.repDonutWrap { position: relative; width: 176px; height: 176px; margin: 4px auto 0; }
+.repDonutSvg { width: 100%; height: 100%; display: block; }
+.repDonutCenter {
+  position: absolute; inset: 0; pointer-events: none;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+}
+.repDonutSum { font: var(--sc-type-title); color: var(--sc-ink); font-variant-numeric: tabular-nums; }
+.repDonutSub { font: var(--sc-type-caption); color: var(--sc-ink-tertiary); font-variant-numeric: tabular-nums; }
+
+/* стовпчики */
+.repBarsHead { display: flex; flex-direction: column; gap: 2px; margin-bottom: 14px; }
+.repBarsBig { font: var(--sc-type-title); color: var(--sc-ink); font-variant-numeric: tabular-nums; }
+.repBarsSub { font: var(--sc-type-caption); color: var(--sc-ink-tertiary); font-variant-numeric: tabular-nums; }
+.repBars { display: flex; align-items: stretch; gap: 8px; height: 152px; }
+.repBarCol { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; }
+.repBarWrap { flex: 1; width: 100%; display: flex; align-items: flex-end; justify-content: center; }
+.repBarFill {
+  width: 64%; max-width: 32px; min-height: 3px; background: var(--sc-accent);
+  border-radius: var(--sc-radius-sm) var(--sc-radius-sm) 2px 2px;
+}
+.repBarLbl { margin-top: 8px; font: var(--sc-type-caption); color: var(--sc-ink-tertiary); }
+
+/* крапки навігації по періодах */
+.repDots { display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 14px; }
+.repDot {
+  width: 6px; height: 6px; padding: 0; border: 0; border-radius: 50%;
+  background: var(--sc-ink-muted); opacity: .45; cursor: pointer;
+  transition: width var(--sc-duration-base) var(--sc-ease),
+              opacity var(--sc-duration-base) var(--sc-ease),
+              background var(--sc-duration-base) var(--sc-ease);
+}
+.repDotOn { width: 18px; border-radius: 3px; background: var(--sc-accent); opacity: 1; }
+
+/* ---------- легенда ---------- */
+.repLegendHead {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 0 4px; margin: 20px 0 6px;
+  font: var(--sc-type-caption); color: var(--sc-ink-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+.repLegend {
+  display: flex; flex-direction: column;
+  border-radius: var(--sc-radius-group);
+  background: var(--sc-surface-card);
+  -webkit-backdrop-filter: var(--sc-blur-card);
+  backdrop-filter: var(--sc-blur-card);
+  box-shadow: var(--sc-shadow-card);
+}
+.repLegendSingle { border-radius: var(--sc-radius-pill); }
+.repLegRow {
+  display: flex; align-items: center; gap: 10px;
+  min-height: 50px; padding: var(--sc-row-inset);
+  color: inherit; text-decoration: none;
+  transition: transform var(--sc-duration-fast) var(--sc-ease);
+}
+.repLegRow:active { transform: scale(.995); }
+.repLegDisc {
+  width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+  color: #fff; display: flex; align-items: center; justify-content: center;
+  font-size: 19px; line-height: 1;
+}
+.repLegMid { display: flex; flex-direction: column; gap: 1px; flex: 1; min-width: 0; }
+.repLegName {
+  font: var(--sc-type-body-medium); color: var(--sc-ink);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.repLegMeta { font: var(--sc-type-caption); color: var(--sc-ink-secondary); font-variant-numeric: tabular-nums; }
+.repLegRight {
+  display: inline-flex; flex-direction: column; align-items: flex-end; gap: 1px;
+  flex-shrink: 0; font-variant-numeric: tabular-nums;
+}
+.repLegSum { font: var(--sc-type-body-medium); color: var(--sc-ink); }
+.repLegSub { font: var(--sc-type-caption); color: var(--sc-ink-tertiary); }
+.repLegChev { color: var(--sc-ink-tertiary); flex-shrink: 0; display: flex; }
+
+/* Звіти без шита: та сама коробка, але без поверхні — картки лежать
+   прямо на канві. Рішення власника продукту, поки тільки для /reports. */
+.repSheet {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0 0 calc(150px + env(safe-area-inset-bottom, 0px));
+}
