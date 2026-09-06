@@ -65,8 +65,8 @@
   --sc-cta-bg: var(--sc-surface-inverse);
   --sc-cta-ink: var(--sc-ink-inverse);
   --sc-cta-bg-press: rgba(241,239,234,.82);
-  --sc-cta-h: 52px;
-  --sc-cta-radius: 16px;
+  --sc-cta-h: 54px;
+  --sc-cta-radius: var(--sc-radius-pill);
 
   /* Попапи — єдині відступи для ВСІХ шитів [ours] */
   --sc-sheet-pad-x: 20px;

@@ -201,7 +201,7 @@ export default function ProfileClient({
         <div className={styles.sheetWrap}>
           <div data-sheet-back className={styles.sheetBack} onClick={() => setDelOpen(false)} />
           <div data-sheet className={styles.sheet}>
-            <div className={styles.sheetBody}>
+            <div data-vfade className={styles.sheetBody}>
               <div className={styles.sheetTitle}>{t("prof.delTitle")}</div>
               <div className={styles.confirmText}>
                 {t("prof.delBody")} <b>{t("prof.forever")}</b>. {t("confirm.typeWord")} <b>{t("confirm.deleteWord")}</b>.

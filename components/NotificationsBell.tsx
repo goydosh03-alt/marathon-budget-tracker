@@ -68,7 +68,7 @@ export default function NotificationsBell() {
         <div className={styles.sheetWrap}>
           <div data-sheet-back className={styles.sheetBack} onClick={() => setOpen(false)} />
           <div data-sheet className={styles.sheet}>
-            <div className={styles.sheetBody}>
+            <div data-vfade className={styles.sheetBody}>
               <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
                 <span>{t("notif.title")}</span>
                 <span style={{ display: "flex", alignItems: "center", gap: 6 }}>

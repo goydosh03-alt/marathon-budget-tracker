@@ -44,7 +44,7 @@ export default function CalcSheet({
     <div className={styles.sheetWrap}>
       <div data-sheet-back className={styles.sheetBack} onClick={onClose} />
       <div data-sheet className={styles.sheet}>
-        <div className={styles.sheetBody}>
+        <div data-vfade className={styles.sheetBody}>
           <div className={styles.sheetTitle}><span>{title || t("calc.sum")}</span></div>
 
           <div className={styles.calcDisp}>

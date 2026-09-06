@@ -107,7 +107,7 @@ export default function CategoriesClient({ categories }: { categories: UserCateg
         <div className={styles.sheetWrap}>
           <div data-sheet-back className={styles.sheetBack} onClick={() => setShowAdd(false)} />
           <div data-sheet className={styles.sheet}>
-            <div className={styles.sheetBody}>
+            <div data-vfade className={styles.sheetBody}>
               <div className={styles.sheetTitle}>{editId ? t("cats.editTitle") : t("cats.newTitle")}</div>
 
               <div className={styles.preview}>

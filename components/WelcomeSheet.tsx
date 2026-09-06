@@ -56,7 +56,7 @@ export default function WelcomeSheet({ txCount }: { txCount: number }) {
     <div className={styles.sheetWrap}>
       <div data-sheet-back className={styles.sheetBack} onClick={close} />
       <div data-sheet className={styles.sheet}>
-        <div className={styles.sheetBody}>
+        <div data-vfade className={styles.sheetBody}>
           <div className={styles.sheetTitle}><span>{t("onb.welcome")}</span></div>
 
           <div className={styles.onbView} onTouchStart={swipeStart} onTouchEnd={swipeEnd}>

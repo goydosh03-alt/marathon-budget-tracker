@@ -172,7 +172,7 @@ export default function SettingsClient({
         <div className={styles.sheetWrap}>
           <div data-sheet-back className={styles.sheetBack} onClick={() => setClearOpen(false)} />
           <div data-sheet className={styles.sheet}>
-            <div className={styles.sheetBody}>
+            <div data-vfade className={styles.sheetBody}>
               <div className={styles.sheetTitle}>{t("set.clearTitle")}</div>
               <div className={styles.confirmText}>
                 {t("set.allWord")} <b>{txCount}</b> {t("set.clearBody")}{" "}
@@ -201,7 +201,7 @@ export default function SettingsClient({
         <div className={styles.sheetWrap}>
           <div data-sheet-back className={styles.sheetBack} onClick={() => setShowCreate(false)} />
           <div data-sheet className={styles.sheet}>
-            <div className={styles.sheetBody}>
+            <div data-vfade className={styles.sheetBody}>
               <div className={styles.sheetTitle}>{t("set.newAccount")}</div>
               <input
                 className={styles.confirmInput}
@@ -238,7 +238,7 @@ export default function SettingsClient({
         <div className={styles.sheetWrap}>
           <div data-sheet-back className={styles.sheetBack} onClick={() => setDelTarget(null)} />
           <div data-sheet className={styles.sheet}>
-            <div className={styles.sheetBody}>
+            <div data-vfade className={styles.sheetBody}>
               <div className={styles.sheetTitle}>{t("set.delAccTitle")}</div>
               <div className={styles.confirmText}>
                 {t("set.delAccPre")} «{delTarget.name}» {t("set.delAccPost")}{" "}

@@ -168,7 +168,7 @@ export default function RecurringClient({
         <div className={styles.sheetWrap}>
           <div data-sheet-back className={styles.sheetBack} onClick={() => setOpen(false)} />
           <div data-sheet className={styles.sheet}>
-            <div className={styles.sheetBody}>
+            <div data-vfade className={styles.sheetBody}>
               <div className={styles.sheetTitle}>{editId ? t("rec.editTitle") : t("rec.newTitle")}</div>
 
               <div className={styles.tabs}>

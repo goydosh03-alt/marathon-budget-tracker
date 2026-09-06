@@ -46,3 +46,19 @@ body {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
+
+
+/* Скрол усередині попапа не обрізається різко, а тане в градієнт.
+   data-fade-t / data-fade-b виставляє SheetSwipe. */
+[data-vfade][data-fade-b="1"]:not([data-fade-t="1"]) {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent);
+          mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent);
+}
+[data-vfade][data-fade-t="1"]:not([data-fade-b="1"]) {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 28px);
+          mask-image: linear-gradient(to bottom, transparent, #000 28px);
+}
+[data-vfade][data-fade-t="1"][data-fade-b="1"] {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 28px, #000 calc(100% - 28px), transparent);
+          mask-image: linear-gradient(to bottom, transparent, #000 28px, #000 calc(100% - 28px), transparent);
+}
