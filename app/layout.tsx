@@ -2,6 +2,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import SaveGlow from "@/components/SaveGlow";
+import SheetSwipe from "@/components/ui/SheetSwipe";
 import { SettingsProvider } from "@/components/SettingsProvider";
 import { createClient } from "@/lib/supabase/server";
 import { DEFAULT_CURRENCY, isCurrency } from "@/lib/currency";
@@ -51,6 +52,7 @@ export default async function RootLayout({
     <html lang={lang}>
       <body>
         <SaveGlow />
+        <SheetSwipe />
         <SettingsProvider
           hideCents={hideCents}
           categories={categories}

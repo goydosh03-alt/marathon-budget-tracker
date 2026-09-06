@@ -199,8 +199,8 @@ export default function ProfileClient({
 
       {delOpen && (
         <div className={styles.sheetWrap}>
-          <div className={styles.sheetBack} onClick={() => setDelOpen(false)} />
-          <div className={styles.sheet}>
+          <div data-sheet-back className={styles.sheetBack} onClick={() => setDelOpen(false)} />
+          <div data-sheet className={styles.sheet}>
             <div className={styles.sheetBody}>
               <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span>{t("prof.delTitle")}</span>

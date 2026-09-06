@@ -108,7 +108,6 @@ export default function AddTransactionForm({
 
   const isIncome = type === "income";
   const [pickerOpen, setPickerOpen] = useState(false);
-  const grabY = useRef<number | null>(null);
   const catFade = useScrollFade<HTMLDivElement>();
   const accFade = useScrollFade<HTMLDivElement>();
   const customCats = useCategories();
@@ -136,12 +135,6 @@ export default function AddTransactionForm({
     noteCategory(c);
   }
 
-  // свайп по граберу закриває шит
-  function grabStart(e: React.TouchEvent) { grabY.current = e.touches[0].clientY; }
-  function grabEnd(e: React.TouchEvent) {
-    const y0 = grabY.current; grabY.current = null;
-    if (y0 !== null && e.changedTouches[0].clientY - y0 > 60) onClose();
-  }
 
   const sym = currencyMeta(useCurrency()).symbol;
 
@@ -323,11 +316,8 @@ export default function AddTransactionForm({
 
   return (
     <div className={styles.sheetWrap}>
-      <div className={styles.sheetBack} onClick={onClose} />
-      <div className={styles.sheet}>
-        <div className={s.grabZone} onTouchStart={grabStart} onTouchEnd={grabEnd}>
-          <span className={s.grab} />
-        </div>
+      <div data-sheet-back className={styles.sheetBack} onClick={onClose} />
+      <div data-sheet className={styles.sheet}>
         <div className={styles.sheetBody}>
         <div className={s.stack}>
 

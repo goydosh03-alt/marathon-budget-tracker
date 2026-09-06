@@ -45,9 +45,8 @@ export default function CategoryPickerSheet({
 
   return (
     <div className={sheetStyles.sheetWrap}>
-      <div className={sheetStyles.sheetBack} onClick={onClose} />
-      <div className={sheetStyles.sheet}>
-        <span className={s.grab} />
+      <div data-sheet-back className={sheetStyles.sheetBack} onClick={onClose} />
+      <div data-sheet className={sheetStyles.sheet}>
         <div className={s.search}>
           <DsIcon name="BoldSearchMagnifer" size={18} />
           <input

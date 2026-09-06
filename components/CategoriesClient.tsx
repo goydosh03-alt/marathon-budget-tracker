@@ -105,8 +105,8 @@ export default function CategoriesClient({ categories }: { categories: UserCateg
 
       {showAdd && (
         <div className={styles.sheetWrap}>
-          <div className={styles.sheetBack} onClick={() => setShowAdd(false)} />
-          <div className={styles.sheet}>
+          <div data-sheet-back className={styles.sheetBack} onClick={() => setShowAdd(false)} />
+          <div data-sheet className={styles.sheet}>
             <div className={styles.sheetBody}>
               <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span>{editId ? t("cats.editTitle") : t("cats.newTitle")}</span>

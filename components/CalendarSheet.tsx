@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import styles from "@/app/dashboard/dashboard.module.css";
+import DsIcon from "@/components/ds/Icon";
 import { Icon } from "@/components/IconSprite";
 import { useT, useLang } from "@/components/SettingsProvider";
 import { MONTHS_FULL, WEEKDAYS_SHORT } from "@/lib/i18n";
@@ -97,8 +98,8 @@ export default function CalendarSheet({
 
   return (
     <div className={styles.sheetWrap}>
-      <div className={styles.sheetBack} onClick={onClose} />
-      <div className={styles.sheet}>
+      <div data-sheet-back className={styles.sheetBack} onClick={onClose} />
+      <div data-sheet className={styles.sheet}>
         <div className={styles.sheetBody}>
           <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span>{sheetTitle}{label ? ` (${label})` : ""}</span>

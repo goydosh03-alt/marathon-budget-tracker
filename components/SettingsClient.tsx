@@ -170,8 +170,8 @@ export default function SettingsClient({
 
       {clearOpen && (
         <div className={styles.sheetWrap}>
-          <div className={styles.sheetBack} onClick={() => setClearOpen(false)} />
-          <div className={styles.sheet}>
+          <div data-sheet-back className={styles.sheetBack} onClick={() => setClearOpen(false)} />
+          <div data-sheet className={styles.sheet}>
             <div className={styles.sheetBody}>
               <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span>{t("set.clearTitle")}</span>
@@ -204,8 +204,8 @@ export default function SettingsClient({
       {/* bottom sheet: новий рахунок */}
       {showCreate && (
         <div className={styles.sheetWrap}>
-          <div className={styles.sheetBack} onClick={() => setShowCreate(false)} />
-          <div className={styles.sheet}>
+          <div data-sheet-back className={styles.sheetBack} onClick={() => setShowCreate(false)} />
+          <div data-sheet className={styles.sheet}>
             <div className={styles.sheetBody}>
               <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span>{t("set.newAccount")}</span>
@@ -246,8 +246,8 @@ export default function SettingsClient({
       {/* bottom sheet: видалення рахунку */}
       {delTarget && (
         <div className={styles.sheetWrap}>
-          <div className={styles.sheetBack} onClick={() => setDelTarget(null)} />
-          <div className={styles.sheet}>
+          <div data-sheet-back className={styles.sheetBack} onClick={() => setDelTarget(null)} />
+          <div data-sheet className={styles.sheet}>
             <div className={styles.sheetBody}>
               <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span>{t("set.delAccTitle")}</span>
