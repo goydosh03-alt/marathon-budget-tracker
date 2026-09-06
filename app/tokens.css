@@ -120,6 +120,13 @@
   --sc-radius-group: 24px;
   --sc-radius-pill: 100px;
 
+  /* Звіти (/reports) — з хендофф-специфікації. Дописано в кінець. */
+  --sc-sheet: #2C2D2A;       /* блок «Витрати» */
+  --sc-axis: #242522;        /* смуга з датами під графіком */
+  --sc-menu: #33342F;        /* дропдауни */
+  --sc-text-hero: 36px;      /* головна сума екрана звітів */
+  --sc-tracking-hero: -1.2px;
+
   /* Legacy aliases so untouched screens follow the new palette */
   --background: var(--sc-bg);
   --foreground: var(--sc-ink);

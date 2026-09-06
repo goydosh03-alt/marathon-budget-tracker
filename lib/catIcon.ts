@@ -12,6 +12,7 @@ const MAP: Record<string, CatVisual> = {
   "Комунальні":  { icon: "BoldEssentionalUIHome2",         color: "var(--sc-cat-teal)" },
   "Зарплата":    { icon: "BoldMoneyMoneyBag",              color: "var(--sc-cat-green)" },
   "Фриланс":     { icon: "BoldMoneyDollarMinimalistic",    color: "var(--sc-cat-green)" },
+  "Кафе":        { icon: "BoldMoneySafeSquare",           color: "var(--sc-cat-green)" },
 };
 
 // Кольори для категорій без іконки — щоб диск усе одно був у палітрі системи.
