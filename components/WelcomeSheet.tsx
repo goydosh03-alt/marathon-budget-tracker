@@ -54,15 +54,10 @@ export default function WelcomeSheet({ txCount }: { txCount: number }) {
 
   return (
     <div className={styles.sheetWrap}>
-      <div className={styles.sheetBack} onClick={close} />
-      <div className={styles.sheet}>
+      <div data-sheet-back className={styles.sheetBack} onClick={close} />
+      <div data-sheet className={styles.sheet}>
         <div className={styles.sheetBody}>
-          <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span>{t("onb.welcome")}</span>
-            <button className={styles.iconBtn} onClick={close} aria-label={t("common.close")}>
-              <Icon id="i-x" />
-            </button>
-          </div>
+          <div className={styles.sheetTitle}><span>{t("onb.welcome")}</span></div>
 
           <div className={styles.onbView} onTouchStart={swipeStart} onTouchEnd={swipeEnd}>
             <div className={styles.onbTrack} style={{ transform: `translateX(-${idx * 100}%)` }}>

@@ -80,7 +80,7 @@ export default async function MenuPage() {
         <section className={m.group}>
           <span className={m.groupLabel}>{t("menu.group.manage")}</span>
           <div className={m.list}>
-            <MenuRow icon="OwnSettingsGear" href="/settings" title={t("menu.settings")} sub={t("menu.settings.sub")} />
+            <MenuRow icon="BoldSettings" href="/settings" title={t("menu.settings")} sub={t("menu.settings.sub")} />
             <MenuRow icon="BoldEssentionalUIHamburgerMenu" href="/categories" title={t("menu.categories")} sub={t("menu.categories.sub")} />
           </div>
         </section>

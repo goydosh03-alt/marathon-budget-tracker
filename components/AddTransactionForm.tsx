@@ -9,9 +9,14 @@ import CalcSheet from "@/components/CalcSheet";
 import AmountPad from "@/components/AmountPad";
 import CalendarSheet from "@/components/CalendarSheet";
 import { currencyMeta } from "@/lib/currency";
-import { catEmoji } from "@/lib/txui";
 import { dataLabel, type StringKey } from "@/lib/i18n";
 import { useCategories, useCurrency, useMoney, useConv, useT, useLang } from "@/components/SettingsProvider";
+import s from "@/app/dashboard/addsheet.module.css";
+import DsIcon from "@/components/ds/Icon";
+import CategoryPickerSheet from "@/components/CategoryPickerSheet";
+import { resolveCat, ACCOUNT_ICON, ACCOUNT_COLOR } from "@/lib/catIcon";
+import { sortByRecent, noteCategory } from "@/lib/recentCats";
+import { useScrollFade } from "@/components/ui/useScrollFade";
 
 const EXPENSE_CATS = ["Їжа", "Кафе", "Транспорт", "Розваги", "Аптека", "Одяг", "Комунальні", "Інше"];
 const INCOME_CATS = ["Зарплата", "Фриланс", "Подарунок", "Інше"];
@@ -101,18 +106,34 @@ export default function AddTransactionForm({
 
 
   const isIncome = type === "income";
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const catFade = useScrollFade<HTMLDivElement>();
+  const accFade = useScrollFade<HTMLDivElement>();
   const customCats = useCategories();
   const cats = [
     ...(isIncome ? INCOME_CATS : EXPENSE_CATS),
     ...customCats.filter((c) => c.type === (isIncome ? "income" : "expense")).map((c) => c.name),
   ];
-  const customEmoji = new Map(customCats.map((c) => [c.name, c.emoji]));
-  const catIcon = (name: string) => customEmoji.get(name) ?? catEmoji(name, isIncome);
+  const customMap = new Map(customCats.map((c) => [c.name, c]));
   const parsed = parseFloat(amount.replace(",", ".")) || 0;
   const money = useMoney();
   const conv = useConv();
   const t = useT();
   const lang = useLang();
+  const [ordered, setOrdered] = useState<string[]>(cats);
+  useEffect(() => {
+    setOrdered(sortByRecent(cats));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cats.join("|")]);
+  const rowA = ordered.filter((_, i) => i % 2 === 0);
+  const rowB = ordered.filter((_, i) => i % 2 === 1);
+
+  function pickCategory(c: string) {
+    setCategory(c);
+    noteCategory(c);
+  }
+
+
   const sym = currencyMeta(useCurrency()).symbol;
 
   const today = isoOffset(0);
@@ -293,61 +314,41 @@ export default function AddTransactionForm({
 
   return (
     <div className={styles.sheetWrap}>
-      <div className={styles.sheetBack} onClick={onClose} />
-      <div className={styles.sheet}>
+      <div data-sheet-back className={styles.sheetBack} onClick={onClose} />
+      <div data-sheet className={styles.sheet}>
         <div className={styles.sheetBody}>
-        <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span>{isEdit ? t("form.editTitle") : t("form.addTitle")}</span>
-          <button className={styles.iconBtn} onClick={onClose} aria-label={t("common.close")}>
-            <Icon id="i-x" />
-          </button>
-        </div>
+        <div className={s.stack}>
 
-        <div className={styles.tabs}>
-          <button className={`${styles.tab} ${type === "expense" ? styles.tabOnExp : ""}`} onClick={() => switchType("expense")}>
-            {t("common.expense")}
+        <div className={s.amtRow}>
+          <button
+            type="button"
+            className={`${s.sign} ${isIncome ? s.signInc : ""}`}
+            onClick={() => switchType(isIncome ? "expense" : "income")}
+            aria-label={isIncome ? t("common.income") : t("common.expense")}
+          >
+            {isIncome ? "+" : "\u2212"}
           </button>
-          <button className={`${styles.tab} ${type === "income" ? styles.tabOnInc : ""}`} onClick={() => switchType("income")}>
-            {t("common.income")}
+          <button
+            type="button"
+            className={`${s.amtBtn} ${isIncome ? s.amtInc : ""}`}
+            onClick={() => setCalcAmount(true)}
+            style={{ color: amount ? undefined : "var(--sc-ink-muted)" }}
+          >
+            {amount || "0"}
           </button>
+          <span className={s.amtCur}>{sym}</span>
         </div>
+        <div className={s.amtConv}>\u2248 {conv(parsed, 2)}</div>
 
-        <div className={styles.amtWrap}>
-          {!isIncome && (
-            <>
-              <button
-                className={styles.scanBtn}
-                type="button"
-                onClick={() => fileRef.current?.click()}
-                disabled={scanning}
-              >
-                <Icon id="i-scan" /> {scanning ? t("form.reading") : t("form.scan")}
-              </button>
-              <input
-                ref={fileRef}
-                type="file"
-                accept="image/*"
-                onChange={handleScan}
-                style={{ display: "none" }}
-              />
-            </>
-          )}
-          <div className={styles.amtRow}>
-            <button
-              type="button"
-              className={styles.amtField}
-              onClick={() => setCalcAmount(true)}
-              style={{
-                width: `${Math.max(1, amount.length || 1)}ch`,
-                color: amount ? undefined : "rgba(255,255,255,0.3)",
-              }}
-            >
-              {amount || "0"}
+        {!isIncome && (
+          <div className={s.scanRow}>
+            <button className={s.scanBtn} type="button" onClick={() => fileRef.current?.click()} disabled={scanning}>
+              <DsIcon name="BoldSecurityScanner" size={16} /> {scanning ? t("form.reading") : t("form.scan")}
             </button>
-            <span className={styles.amtZl}>{sym}</span>
+            <input ref={fileRef} type="file" accept="image/*" onChange={handleScan} style={{ display: "none" }} />
           </div>
-          <div className={styles.amtConv}>≈ {conv(parsed, 2)}</div>
-        </div>
+        )}
+
 
         {scannedItems && scannedItems.length > 0 && (
           <>
@@ -373,64 +374,95 @@ export default function AddTransactionForm({
           </>
         )}
 
-        <div className={styles.fieldLabel}>{t("det.category")}</div>
-        <div className={styles.chips2}>
-          {cats.map((c) => (
-            <button
-              key={c}
-              className={`${styles.chip2} ${category === c ? styles.chip2On : ""}`}
-              onClick={() => setCategory(c)}
-            >
-              {catIcon(c)} {dataLabel(c, lang)}
+        <div>
+          <span className={s.label}>{t("det.category")}</span>
+          <div className={s.catWrap}>
+            <div className={`${s.box} ${s.catBox}`}>
+              <div
+                ref={catFade.ref}
+                className={`${s.scrollY} ${catFade.left ? s.fadeL : ""} ${catFade.right ? s.fadeR : ""}`}
+              >
+                {[rowA, rowB].map((row, ri) => (
+                  <div className={s.row} key={ri}>
+                    {row.map((c) => {
+                      const look = resolveCat(c, isIncome, customMap.get(c));
+                      return (
+                        <button
+                          key={c}
+                          type="button"
+                          className={`${s.chip} ${category === c ? s.chipOn : ""}`}
+                          onClick={() => pickCategory(c)}
+                        >
+                          <span className={s.chipIco} style={{ color: look.color }}>
+                            {look.icon ? <DsIcon name={look.icon} size={16} /> : look.emoji}
+                          </span>
+                          {dataLabel(c, lang)}
+                        </button>
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <button type="button" className={s.more} onClick={() => setPickerOpen(true)} aria-label={t("det.category")}>
+              <span className={s.dots}><i /><i /><i /></span>
             </button>
-          ))}
-        </div>
-
-        <div className={styles.fieldLabel}>{t("det.account")}</div>
-        <div className={styles.accChips}>
-          {accounts.map((a) => (
-            <button
-              key={a.id}
-              type="button"
-              className={`${styles.accChip} ${accountId === a.id ? styles.accChipOn : ""}`}
-              onClick={() => setAccountId(a.id)}
-            >
-              {ACC_EMOJI[a.type] ?? "👛"} {dataLabel(a.name, lang)}
-            </button>
-          ))}
-        </div>
-
-        <div className={styles.fieldLabel}>{t("det.date")}</div>
-        <div className={styles.daysRow}>
-          {dayOptions.map((o) => (
-            <button
-              key={o.label}
-              type="button"
-              className={`${styles.dayBtn} ${date === o.key ? styles.dayBtnOn : ""}`}
-              onClick={() => setDate(o.key)}
-            >
-              <b>{o.label}</b><span>{dm(o.key)}</span>
-            </button>
-          ))}
-          <button
-            type="button"
-            className={styles.dayCalBtn}
-            onClick={() => setDateCalOpen(true)}
-            aria-label={t("form.pickDate")}
-          >
-            <Icon id="i-cal" />
-          </button>
-        </div>
-
-        <div className={styles.fcard}>
-          <div className={styles.fcIcon} style={{ background: "rgba(124,92,255,0.16)", color: "#b9a8ff" }}>
-            <Icon id="i-edit" />
           </div>
+        </div>
+
+        <div>
+          <span className={s.label}>{t("det.account")}</span>
+          <div className={`${s.box} ${s.boxPill}`}>
+            <div
+              ref={accFade.ref}
+              className={`${s.scrollX} ${accFade.left ? s.fadeL : ""} ${accFade.right ? s.fadeR : ""}`}
+            >
+              {accounts.map((a) => (
+                <button
+                  key={a.id}
+                  type="button"
+                  className={`${s.chip} ${accountId === a.id ? s.chipOn : ""}`}
+                  onClick={() => setAccountId(a.id)}
+                >
+                  <span className={s.chipIco} style={{ color: ACCOUNT_COLOR[a.type] ?? "var(--sc-cat-teal)" }}>
+                    <DsIcon name={ACCOUNT_ICON[a.type] ?? "BoldMoneyWallet"} size={16} />
+                  </span>
+                  {dataLabel(a.name, lang)}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <span className={s.label}>{t("det.date")}</span>
+          <div className={s.dateCtl}>
+            {dayOptions.map((o) => (
+              <button
+                key={o.label}
+                type="button"
+                className={`${s.day} ${date === o.key ? s.dayOn : ""}`}
+                onClick={() => setDate(o.key)}
+              >
+                <b>{o.label}</b><span>{dm(o.key)}</span>
+              </button>
+            ))}
+            <span className={s.vdiv} />
+            <button type="button" className={s.calBtn} onClick={() => setDateCalOpen(true)} aria-label={t("form.pickDate")}>
+              <DsIcon name="BoldCalendar" size={18} />
+            </button>
+          </div>
+        </div>
+
+        <div className={s.nameCard}>
+          <span className={s.nameTile}><DsIcon name="BoldMessagesConversationPen" size={18} /></span>
           <input
             placeholder={isIncome ? t("form.namePlaceholderInc") : t("form.namePlaceholderExp")}
             value={merchant}
             onChange={(e) => setMerchant(e.target.value)}
           />
+        </div>
+
         </div>
 
         {error && <div className={styles.errMsg}>{error}</div>}
@@ -460,6 +492,16 @@ export default function AddTransactionForm({
           initial={scannedItems[calcItem].price}
           onApply={(val) => applyItemPrice(calcItem, val)}
           onClose={() => setCalcItem(null)}
+        />
+      )}
+
+      {pickerOpen && (
+        <CategoryPickerSheet
+          cats={ordered}
+          value={category}
+          isIncome={isIncome}
+          onPick={pickCategory}
+          onClose={() => setPickerOpen(false)}
         />
       )}
 

@@ -170,15 +170,10 @@ export default function SettingsClient({
 
       {clearOpen && (
         <div className={styles.sheetWrap}>
-          <div className={styles.sheetBack} onClick={() => setClearOpen(false)} />
-          <div className={styles.sheet}>
+          <div data-sheet-back className={styles.sheetBack} onClick={() => setClearOpen(false)} />
+          <div data-sheet className={styles.sheet}>
             <div className={styles.sheetBody}>
-              <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span>{t("set.clearTitle")}</span>
-                <button className={styles.iconBtn} onClick={() => setClearOpen(false)} aria-label={t("common.close")}>
-                  <Icon id="i-x" />
-                </button>
-              </div>
+              <div className={styles.sheetTitle}>{t("set.clearTitle")}</div>
               <div className={styles.confirmText}>
                 {t("set.allWord")} <b>{txCount}</b> {t("set.clearBody")}{" "}
                 {t("confirm.typeWord")} <b>{t("confirm.yes")}</b>.
@@ -204,15 +199,10 @@ export default function SettingsClient({
       {/* bottom sheet: новий рахунок */}
       {showCreate && (
         <div className={styles.sheetWrap}>
-          <div className={styles.sheetBack} onClick={() => setShowCreate(false)} />
-          <div className={styles.sheet}>
+          <div data-sheet-back className={styles.sheetBack} onClick={() => setShowCreate(false)} />
+          <div data-sheet className={styles.sheet}>
             <div className={styles.sheetBody}>
-              <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span>{t("set.newAccount")}</span>
-                <button className={styles.iconBtn} onClick={() => setShowCreate(false)} aria-label={t("common.close")}>
-                  <Icon id="i-x" />
-                </button>
-              </div>
+              <div className={styles.sheetTitle}>{t("set.newAccount")}</div>
               <input
                 className={styles.confirmInput}
                 placeholder={t("set.accNamePh")}
@@ -246,15 +236,10 @@ export default function SettingsClient({
       {/* bottom sheet: видалення рахунку */}
       {delTarget && (
         <div className={styles.sheetWrap}>
-          <div className={styles.sheetBack} onClick={() => setDelTarget(null)} />
-          <div className={styles.sheet}>
+          <div data-sheet-back className={styles.sheetBack} onClick={() => setDelTarget(null)} />
+          <div data-sheet className={styles.sheet}>
             <div className={styles.sheetBody}>
-              <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span>{t("set.delAccTitle")}</span>
-                <button className={styles.iconBtn} onClick={() => setDelTarget(null)} aria-label={t("common.close")}>
-                  <Icon id="i-x" />
-                </button>
-              </div>
+              <div className={styles.sheetTitle}>{t("set.delAccTitle")}</div>
               <div className={styles.confirmText}>
                 {t("set.delAccPre")} «{delTarget.name}» {t("set.delAccPost")}{" "}
                 {t("confirm.typeWord")} <b>{t("confirm.yes")}</b>.

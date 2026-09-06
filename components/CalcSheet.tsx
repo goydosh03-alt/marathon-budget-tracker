@@ -42,15 +42,10 @@ export default function CalcSheet({
 
   return (
     <div className={styles.sheetWrap}>
-      <div className={styles.sheetBack} onClick={onClose} />
-      <div className={styles.sheet}>
+      <div data-sheet-back className={styles.sheetBack} onClick={onClose} />
+      <div data-sheet className={styles.sheet}>
         <div className={styles.sheetBody}>
-          <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span>{title || t("calc.sum")}</span>
-            <button className={styles.iconBtn} onClick={onClose} aria-label={t("common.close")}>
-              <Icon id="i-x" />
-            </button>
-          </div>
+          <div className={styles.sheetTitle}><span>{title || t("calc.sum")}</span></div>
 
           <div className={styles.calcDisp}>
             <div className={styles.calcExpr}>{expr || "0"}</div>

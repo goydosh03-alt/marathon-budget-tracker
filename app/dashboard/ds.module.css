@@ -215,7 +215,11 @@
 .emptyTitle { font: var(--sc-type-body-medium); color: var(--sc-ink); }
 .emptyHint { font: var(--sc-type-caption); color: var(--sc-ink-tertiary); max-width: 260px; }
 
+/* фокус-рінг лишається тільки для клавіатурної навігації по кнопках/лінках;
+   на полях вводу обводки немає — поле й так очевидно клікабельне [ours] */
 .screen :focus-visible { outline: 2px solid var(--sc-accent); outline-offset: 2px; }
+.screen input:focus, .screen input:focus-visible,
+.screen textarea:focus, .screen textarea:focus-visible { outline: none; box-shadow: none; }
 
 /* ============================================================
    ЗВІТИ (/reports) — за хендофф-специфікацією «dark stone».

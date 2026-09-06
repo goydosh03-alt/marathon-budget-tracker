@@ -66,8 +66,8 @@ export default function NotificationsBell() {
 
       {open && (
         <div className={styles.sheetWrap}>
-          <div className={styles.sheetBack} onClick={() => setOpen(false)} />
-          <div className={styles.sheet}>
+          <div data-sheet-back className={styles.sheetBack} onClick={() => setOpen(false)} />
+          <div data-sheet className={styles.sheet}>
             <div className={styles.sheetBody}>
               <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
                 <span>{t("notif.title")}</span>
@@ -80,9 +80,6 @@ export default function NotificationsBell() {
                       {t("notif.markAll")}
                     </button>
                   )}
-                  <button className={styles.iconBtn} onClick={() => setOpen(false)} aria-label={t("common.close")}>
-                    <Icon id="i-x" />
-                  </button>
                 </span>
               </div>
 

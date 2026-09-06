@@ -5,7 +5,6 @@ import Link from "next/link";
 import styles from "@/app/dashboard/ds.module.css";
 import legacy from "@/app/dashboard/dashboard.module.css";
 import DsIcon from "@/components/ds/Icon";
-import { Icon } from "@/components/IconSprite";
 import { useT } from "@/components/SettingsProvider";
 import AddTransactionForm from "@/components/AddTransactionForm";
 
@@ -53,21 +52,21 @@ export default function BottomNav({
           <div className={legacy.backdrop} onClick={() => setMenuOpen(false)} />
           <div className={legacy.addmenu}>
             <button className={legacy.addItem} onClick={() => openForm("income")}>
-              <span className={legacy.mi} style={{ background: "rgba(95,179,127,0.16)", color: "var(--sc-accent-text)" }}>
-                <Icon id="i-income" />
+              <span className={legacy.mi} style={{ color: "var(--sc-cat-green)" }}>
+                <DsIcon name="BoldMoneyDollarMinimalistic" size={18} />
               </span>
               {t("nav.addIncome")}
             </button>
             <div className={legacy.menuDiv} />
             <button className={legacy.addItem} onClick={() => openForm("expense")}>
-              <span className={legacy.mi} style={{ background: "rgba(181,123,238,0.16)", color: "var(--sc-cat-purple)" }}>
-                <Icon id="i-edit" />
+              <span className={legacy.mi} style={{ color: "var(--sc-ink)" }}>
+                <DsIcon name="BoldMessagesConversationPen" size={18} />
               </span>
               {t("nav.addExpense")}
             </button>
             <button className={legacy.addItem} onClick={() => openForm("expense", true)}>
-              <span className={legacy.mi} style={{ background: "rgba(47,123,255,0.16)", color: "var(--sc-cat-blue)" }}>
-                <Icon id="i-scan" />
+              <span className={legacy.mi} style={{ color: "var(--sc-cat-blue)" }}>
+                <DsIcon name="BoldSecurityScanner" size={18} />
               </span>
               {t("nav.scanReceipt")}
             </button>

@@ -97,14 +97,11 @@ export default function CalendarSheet({
 
   return (
     <div className={styles.sheetWrap}>
-      <div className={styles.sheetBack} onClick={onClose} />
-      <div className={styles.sheet}>
+      <div data-sheet-back className={styles.sheetBack} onClick={onClose} />
+      <div data-sheet className={styles.sheet}>
         <div className={styles.sheetBody}>
-          <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span>{sheetTitle}{label ? ` (${label})` : ""}</span>
-            <button className={styles.iconBtn} onClick={onClose} aria-label={t("common.close")}>
-              <Icon id="i-x" />
-            </button>
+          <div className={styles.sheetTitle}>
+            {sheetTitle}{label ? ` (${label})` : ""}
           </div>
 
           <div className={styles.calSheetHead}>

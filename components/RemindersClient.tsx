@@ -159,15 +159,10 @@ export default function RemindersClient({ reminders }: { reminders: Reminder[] }
 
       {open && (
         <div className={styles.sheetWrap}>
-          <div className={styles.sheetBack} onClick={() => setOpen(false)} />
-          <div className={styles.sheet}>
+          <div data-sheet-back className={styles.sheetBack} onClick={() => setOpen(false)} />
+          <div data-sheet className={styles.sheet}>
             <div className={styles.sheetBody}>
-              <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span>{editId ? t("rem.editTitle") : t("rem.newTitle")}</span>
-                <button className={styles.iconBtn} onClick={() => setOpen(false)} aria-label={t("common.close")}>
-                  <Icon id="i-x" />
-                </button>
-              </div>
+              <div className={styles.sheetTitle}>{editId ? t("rem.editTitle") : t("rem.newTitle")}</div>
 
               {/* Час — головний елемент, як сума у формі транзакції. Тап = системний пікер. */}
               <div className={styles.remTimeWrap}>

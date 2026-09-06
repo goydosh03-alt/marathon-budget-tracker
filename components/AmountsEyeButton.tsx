@@ -15,9 +15,7 @@ export default function AmountsEyeButton() {
       aria-label={hidden ? t("eye.show") : t("eye.hide")}
       title={hidden ? t("eye.show") : t("eye.hide")}
     >
-      <span style={{ opacity: hidden ? 0.45 : 1, display: "flex" }}>
-        <DsIcon name="BoldSecurityEye" size={20} />
-      </span>
+      <DsIcon name={hidden ? "BoldEyeClosed" : "BoldSecurityEye"} size={20} />
     </button>
   );
 }
