@@ -6,7 +6,8 @@ import styles from "@/app/dashboard/dashboard.module.css";
 import { addTransaction, updateTransaction, deleteTransaction } from "@/app/dashboard/actions";
 import { Icon } from "@/components/IconSprite";
 import CalcSheet from "@/components/CalcSheet";
-import AmountPad from "@/components/AmountPad";
+import AmountKeypad from "@/components/AmountKeypad";
+import { evalExpr, trimNum } from "@/lib/calc";
 import CalendarSheet from "@/components/CalendarSheet";
 import { currencyMeta } from "@/lib/currency";
 import { dataLabel, type StringKey } from "@/lib/i18n";
@@ -91,7 +92,9 @@ export default function AddTransactionForm({
   // калькулятор для позиції (індекс)
   const [calcItem, setCalcItem] = useState<number | null>(null);
   // калькулятор для суми + наш календар для дати
-  const [calcAmount, setCalcAmount] = useState(false);
+  const [padOpen, setPadOpen] = useState(false);
+  const [expr, setExpr] = useState("");
+  const padResult = evalExpr(expr);
   const [dateCalOpen, setDateCalOpen] = useState(false);
 
   function applyItemPrice(idx: number, value: number) {
@@ -317,7 +320,8 @@ export default function AddTransactionForm({
   return (
     <div className={styles.sheetWrap}>
       <div data-sheet-back className={styles.sheetBack} onClick={onClose} />
-      <div data-sheet className={styles.sheet}>
+      <div data-sheet className={`${styles.sheet} ${s.addSheet}`}>
+        <span className={s.tex} aria-hidden="true" />
         <div data-vfade className={styles.sheetBody}>
         <div className={s.stack}>
 
@@ -334,10 +338,11 @@ export default function AddTransactionForm({
           <button
             type="button"
             className={`${s.amtBtn} ${isIncome ? s.amtInc : ""}`}
-            onClick={() => setCalcAmount(true)}
-            style={{ color: amount ? undefined : "var(--sc-ink-muted)" }}
+            onClick={() => { if (padOpen) return; setExpr(amount ? amount.replace(",", ".") : ""); setPadOpen(true); }}
+            style={{ color: padOpen || amount ? undefined : "var(--sc-ink-muted)" }}
           >
-            {amount || "0"}
+            {padOpen ? (padResult !== null ? trimNum(padResult) : "0") : amount || "0"}
+            {padOpen && <span className={s.caret} />}
           </button>
           <span className={s.amtCur}>{sym}</span>
         </div>
@@ -345,7 +350,7 @@ export default function AddTransactionForm({
           <div className={s.amtConv}>≈ {conv(parsed, 2)}</div>
         )}
 
-        {!isIncome && (
+        {!isIncome && !padOpen && (
           <div className={s.scanRow}>
             <button className={s.scanBtn} type="button" onClick={() => fileRef.current?.click()} disabled={scanning}>
               <DsIcon name="BoldSecurityScanner" size={16} /> {scanning ? t("form.reading") : t("form.scan")}
@@ -355,7 +360,10 @@ export default function AddTransactionForm({
         )}
         </div>
 
+        {padOpen && <AmountKeypad expr={expr} result={padResult} onExpr={setExpr} />}
 
+        {!padOpen && (
+        <>
         {scannedItems && scannedItems.length > 0 && (
           <>
             <div className={styles.fieldLabel}>{t("form.receiptItems")}</div>
@@ -468,6 +476,8 @@ export default function AddTransactionForm({
             onChange={(e) => setMerchant(e.target.value)}
           />
         </div>
+        </>
+        )}
 
         </div>
 
@@ -475,12 +485,28 @@ export default function AddTransactionForm({
         </div>
 
         <div className={styles.sheetActions}>
-          {isEdit && (
-            <button className={styles.btnDelText} onClick={remove} disabled={pending}>{t("common.delete")}</button>
+          {padOpen ? (
+            <button
+              className={styles.btnPrimary}
+              disabled={padResult === null || padResult < 0}
+              onClick={() => {
+                if (padResult === null) return;
+                setAmount(trimNum(Number(padResult.toFixed(2))));
+                setPadOpen(false);
+              }}
+            >
+              {t("common.apply")}
+            </button>
+          ) : (
+            <>
+              {isEdit && (
+                <button className={styles.btnDelText} onClick={remove} disabled={pending}>{t("common.delete")}</button>
+              )}
+              <button className={styles.btnPrimary} onClick={save} disabled={pending}>
+                {pending ? t("form.saving") : t("common.save")}
+              </button>
+            </>
           )}
-          <button className={styles.btnPrimary} onClick={save} disabled={pending}>
-            {pending ? t("form.saving") : t("common.save")}
-          </button>
         </div>
       </div>
 
@@ -509,10 +535,6 @@ export default function AddTransactionForm({
           onPick={pickCategory}
           onClose={() => setPickerOpen(false)}
         />
-      )}
-
-      {calcAmount && (
-        <AmountPad value={amount} onChange={setAmount} onClose={() => setCalcAmount(false)} />
       )}
 
       {dateCalOpen && (

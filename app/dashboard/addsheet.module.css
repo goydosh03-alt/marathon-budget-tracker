@@ -133,3 +133,48 @@
 .pickOn .pickName { color: var(--sc-ink); }
 .pickCheck { color: var(--sc-accent-text); display: flex; flex-shrink: 0; }
 .pickEmpty { padding: 24px 16px; text-align: center; font: var(--sc-type-caption); color: var(--sc-ink-tertiary); }
+
+/* ============================================================
+   Попап додавання: фактура як на головному екрані
+   (засвіт зверху + крапки, що тануть донизу)
+   ============================================================ */
+.addSheet { overflow: hidden; }
+.addSheet > * { position: relative; z-index: 1; }
+.addSheet::before { position: relative; z-index: 2; }  /* грабер лишається зверху фактури */
+
+.tex { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.tex::before,
+.tex::after { content: ""; position: absolute; inset: 0; }
+.tex::before { background: var(--sc-bg-glow); opacity: .55; }
+.tex::after {
+  background-image: var(--sc-bg-dots);
+  background-size: var(--sc-bg-dots-size) var(--sc-bg-dots-size);
+  background-position: 11px 11px;
+  -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,.9) 0%, rgba(0,0,0,.9) 38%, transparent 76%);
+          mask-image: linear-gradient(180deg, rgba(0,0,0,.9) 0%, rgba(0,0,0,.9) 38%, transparent 76%);
+}
+
+/* ---------- режим клавіатури ---------- */
+/* Курсор у сумі: поле активне прямо тут, без другого попапа. */
+.caret {
+  display: inline-block; width: 2px; align-self: stretch; margin-left: 2px;
+  background: var(--sc-accent-text); border-radius: 1px;
+  animation: scBlink 1.06s steps(1, end) infinite;
+}
+@keyframes scBlink { 0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; } }
+
+.padExpr {
+  text-align: center; font: var(--sc-type-caption); color: var(--sc-ink-tertiary);
+  min-height: 16px; font-variant-numeric: tabular-nums;
+}
+.pad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.key {
+  height: 56px; border: 0; border-radius: 18px; cursor: pointer;
+  background: var(--sc-surface-glass); box-shadow: inset 0 0 0 .5px var(--sc-glass-edge);
+  color: var(--sc-ink); font: var(--sc-weight-medium) 22px/1 var(--sc-font);
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--sc-duration-fast) var(--sc-ease), transform var(--sc-duration-fast) var(--sc-ease);
+}
+.key:active { background: var(--sc-surface-glass-active); transform: scale(var(--sc-press-scale)); }
+.keyOp { background: transparent; box-shadow: none; color: var(--sc-ink-secondary); }
+.keySplit { font: var(--sc-weight-semibold) 15px/1 var(--sc-font); color: var(--sc-accent-text); }
