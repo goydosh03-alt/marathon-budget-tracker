@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { IconSprite } from "@/components/IconSprite";
 import SubHeader from "@/components/SubHeader";
 import SettingsClient from "@/components/SettingsClient";
-import styles from "@/app/dashboard/dashboard.module.css";
+import ds from "@/app/dashboard/ds.module.css";
 import { DEFAULT_LANG, isLang, translate } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
@@ -30,11 +30,12 @@ export default async function SettingsPage() {
     .eq("user_id", user.id);
 
   return (
-    <div className={styles.screen}>
+    <div className={ds.screen}>
       <IconSprite />
-      <SubHeader title={translate("menu.settings", lang)} back="/menu" />
-
-      <SettingsClient accounts={accounts ?? []} txCount={count ?? 0} />
+      <div className={ds.content}>
+        <SubHeader title={translate("menu.settings", lang)} back="/menu" />
+        <SettingsClient accounts={accounts ?? []} txCount={count ?? 0} />
+      </div>
     </div>
   );
 }
