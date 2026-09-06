@@ -227,18 +227,35 @@
 .screen textarea:focus, .screen textarea:focus-visible { outline: none; box-shadow: none; }
 
 /* ============================================================
-   ЗВІТИ (/reports). Дописано в кінець — наявні класи не чіпав.
-   Усі значення з app/tokens.css.
+   ЗВІТИ (/reports) — за хендофф-специфікацією «dark stone».
+   Дописано в кінець, спільні класи не чіпав. Значення з app/tokens.css.
    ============================================================ */
 
-/* ---------- шапка екрана ---------- */
-.repTitle { margin: 0; font: var(--sc-type-title); color: var(--sc-ink); }
+/* ---------- прокрутка екрана ---------- */
+.repScroll {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: calc(env(safe-area-inset-top, 0px) + 20px) 20px
+           calc(150px + env(safe-area-inset-bottom, 0px));
+}
+
+/* ---------- шапка ---------- */
+.repHead { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.repTitle { margin: 0; font: var(--sc-type-page); letter-spacing: var(--sc-tracking-page); color: var(--sc-ink); }
+.repHeadActions {
+  display: inline-flex; align-items: center; height: 44px; padding: 0 4px;
+  border-radius: var(--sc-radius-pill); flex-shrink: 0;
+}
 
 /* ---------- сегмент Витрати / Дохід ---------- */
-.repSeg {
-  display: flex; gap: 4px; padding: 4px;
-  border-radius: var(--sc-radius-pill);
-}
+.repSeg { display: flex; gap: 4px; padding: 4px; border-radius: var(--sc-radius-pill); }
 .repSegBtn {
   flex: 1; height: 40px; border: 0; border-radius: var(--sc-radius-pill);
   background: transparent; color: var(--sc-ink-muted);
@@ -248,141 +265,195 @@
 }
 .repSegOn { background: var(--sc-surface-glass-active); color: var(--sc-ink); }
 
-/* ---------- фільтр періоду + календар ---------- */
-.repCtl {
-  display: flex; align-items: center; gap: 2px; padding: 4px;
+/* ---------- герой ---------- */
+.repHero { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 6px 4px 0; }
+.repScope {
+  display: flex; align-items: center; gap: 8px;
+  font: var(--sc-type-body); color: var(--sc-ink-tertiary);
+}
+.repDelta {
+  display: inline-flex; align-items: center; gap: 4px; height: 22px; padding: 0 8px;
   border-radius: var(--sc-radius-pill);
+  background: rgba(95,179,127,.18); color: var(--sc-accent-text);
+  font: var(--sc-type-caption-medium); flex-shrink: 0;
 }
-.repPf {
-  flex: 1; min-width: 0; height: 34px; border: 0; border-radius: var(--sc-radius-pill);
-  background: transparent; color: var(--sc-ink-muted);
-  font: var(--sc-type-caption-medium); cursor: pointer;
-  transition: background var(--sc-duration-fast) var(--sc-ease),
-              color var(--sc-duration-fast) var(--sc-ease);
+.repAmount { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.repBig {
+  font: var(--sc-weight-semibold) var(--sc-text-hero)/var(--sc-leading-display) var(--sc-font);
+  letter-spacing: var(--sc-tracking-hero); color: var(--sc-ink); font-variant-numeric: tabular-nums;
 }
-.repPfOn { background: var(--sc-surface-glass-active); color: var(--sc-ink); }
-.repVdiv {
-  flex: 0 0 1px; width: 1px; height: 16px; margin: 0 4px;
-  background: var(--sc-glass-edge); border-radius: 1px;
-}
-.repCal {
-  flex: 0 0 34px; height: 34px; border: 0; border-radius: 50%;
-  background: transparent; color: var(--sc-ink-muted);
-  display: flex; align-items: center; justify-content: center; cursor: pointer;
-  transition: background var(--sc-duration-fast) var(--sc-ease),
-              color var(--sc-duration-fast) var(--sc-ease);
-}
-.repCalOn { background: var(--sc-surface-glass-active); color: var(--sc-accent-text); }
+.repConv { font: var(--sc-type-body); color: var(--sc-ink-tertiary); font-variant-numeric: tabular-nums; }
 
-/* ---------- рядок «період + перемикач вигляду» ---------- */
-.repDate { font: var(--sc-type-body-medium); color: var(--sc-ink); font-variant-numeric: tabular-nums; }
-.repViewSeg {
-  display: inline-flex; gap: 2px; padding: 3px; flex-shrink: 0;
-  border-radius: var(--sc-radius-pill);
-  background: var(--sc-surface-glass);
-  box-shadow: inset 0 0 0 .5px var(--sc-glass-edge);
+/* ---------- пілюлі-фільтри з дропдаунами ---------- */
+.repFilters { display: flex; align-items: center; gap: 8px; }
+.repFilterWrap { position: relative; display: inline-flex; }
+.repPill {
+  display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px;
+  border: 0; border-radius: var(--sc-radius-pill); cursor: pointer;
+  font: var(--sc-weight-regular) 14px/1 var(--sc-font); color: var(--sc-ink);
+  white-space: nowrap;
+  transition: transform var(--sc-duration-fast) var(--sc-ease);
 }
-.repViewBtn {
-  width: 40px; height: 30px; border: 0; border-radius: var(--sc-radius-pill);
-  background: transparent; color: var(--sc-ink-muted);
-  display: flex; align-items: center; justify-content: center; cursor: pointer;
-  transition: background var(--sc-duration-fast) var(--sc-ease),
-              color var(--sc-duration-fast) var(--sc-ease);
-}
-.repViewOn { background: var(--sc-surface-glass-active); color: var(--sc-ink); }
+.repPillWide { padding: 0 14px; }
+.repPill:active { transform: scale(var(--sc-press-scale)); }
+.repPillIcon { display: inline-flex; opacity: .7; }
+.repPillIconBright { display: inline-flex; opacity: .85; }
+.repPillChev { display: inline-flex; opacity: .55; }
 
-/* ---------- картка графіка ---------- */
-.repCard {
-  margin-top: 12px; padding: 16px;
-  border-radius: var(--sc-radius-card);
-  background: var(--sc-surface-card);
-  -webkit-backdrop-filter: var(--sc-blur-card);
-  backdrop-filter: var(--sc-blur-card);
-  box-shadow: var(--sc-shadow-card);
-  touch-action: pan-y;
+.repMenu {
+  position: absolute; top: calc(100% + 6px); left: 0; z-index: 9;
+  min-width: 170px; display: flex; flex-direction: column; padding: 4px;
+  border-radius: var(--sc-radius-row); background: var(--sc-menu);
+  box-shadow: 0 14px 32px rgba(0,0,0,.5), inset 0 0 0 .5px var(--sc-glass-edge);
+}
+.repMenuRight { left: auto; right: 0; }
+.repMenuItem {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  height: 34px; padding: 0 10px; border: 0; border-radius: 10px; cursor: pointer;
+  background: transparent; color: var(--sc-ink);
+  font: var(--sc-weight-regular) 14px/1 var(--sc-font); text-align: left;
+}
+.repMenuItemOn { background: rgba(255,255,255,.08); }
+.repMenuItemMuted { color: var(--sc-ink-secondary); }
+.repMenuLeft { display: inline-flex; align-items: center; gap: 8px; }
+.repMenuIco { display: inline-flex; }
+.repMenuDiv { height: 1px; background: rgba(255,255,255,.1); margin: 6px 10px; }
+.repCheck {
+  width: 16px; height: 16px; border-radius: 5px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; box-shadow: inset 0 0 0 1.5px rgba(241,239,234,.3);
+  color: var(--sc-ink-inverse);
+}
+.repCheckOn { background: var(--sc-accent); box-shadow: none; }
+
+/* ---------- пейджер ---------- */
+.repPager { display: flex; align-items: center; gap: 5px; margin-top: 10px; }
+.repPagerDot { border: 0; padding: 0; border-radius: 50%; background: rgba(241,239,234,.18); cursor: default; }
+.repPagerNear { background: rgba(241,239,234,.3); }
+.repPagerOn { background: var(--sc-ink); }
+.repPagerTap { cursor: pointer; }
+
+/* ---------- графік зі штрихів ---------- */
+.repChart { padding: 0 4px; margin-top: -14px; touch-action: pan-y; }
+.repTicks { height: 200px; display: flex; align-items: stretch; gap: 4px; }
+.repTickGroup {
+  flex: 1; min-width: 0; display: flex; align-items: flex-end; justify-content: center;
+  gap: 5px; padding: 8px 6px;
+}
+.repTick {
+  flex: 1; min-width: 0; max-width: 8px; min-height: 8px;
+  border-radius: var(--sc-radius-pill); background: rgba(241,239,234,.42);
+}
+.repTickOn { background: var(--sc-ink); }
+
+/* смуга з датами — full-bleed, заходить на графік */
+.repAxis {
+  display: flex; justify-content: space-between; gap: 4px;
+  margin: -10px -24px 0; position: relative; z-index: 1;
+  padding: 14px 24px 20px;
+  border-radius: var(--sc-radius-sheet) var(--sc-radius-sheet) 0 0;
+  background: var(--sc-axis);
+  box-shadow: inset 0 .5px 0 var(--sc-glass-edge);
+}
+.repAxisLbl {
+  flex: 1; text-align: center; font-variant-numeric: tabular-nums;
+  font: var(--sc-weight-medium) 12px/1 var(--sc-font); color: var(--sc-ink-secondary);
 }
 
-/* донат */
-.repDonutWrap { position: relative; width: 176px; height: 176px; margin: 4px auto 0; }
-.repDonutSvg { width: 100%; height: 100%; display: block; }
-.repDonutCenter {
-  position: absolute; inset: 0; pointer-events: none;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+/* ---------- блок «Витрати» ---------- */
+.repList {
+  margin: -20px -20px calc(-150px - env(safe-area-inset-bottom, 0px));
+  position: relative; z-index: 2;
+  padding: 18px 20px calc(150px + env(safe-area-inset-bottom, 0px));
+  border-radius: var(--sc-radius-sheet) var(--sc-radius-sheet) 0 0;
+  background: var(--sc-sheet);
+  border-top: .5px solid rgba(255,255,255,.14);
+  display: flex; flex-direction: column; gap: 6px;
 }
-.repDonutSum { font: var(--sc-type-title); color: var(--sc-ink); font-variant-numeric: tabular-nums; }
-.repDonutSub { font: var(--sc-type-caption); color: var(--sc-ink-tertiary); font-variant-numeric: tabular-nums; }
-
-/* стовпчики */
-.repBarsHead { display: flex; flex-direction: column; gap: 2px; margin-bottom: 14px; }
-.repBarsBig { font: var(--sc-type-title); color: var(--sc-ink); font-variant-numeric: tabular-nums; }
-.repBarsSub { font: var(--sc-type-caption); color: var(--sc-ink-tertiary); font-variant-numeric: tabular-nums; }
-.repBars { display: flex; align-items: stretch; gap: 8px; height: 152px; }
-.repBarCol { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; }
-.repBarWrap { flex: 1; width: 100%; display: flex; align-items: flex-end; justify-content: center; }
-.repBarFill {
-  width: 64%; max-width: 32px; min-height: 3px; background: var(--sc-accent);
-  border-radius: var(--sc-radius-sm) var(--sc-radius-sm) 2px 2px;
+.repListHead {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0 4px; margin-bottom: 2px;
 }
-.repBarLbl { margin-top: 8px; font: var(--sc-type-caption); color: var(--sc-ink-tertiary); }
-
-/* крапки навігації по періодах */
-.repDots { display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 14px; }
-.repDot {
-  width: 6px; height: 6px; padding: 0; border: 0; border-radius: 50%;
-  background: var(--sc-ink-muted); opacity: .45; cursor: pointer;
-  transition: width var(--sc-duration-base) var(--sc-ease),
-              opacity var(--sc-duration-base) var(--sc-ease),
-              background var(--sc-duration-base) var(--sc-ease);
+.repListTitle { font: var(--sc-type-heading); color: var(--sc-ink); }
+.repListLink {
+  font: var(--sc-type-body); color: var(--sc-accent-text); text-decoration: none;
+  display: inline-flex; align-items: center; gap: 4px;
 }
-.repDotOn { width: 18px; border-radius: 3px; background: var(--sc-accent); opacity: 1; }
-
-/* ---------- легенда ---------- */
-.repLegendHead {
-  display: flex; justify-content: space-between; align-items: baseline;
-  padding: 0 4px; margin: 20px 0 6px;
-  font: var(--sc-type-caption); color: var(--sc-ink-tertiary);
-  font-variant-numeric: tabular-nums;
-}
-.repLegend {
-  display: flex; flex-direction: column;
-  border-radius: var(--sc-radius-group);
-  background: var(--sc-surface-card);
-  -webkit-backdrop-filter: var(--sc-blur-card);
-  backdrop-filter: var(--sc-blur-card);
-  box-shadow: var(--sc-shadow-card);
-}
-.repLegendSingle { border-radius: var(--sc-radius-pill); }
-.repLegRow {
-  display: flex; align-items: center; gap: 10px;
-  min-height: 50px; padding: var(--sc-row-inset);
+.repRowDiv { height: 1px; margin: 0 4px 0 54px; background: var(--sc-hairline); }
+.repRowDivFirst { background: transparent; }
+.repRow {
+  display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 9px 4px;
   color: inherit; text-decoration: none;
   transition: transform var(--sc-duration-fast) var(--sc-ease);
 }
-.repLegRow:active { transform: scale(.995); }
-.repLegDisc {
-  width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+.repRow:active { transform: scale(var(--sc-press-scale)); }
+.repDisc {
+  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
   color: #fff; display: flex; align-items: center; justify-content: center;
-  font-size: 19px; line-height: 1;
 }
-.repLegMid { display: flex; flex-direction: column; gap: 1px; flex: 1; min-width: 0; }
-.repLegName {
-  font: var(--sc-type-body-medium); color: var(--sc-ink);
+.repRowMid { display: flex; flex-direction: column; gap: 1px; flex: 1; min-width: 0; }
+.repRowName {
+  font: var(--sc-weight-medium) 14px/1.2 var(--sc-font); color: var(--sc-ink);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.repLegMeta { font: var(--sc-type-caption); color: var(--sc-ink-secondary); font-variant-numeric: tabular-nums; }
-.repLegRight {
+.repRowPct { font: var(--sc-weight-regular) 12px/1.2 var(--sc-font); color: var(--sc-ink-secondary); }
+.repRowRight {
   display: inline-flex; flex-direction: column; align-items: flex-end; gap: 1px;
   flex-shrink: 0; font-variant-numeric: tabular-nums;
 }
-.repLegSum { font: var(--sc-type-body-medium); color: var(--sc-ink); }
-.repLegSub { font: var(--sc-type-caption); color: var(--sc-ink-tertiary); }
-.repLegChev { color: var(--sc-ink-tertiary); flex-shrink: 0; display: flex; }
+.repRowSum { font: var(--sc-weight-medium) 14px/1.2 var(--sc-font); color: var(--sc-ink); }
+.repRowConv { font: var(--sc-weight-regular) 12px/1.2 var(--sc-font); color: var(--sc-ink-tertiary); }
 
-/* Звіти без шита: та сама коробка, але без поверхні — картки лежать
-   прямо на канві. Рішення власника продукту, поки тільки для /reports. */
-.repSheet {
-  flex: 1;
+.repEmpty {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 32px 20px; text-align: center;
+}
+.repEmptyTitle { font: var(--sc-type-body-medium); color: var(--sc-ink); }
+.repEmptyHint { font: var(--sc-type-caption); color: var(--sc-ink-tertiary); max-width: 260px; }
+
+/* ---------- низ ---------- */
+.repScrim {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; pointer-events: none;
+  height: calc(130px + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(rgba(35,36,33,0), rgba(35,36,33,.55) 45%, rgba(35,36,33,.93));
+}
+.repDock {
+  position: absolute; z-index: 4;
+  left: 0; right: 0; bottom: calc(var(--sc-nav-bottom) + env(safe-area-inset-bottom, 0px));
+  max-width: 480px; margin: 0 auto; padding: 0 20px;
+  display: flex; align-items: center; gap: 10px;
+}
+.repNavPill {
+  flex: 1; display: flex; justify-content: space-between; align-items: center;
+  height: 62px; padding: 0 6px; border-radius: var(--sc-radius-pill);
+}
+.repNavTab {
+  height: 48px; padding: 0 4px; flex: 1; min-width: 0; border: 0;
+  border-radius: var(--sc-radius-pill); background: transparent; color: var(--sc-ink-muted);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  transition: background var(--sc-duration-fast) var(--sc-ease),
+              color var(--sc-duration-fast) var(--sc-ease);
+}
+.repNavTabOn { background: var(--sc-surface-glass-active); color: var(--sc-ink); }
+.repFab {
+  width: 62px; height: 62px; flex-shrink: 0; border: 0; border-radius: 50%;
+  background: var(--sc-surface-inverse); color: var(--sc-ink-inverse);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  box-shadow: var(--sc-shadow-fab);
+  transition: transform var(--sc-duration-fast) var(--sc-ease);
+}
+.repFab:active { transform: scale(var(--sc-press-scale)); }
+
+.repBackdrop { position: fixed; inset: 0; z-index: 8; }
+
+/* Перехід між періодами при свайпі. Напрямок задає --rep-from з компонента. */
+.repSlide {
   display: flex;
   flex-direction: column;
-  padding: 0 0 calc(150px + env(safe-area-inset-bottom, 0px));
+  gap: 20px;
+  animation: repSlideIn var(--sc-duration-base) var(--sc-ease) both;
+}
+@keyframes repSlideIn {
+  from { opacity: 0; transform: translateX(var(--rep-from, 16px)); }
+  to   { opacity: 1; transform: none; }
 }

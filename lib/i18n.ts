@@ -133,6 +133,7 @@ export const STRINGS = {
   "rep.noDataInc": { uk: "За цей період доходів немає.", en: "No income for this period.", ru: "Доходов за этот период нет." },
   "rep.donut": { uk: "Кругова", en: "Donut", ru: "Круговая" },
   "rep.bars": { uk: "Стовпчики", en: "Bars", ru: "Столбцы" },
+  "rep.allAccounts": { uk: "Всі рахунки", en: "All accounts", ru: "Все счета" },
 
   // форма додавання транзакції
   "common.undo": { uk: "Повернути", en: "Undo", ru: "Вернуть" },
