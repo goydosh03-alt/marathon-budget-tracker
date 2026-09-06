@@ -4,9 +4,8 @@ import { useMemo, useState } from "react";
 import sheetStyles from "@/app/dashboard/dashboard.module.css";
 import s from "@/app/dashboard/addsheet.module.css";
 import DsIcon from "@/components/ds/Icon";
-import { catVisual } from "@/lib/catIcon";
-import { catEmoji } from "@/lib/txui";
-import { useT, useLang } from "@/components/SettingsProvider";
+import { resolveCat } from "@/lib/catIcon";
+import { useT, useLang, useCategories } from "@/components/SettingsProvider";
 import { dataLabel } from "@/lib/i18n";
 
 function Check() {
@@ -33,6 +32,8 @@ export default function CategoryPickerSheet({
 }) {
   const t = useT();
   const lang = useLang();
+  const customCats = useCategories();
+  const customMap = new Map(customCats.map((c) => [c.name, c]));
   const [q, setQ] = useState("");
 
   const list = useMemo(() => {
@@ -59,7 +60,7 @@ export default function CategoryPickerSheet({
         <div className={sheetStyles.sheetBody} style={{ marginTop: 12 }}>
           <div className={s.pickList}>
             {list.map((c) => {
-              const vis = catVisual(c, isIncome);
+              const look = resolveCat(c, isIncome, customMap.get(c));
               return (
                 <button
                   key={c}
@@ -70,8 +71,8 @@ export default function CategoryPickerSheet({
                     onClose();
                   }}
                 >
-                  <span className={s.pickIco} style={{ color: vis.color }}>
-                    {vis.icon ? <DsIcon name={vis.icon} size={20} /> : catEmoji(c, isIncome)}
+                  <span className={s.pickIco} style={{ color: look.color }}>
+                    {look.icon ? <DsIcon name={look.icon} size={20} /> : look.emoji}
                   </span>
                   <span className={s.pickName}>{dataLabel(c, lang)}</span>
                   {c === value && <span className={s.pickCheck}><Check /></span>}

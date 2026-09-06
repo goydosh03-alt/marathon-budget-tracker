@@ -21,6 +21,28 @@ const MAP: Record<string, CatVisual> = {
 // Для кастомних категорій без іконки — колір лишається в палітрі системи.
 const FALLBACK_COLOR = "var(--sc-cat-teal)";
 
+/** Нейтральний вектор, коли нічого кращого немає. Емодзі-затички більше не показуємо. */
+const NEUTRAL_ICON = "BoldEssentionalUIMenuDotsCircle";
+
+export type CatLook = { icon: string | null; emoji: string | null; color: string };
+
+/**
+ * Як намалювати диск категорії.
+ * Дефолтна категорія -> векторний гліф. Кастомна -> ВЛАСНИЙ емодзі й колір
+ * користувача (це його вибір на /categories). Нічого з цього нема -> нейтральний вектор.
+ */
+export function resolveCat(
+  category: string,
+  isIncome: boolean,
+  custom?: { emoji?: string; color?: string }
+): CatLook {
+  const hit = MAP[category];
+  if (hit) return { icon: hit.icon, emoji: null, color: hit.color };
+  if (custom?.emoji) return { icon: null, emoji: custom.emoji, color: custom.color || FALLBACK_COLOR };
+  if (isIncome) return { icon: "BoldMoneyMoneyBag", emoji: null, color: "var(--sc-cat-green)" };
+  return { icon: NEUTRAL_ICON, emoji: null, color: custom?.color || FALLBACK_COLOR };
+}
+
 export function catVisual(category: string, isIncome: boolean): CatVisual {
   const hit = MAP[category];
   if (hit) return hit;

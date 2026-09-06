@@ -9,13 +9,12 @@ import CalcSheet from "@/components/CalcSheet";
 import AmountPad from "@/components/AmountPad";
 import CalendarSheet from "@/components/CalendarSheet";
 import { currencyMeta } from "@/lib/currency";
-import { catEmoji } from "@/lib/txui";
 import { dataLabel, type StringKey } from "@/lib/i18n";
 import { useCategories, useCurrency, useMoney, useConv, useT, useLang } from "@/components/SettingsProvider";
 import s from "@/app/dashboard/addsheet.module.css";
 import DsIcon from "@/components/ds/Icon";
 import CategoryPickerSheet from "@/components/CategoryPickerSheet";
-import { catVisual, ACCOUNT_ICON, ACCOUNT_COLOR } from "@/lib/catIcon";
+import { resolveCat, ACCOUNT_ICON, ACCOUNT_COLOR } from "@/lib/catIcon";
 import { sortByRecent, noteCategory } from "@/lib/recentCats";
 import { useScrollFade } from "@/components/ui/useScrollFade";
 
@@ -115,8 +114,7 @@ export default function AddTransactionForm({
     ...(isIncome ? INCOME_CATS : EXPENSE_CATS),
     ...customCats.filter((c) => c.type === (isIncome ? "income" : "expense")).map((c) => c.name),
   ];
-  const customEmoji = new Map(customCats.map((c) => [c.name, c.emoji]));
-  const catIcon = (name: string) => customEmoji.get(name) ?? catEmoji(name, isIncome);
+  const customMap = new Map(customCats.map((c) => [c.name, c]));
   const parsed = parseFloat(amount.replace(",", ".")) || 0;
   const money = useMoney();
   const conv = useConv();
@@ -387,7 +385,7 @@ export default function AddTransactionForm({
                 {[rowA, rowB].map((row, ri) => (
                   <div className={s.row} key={ri}>
                     {row.map((c) => {
-                      const vis = catVisual(c, isIncome);
+                      const look = resolveCat(c, isIncome, customMap.get(c));
                       return (
                         <button
                           key={c}
@@ -395,8 +393,8 @@ export default function AddTransactionForm({
                           className={`${s.chip} ${category === c ? s.chipOn : ""}`}
                           onClick={() => pickCategory(c)}
                         >
-                          <span className={s.chipIco} style={{ color: vis.color }}>
-                            {vis.icon ? <DsIcon name={vis.icon} size={16} /> : catEmoji(c, isIncome)}
+                          <span className={s.chipIco} style={{ color: look.color }}>
+                            {look.icon ? <DsIcon name={look.icon} size={16} /> : look.emoji}
                           </span>
                           {dataLabel(c, lang)}
                         </button>
