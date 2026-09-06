@@ -25,7 +25,11 @@
 }
 .amtInc { color: var(--sc-accent-text); }
 .amtCur { font: var(--sc-weight-semibold) 20px/1 var(--sc-font); color: var(--sc-ink-tertiary); align-self: flex-end; padding-bottom: 4px; }
-.amtConv { text-align: center; font: var(--sc-type-caption); color: var(--sc-ink-tertiary); }
+.amtConv {
+  text-align: center; font: var(--sc-type-caption); color: var(--sc-ink-tertiary);
+  min-height: calc(var(--sc-text-caption) * var(--sc-leading-body));
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
 
 .scanRow { display: flex; justify-content: center; }
 .scanBtn {
@@ -73,10 +77,14 @@
 .dots i { width: 4px; height: 4px; border-radius: 50%; background: currentColor; display: block; }
 
 /* ---------- дата ---------- */
-.dateCtl { display: flex; align-items: center; gap: 3px; padding: 5px; border-radius: var(--sc-radius-pill);
+.dateCtl { display: flex; align-items: center; gap: 5px; padding: 5px; border-radius: var(--sc-radius-pill);
   background: var(--sc-surface-glass); box-shadow: inset 0 0 0 .5px var(--sc-glass-edge); }
+/* дні гортаються й важать по контенту — як чіпи категорій */
+.dateScroll { display: flex; align-items: center; gap: 5px; flex: 1; min-width: 0;
+  overflow-x: auto; scrollbar-width: none; }
+.dateScroll::-webkit-scrollbar { display: none; }
 .day {
-  flex: 1; min-width: 0; min-height: 50px; padding: 8px; border: 0; cursor: pointer;
+  flex: 0 0 auto; min-height: 50px; padding: 8px 16px; border: 0; cursor: pointer;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
   border-radius: var(--sc-radius-pill); background: transparent; color: var(--sc-ink-muted);
 }
@@ -145,13 +153,15 @@
 .tex { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
 .tex::before,
 .tex::after { content: ""; position: absolute; inset: 0; }
-.tex::before { background: var(--sc-bg-glow); opacity: .55; }
+.tex::before { background: var(--sc-bg-glow); opacity: .42; }
 .tex::after {
-  background-image: var(--sc-bg-dots);
-  background-size: var(--sc-bg-dots-size) var(--sc-bg-dots-size);
-  background-position: 11px 11px;
-  -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,.9) 0%, rgba(0,0,0,.9) 38%, transparent 76%);
-          mask-image: linear-gradient(180deg, rgba(0,0,0,.9) 0%, rgba(0,0,0,.9) 38%, transparent 76%);
+  /* дрібніша сітка, ніж на екрані: попап менший, велика виглядає грубо */
+  background-image: radial-gradient(rgba(241,239,234,.12) .9px, transparent 1.1px);
+  background-size: 17px 17px;
+  background-position: 9px 9px;
+  /* тануть на рівні блоку суми — нижче, біля категорій, їх уже немає */
+  -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,.9) 0%, rgba(0,0,0,.85) 16%, transparent 40%);
+          mask-image: linear-gradient(180deg, rgba(0,0,0,.9) 0%, rgba(0,0,0,.85) 16%, transparent 40%);
 }
 
 /* ---------- режим клавіатури ---------- */
@@ -176,5 +186,5 @@
   transition: background var(--sc-duration-fast) var(--sc-ease), transform var(--sc-duration-fast) var(--sc-ease);
 }
 .key:active { background: var(--sc-surface-glass-active); transform: scale(var(--sc-press-scale)); }
-.keyOp { background: transparent; box-shadow: none; color: var(--sc-ink-secondary); }
-.keySplit { font: var(--sc-weight-semibold) 15px/1 var(--sc-font); color: var(--sc-accent-text); }
+.keyOp { color: var(--sc-accent-text); }
+.keySplit { font: var(--sc-weight-semibold) 16px/1 var(--sc-font); color: var(--sc-accent-text); }

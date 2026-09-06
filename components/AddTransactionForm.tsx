@@ -346,8 +346,8 @@ export default function AddTransactionForm({
           </button>
           <span className={s.amtCur}>{sym}</span>
         </div>
-        {convCur !== homeCur && parsed > 0 && (
-          <div className={s.amtConv}>≈ {conv(parsed, 2)}</div>
+        {convCur !== homeCur && (
+          <div className={s.amtConv}>≈ {conv(padOpen ? (padResult ?? 0) : parsed, 2)}</div>
         )}
 
         {!isIncome && !padOpen && (
@@ -451,6 +451,7 @@ export default function AddTransactionForm({
         <div>
           <span className={s.label}>{t("det.date")}</span>
           <div className={s.dateCtl}>
+            <div className={s.dateScroll}>
             {dayOptions.map((o) => (
               <button
                 key={o.label}
@@ -461,6 +462,7 @@ export default function AddTransactionForm({
                 <b>{o.label}</b><span>{dm(o.key)}</span>
               </button>
             ))}
+            </div>
             <span className={s.vdiv} />
             <button type="button" className={s.calBtn} onClick={() => setDateCalOpen(true)} aria-label={t("form.pickDate")}>
               <DsIcon name="BoldCalendar" size={18} />

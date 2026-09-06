@@ -66,10 +66,15 @@
 }
 
 /* тип рахунку — той самий сегмент, що всюди: активний = скло */
-.typeRow { display: flex; gap: 5px; padding: 5px; border-radius: var(--sc-radius-pill);
-  background: var(--sc-surface-glass); box-shadow: inset 0 0 0 .5px var(--sc-glass-edge); }
+/* Контейнер-пігулка: типи важать по контенту й гортаються, якщо їх стане більше */
+.typeRow {
+  display: flex; gap: 5px; padding: 5px; border-radius: var(--sc-radius-pill);
+  background: var(--sc-surface-glass); box-shadow: inset 0 0 0 .5px var(--sc-glass-edge);
+  overflow-x: auto; scrollbar-width: none;
+}
+.typeRow::-webkit-scrollbar { display: none; }
 .type {
-  flex: 1; min-width: 0; min-height: 44px; border: 0; cursor: pointer;
+  flex: 0 0 auto; min-height: 50px; padding: 0 16px; white-space: nowrap; border: 0; cursor: pointer;
   display: flex; align-items: center; justify-content: center; gap: 8px;
   border-radius: var(--sc-radius-pill); background: transparent;
   color: var(--sc-ink-muted); font: var(--sc-type-caption-medium);
