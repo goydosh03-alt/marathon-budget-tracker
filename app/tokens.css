@@ -68,8 +68,12 @@
   --sc-cta-h: 54px;
   --sc-cta-radius: var(--sc-radius-pill);
 
+  /* ПРАВИЛО: один боковий відступ на всю платформу. Сторінка, шит,
+     повноширинна полиця — усі міряються від нього. [ours] */
+  --sc-inset: 20px;
+
   /* Попапи — єдині відступи для ВСІХ шитів [ours] */
-  --sc-sheet-pad-x: 20px;
+  --sc-sheet-pad-x: var(--sc-inset);
   --sc-sheet-pad-top: 10px;
   --sc-sheet-pad-bottom: 20px;
   --sc-sheet-gap: 20px;
@@ -119,7 +123,7 @@
   --sc-type-caption-medium: var(--sc-weight-medium) var(--sc-text-caption)/var(--sc-leading-body) var(--sc-font);
 
   /* Spacing / layout — 2px base */
-  --sc-page-inset: 20px;
+  --sc-page-inset: var(--sc-inset);
   --sc-safe-top: 56px;
   --sc-nav-bottom: 34px;
   /* нижній відступ контенту: док (62) + його offset + повітря [ours] */
@@ -141,6 +145,9 @@
   /* Звіти (/reports) — з хендофф-специфікації. Дописано в кінець. */
   --sc-sheet: #2C2D2A;       /* блок «Витрати» */
   --sc-axis: #242522;        /* смуга з датами під графіком */
+  /* полиця над клавіатурою: піднята відносно шита, не темніша за нього [ours] */
+  --sc-surface-shelf: #2F302C;
+  --sc-surface-panel: rgba(255,255,255,.04);
   --sc-menu: #33342F;        /* дропдауни */
   --sc-text-hero: 36px;      /* головна сума екрана звітів */
   --sc-tracking-hero: -1.2px;

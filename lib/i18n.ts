@@ -285,6 +285,7 @@ export const STRINGS = {
   "cur.convTo": { uk: "Конвертується в", en: "Converts to", ru: "Конвертируется в" },
 
   // калькулятор
+  "calc.hint": { uk: "Можна рахувати: 120+35", en: "You can do maths: 120+35", ru: "Можно считать: 120+35" },
   "calc.sum": { uk: "Сума", en: "Amount", ru: "Сумма" },
   "calc.erase": { uk: "Стерти", en: "Erase", ru: "Стереть" },
 

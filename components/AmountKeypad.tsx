@@ -23,7 +23,6 @@ export default function AmountKeypad({
 
   return (
     <>
-      <div className={s.padExpr}>{expr.length > 1 || /[+\-*/]/.test(expr) ? expr : ""}</div>
       <div className={s.pad}>
         <button type="button" className={`${s.key} ${s.keySplit}`} onClick={() => split(2)}>÷2</button>
         <button type="button" className={`${s.key} ${s.keySplit}`} onClick={() => split(3)}>÷3</button>

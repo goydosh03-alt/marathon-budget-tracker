@@ -360,8 +360,6 @@ export default function AddTransactionForm({
         )}
         </div>
 
-        {padOpen && <AmountKeypad expr={expr} result={padResult} onExpr={setExpr} />}
-
         {!padOpen && (
         <>
         {scannedItems && scannedItems.length > 0 && (
@@ -486,8 +484,25 @@ export default function AddTransactionForm({
         {error && <div className={styles.errMsg}>{error}</div>}
         </div>
 
-        <div className={styles.sheetActions}>
-          {padOpen ? (
+        {padOpen && (
+          <div className={s.shelf}>
+            <div className={s.shelfLine}>
+              {expr ? (
+                <>
+                  <span>{expr.replace(/\*/g, " × ").replace(/\//g, " ÷ ").replace(/\+/g, " + ").replace(/-/g, " − ")}</span>
+                  <span className={s.shelfEq}>=</span>
+                  <span className={s.shelfRes}>{padResult !== null ? trimNum(padResult) : "—"}</span>
+                </>
+              ) : (
+                <span className={s.shelfPh}>{t("calc.hint")}</span>
+              )}
+            </div>
+          </div>
+        )}
+
+        {padOpen && (
+          <div className={s.padPanel}>
+            <AmountKeypad expr={expr} result={padResult} onExpr={setExpr} />
             <button
               className={styles.btnPrimary}
               disabled={padResult === null || padResult < 0}
@@ -499,17 +514,19 @@ export default function AddTransactionForm({
             >
               {t("common.apply")}
             </button>
-          ) : (
-            <>
-              {isEdit && (
-                <button className={styles.btnDelText} onClick={remove} disabled={pending}>{t("common.delete")}</button>
-              )}
-              <button className={styles.btnPrimary} onClick={save} disabled={pending}>
-                {pending ? t("form.saving") : t("common.save")}
-              </button>
-            </>
-          )}
-        </div>
+          </div>
+        )}
+
+        {!padOpen && (
+          <div className={styles.sheetActions}>
+            {isEdit && (
+              <button className={styles.btnDelText} onClick={remove} disabled={pending}>{t("common.delete")}</button>
+            )}
+            <button className={styles.btnPrimary} onClick={save} disabled={pending}>
+              {pending ? t("form.saving") : t("common.save")}
+            </button>
+          </div>
+        )}
       </div>
 
       {itemUndo && (

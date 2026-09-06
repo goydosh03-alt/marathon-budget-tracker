@@ -188,3 +188,38 @@
 .key:active { background: var(--sc-surface-glass-active); transform: scale(var(--sc-press-scale)); }
 .keyOp { color: var(--sc-accent-text); }
 .keySplit { font: var(--sc-weight-semibold) 16px/1 var(--sc-font); color: var(--sc-accent-text); }
+
+
+/* ============================================================
+   Варіант C: полиця з виразом + панель клавіш.
+   Обидві повноширинні — вилітають за padding шита рівно на --sc-inset.
+   ============================================================ */
+.shelf {
+  flex: 0 0 auto; position: relative; z-index: 1;
+  margin: var(--sc-sheet-stack) calc(var(--sc-inset) * -1) 0;
+  padding: 12px var(--sc-inset) 20px;
+  border-radius: var(--sc-radius-sheet) var(--sc-radius-sheet) 0 0;
+  background: var(--sc-surface-shelf);
+  box-shadow: inset 0 .5px 0 var(--sc-glass-edge);
+}
+.shelfLine {
+  display: flex; align-items: baseline; justify-content: center; gap: 8px;
+  font: var(--sc-type-body-medium); color: var(--sc-ink-secondary);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+  min-height: calc(var(--sc-text-body) * var(--sc-leading-body));
+}
+.shelfEq { color: var(--sc-ink-tertiary); opacity: .6; }
+.shelfRes { font-weight: 600; color: var(--sc-accent-text); }
+.shelfPh { color: var(--sc-ink-tertiary); opacity: .55; }
+
+.padPanel {
+  flex: 0 0 auto; position: relative; z-index: 1;
+  display: flex; flex-direction: column; gap: 14px;
+  margin: -10px calc(var(--sc-inset) * -1) calc((var(--sc-sheet-pad-bottom) + env(safe-area-inset-bottom, 0px)) * -1);
+  padding: 16px var(--sc-inset) calc(var(--sc-sheet-pad-bottom) + env(safe-area-inset-bottom, 0px));
+  border-radius: var(--sc-radius-sheet) var(--sc-radius-sheet) 0 0;
+  border-top: .5px solid var(--sc-sheet-edge);
+  background: var(--sc-surface-sheet);
+  -webkit-backdrop-filter: var(--sc-blur-sheet); backdrop-filter: var(--sc-blur-sheet);
+}

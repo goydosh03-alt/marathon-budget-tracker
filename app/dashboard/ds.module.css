@@ -213,7 +213,7 @@
 .fabOn { transform: rotate(45deg); }
 
 .empty {
-  margin-top: 24px; padding: 32px 20px; text-align: center;
+  margin-top: 24px; padding: 32px var(--sc-inset); text-align: center;
   display: flex; flex-direction: column; align-items: center; gap: 6px;
   background: var(--sc-surface-card); border-radius: var(--sc-radius-group); box-shadow: var(--sc-shadow-card);
 }
@@ -242,7 +242,7 @@
   gap: 20px;
   max-width: 480px;
   margin: 0 auto;
-  padding: calc(env(safe-area-inset-top, 0px) + 20px) 20px
+  padding: calc(env(safe-area-inset-top, 0px) + 20px) var(--sc-inset)
            calc(150px + env(safe-area-inset-bottom, 0px));
 }
 
@@ -406,7 +406,7 @@
 
 .repEmpty {
   display: flex; flex-direction: column; align-items: center; gap: 6px;
-  padding: 32px 20px; text-align: center;
+  padding: 32px var(--sc-inset); text-align: center;
 }
 .repEmptyTitle { font: var(--sc-type-body-medium); color: var(--sc-ink); }
 .repEmptyHint { font: var(--sc-type-caption); color: var(--sc-ink-tertiary); max-width: 260px; }
@@ -420,7 +420,7 @@
 .repDock {
   position: absolute; z-index: 4;
   left: 0; right: 0; bottom: calc(var(--sc-nav-bottom) + env(safe-area-inset-bottom, 0px));
-  max-width: 480px; margin: 0 auto; padding: 0 20px;
+  max-width: 480px; margin: 0 auto; padding: 0 var(--sc-inset);
   display: flex; align-items: center; gap: 10px;
 }
 .repNavPill {
