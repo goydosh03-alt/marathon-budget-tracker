@@ -202,12 +202,7 @@ export default function ProfileClient({
           <div data-sheet-back className={styles.sheetBack} onClick={() => setDelOpen(false)} />
           <div data-sheet className={styles.sheet}>
             <div className={styles.sheetBody}>
-              <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span>{t("prof.delTitle")}</span>
-                <button className={styles.iconBtn} onClick={() => setDelOpen(false)} aria-label={t("common.close")}>
-                  <Icon id="i-x" />
-                </button>
-              </div>
+              <div className={styles.sheetTitle}>{t("prof.delTitle")}</div>
               <div className={styles.confirmText}>
                 {t("prof.delBody")} <b>{t("prof.forever")}</b>. {t("confirm.typeWord")} <b>{t("confirm.deleteWord")}</b>.
               </div>

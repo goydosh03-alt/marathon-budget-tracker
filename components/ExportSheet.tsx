@@ -80,12 +80,7 @@ export default function ExportSheet({
       <div data-sheet-back className={styles.sheetBack} onClick={onClose} />
       <div data-sheet className={styles.sheet}>
         <div className={styles.sheetBody}>
-          <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span>{t("common.export")}</span>
-            <button className={styles.iconBtn} onClick={onClose} aria-label={t("common.close")}>
-              <Icon id="i-x" />
-            </button>
-          </div>
+          <div className={styles.sheetTitle}><span>{t("common.export")}</span></div>
 
           <div className={styles.donateHint}>
             <b>{scope}</b> · <b>{periodText}</b> → {t("exp.hintTail")}

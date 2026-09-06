@@ -61,6 +61,22 @@
   --sc-cat-red: #E5533D;
   --sc-cat-teal: #2BA7A0;
 
+  /* CTA — ПРАВИЛО: головна кнопка ЗАВЖДИ біла. Жодних градієнтів. [ours] */
+  --sc-cta-bg: var(--sc-surface-inverse);
+  --sc-cta-ink: var(--sc-ink-inverse);
+  --sc-cta-bg-press: rgba(241,239,234,.82);
+  --sc-cta-h: 52px;
+  --sc-cta-radius: 16px;
+
+  /* Попапи — єдині відступи для ВСІХ шитів [ours] */
+  --sc-sheet-pad-x: 20px;
+  --sc-sheet-pad-top: 10px;
+  --sc-sheet-pad-bottom: 20px;
+  --sc-sheet-gap: 20px;
+  --sc-sheet-gap-tight: 10px;
+  --sc-sheet-stack: 16px;      /* між блоками форми в попапі */
+  --sc-sheet-label-gap: 8px;   /* лейбл блоку -> сам контрол */
+
   /* Effects */
   --sc-blur-glass: blur(24px) saturate(140%);
   --sc-blur-sheet: blur(28px) saturate(140%);

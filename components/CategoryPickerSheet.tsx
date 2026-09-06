@@ -54,10 +54,11 @@ export default function CategoryPickerSheet({
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder={t("det.category")}
-            autoFocus
+            inputMode="search"
           />
         </div>
-        <div className={sheetStyles.sheetBody} style={{ marginTop: 12 }}>
+        <div className={s.searchGap} />
+        <div className={sheetStyles.sheetBody}>
           <div className={s.pickList}>
             {list.map((c) => {
               const look = resolveCat(c, isIncome, customMap.get(c));

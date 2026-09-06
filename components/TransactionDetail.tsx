@@ -62,12 +62,7 @@ export default function TransactionDetail({
       <div data-sheet-back className={styles.sheetBack} onClick={onClose} />
       <div data-sheet className={styles.sheet}>
         <div className={styles.sheetBody}>
-          <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span>{tx.merchant || dataLabel(cat, lang)}</span>
-            <button className={styles.iconBtn} onClick={onClose} aria-label={t("common.close")}>
-              <Icon id="i-x" />
-            </button>
-          </div>
+          <div className={styles.sheetTitle}><span>{tx.merchant || dataLabel(cat, lang)}</span></div>
 
           <div className={`${styles.detAmt} ${isIncome ? styles.inc : ""}`}>
             {isIncome ? "+" : "−"}{money(amount, dec)}

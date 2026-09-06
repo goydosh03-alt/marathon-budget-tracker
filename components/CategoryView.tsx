@@ -4,6 +4,7 @@ import { useState } from "react";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { useRouter } from "next/navigation";
 import { Icon, IconSprite } from "@/components/IconSprite";
+import DsIcon from "@/components/ds/Icon";
 import SubHeader from "@/components/SubHeader";
 import TransactionViewer from "@/components/TransactionViewer";
 import AddTransactionForm from "@/components/AddTransactionForm";
@@ -97,7 +98,7 @@ export default function CategoryView({
         <div className={styles.fulldiv} />
 
         <div className={styles.searchInline}>
-          <Icon id="i-search" />
+          <DsIcon name="BoldSearchMagnifer" size={18} />
           <input placeholder={tt("cat.search")} value={query} onChange={(e) => setQuery(e.target.value)} />
           {query && (
             <button className={styles.searchClear} onClick={() => setQuery("")} aria-label={tt("common.clear")}>

@@ -169,12 +169,7 @@ export default function RecurringClient({
           <div data-sheet-back className={styles.sheetBack} onClick={() => setOpen(false)} />
           <div data-sheet className={styles.sheet}>
             <div className={styles.sheetBody}>
-              <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span>{editId ? t("rec.editTitle") : t("rec.newTitle")}</span>
-                <button className={styles.iconBtn} onClick={() => setOpen(false)} aria-label={t("common.close")}>
-                  <Icon id="i-x" />
-                </button>
-              </div>
+              <div className={styles.sheetTitle}>{editId ? t("rec.editTitle") : t("rec.newTitle")}</div>
 
               <div className={styles.tabs}>
                 <button className={`${styles.tab} ${!isIncome ? styles.tabOnExp : ""}`} onClick={() => { setType("expense"); setCategory("Комунальні"); }}>{t("common.expense")}</button>

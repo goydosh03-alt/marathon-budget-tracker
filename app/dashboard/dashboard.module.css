@@ -166,8 +166,9 @@
 .dayCalBtn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
 .sheet {
   position: relative; z-index: 1; width: 100%; max-width: 480px;
-  display: flex; flex-direction: column; max-height: 88dvh;
-  padding: 12px 20px calc(22px + env(safe-area-inset-bottom));
+  display: flex; flex-direction: column;
+  max-height: min(88dvh, calc(var(--sc-vvh, 100dvh) - 24px));
+  padding: var(--sc-sheet-pad-top) var(--sc-sheet-pad-x) calc(var(--sc-sheet-pad-bottom) + env(safe-area-inset-bottom));
   border: 0; border-top: .5px solid var(--sc-sheet-edge);
   border-radius: var(--sc-radius-sheet) var(--sc-radius-sheet) 0 0;
   background: var(--sc-surface-sheet);
@@ -178,24 +179,25 @@
 .sheet::before {
   content: ""; flex: 0 0 auto; align-self: center;
   width: 38px; height: 4px; border-radius: var(--sc-radius-pill);
-  background: rgba(255,255,255,.28); margin: 0 0 12px;
+  background: rgba(255,255,255,.28); margin: 0 0 14px;
 }
 .sheet :focus { outline: none; }
 .sheetBody { overflow-y: auto; overflow-x: hidden; flex: 1 1 auto; min-height: 0; overscroll-behavior: contain; touch-action: pan-y; }
 .sheetBody::-webkit-scrollbar { width: 0; }
-.sheetTitle { font: var(--sc-type-title); letter-spacing: -0.4px; margin-bottom: 16px; }
+.sheetTitle { font: var(--sc-type-page); letter-spacing: var(--sc-tracking-page); margin: 0 0 var(--sc-sheet-gap); }
 .segType { display: flex; gap: 8px; margin-bottom: 16px; }
 .segType button { flex: 1; padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.6); font-weight: 600; font-size: 14px; cursor: pointer; }
-.segOn { background: linear-gradient(135deg,var(--sc-accent),var(--sc-cat-blue)) !important; color: var(--sc-ink-inverse) !important; border-color: transparent !important; }
+.segOn { background: var(--sc-surface-glass) !important; color: var(--sc-ink) !important; border-color: var(--sc-glass-edge) !important; }
 .field { margin-bottom: 12px; }
-.fieldLabel { display: block; font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 6px; }
+.fieldLabel { display: block; font: var(--sc-type-caption); color: var(--sc-ink-tertiary); margin: 0 0 var(--sc-sheet-gap-tight); }
 .input, .select { width: 100%; height: 44px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: var(--sc-ink); padding: 0 12px; font-size: 15px; outline: none; }
 .amountInput { height: 56px; font-size: 26px; font-weight: 700; }
-.sheetActions { display: flex; gap: 10px; margin-top: 16px; flex-shrink: 0; }
-.btnPrimary { flex: 1; height: 48px; border-radius: 14px; border: none; background: linear-gradient(135deg,var(--sc-accent),var(--sc-cat-blue)); color: var(--sc-ink-inverse); font-weight: 600; font-size: 15px; cursor: pointer; }
-.btnPrimary:disabled { opacity: 0.5; }
-.btnGhost { flex: 0 0 auto; height: 48px; padding: 0 18px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.12); background: none; color: var(--sc-ink); font-weight: 500; cursor: pointer; }
-.btnDelText { flex: 0 0 auto; height: 48px; padding: 0 18px; border-radius: 14px; border: 1px solid rgba(255,90,90,0.35); background: rgba(255,90,90,0.10); color: var(--sc-danger); font-weight: 600; font-size: 15px; cursor: pointer; }
+.sheetActions { display: flex; gap: 10px; margin-top: var(--sc-sheet-gap); flex-shrink: 0; }
+.btnPrimary { flex: 1; height: var(--sc-cta-h); border-radius: var(--sc-cta-radius); border: 0; background: var(--sc-cta-bg); color: var(--sc-cta-ink); font: var(--sc-type-body-medium); font-weight: 600; cursor: pointer; transition: background var(--sc-duration-fast) var(--sc-ease), transform var(--sc-duration-fast) var(--sc-ease); }
+.btnPrimary:active:not(:disabled) { background: var(--sc-cta-bg-press); transform: scale(var(--sc-press-scale)); }
+.btnPrimary:disabled { opacity: .38; }
+.btnGhost { flex: 0 0 auto; height: var(--sc-cta-h); padding: 0 18px; border-radius: var(--sc-cta-radius); border: .5px solid var(--sc-glass-edge); background: var(--sc-surface-glass); color: var(--sc-ink); font: var(--sc-type-body-medium); font-weight: 500; cursor: pointer; }
+.btnDelText { flex: 0 0 auto; height: var(--sc-cta-h); padding: 0 18px; border-radius: var(--sc-cta-radius); border: .5px solid rgba(229,83,61,.35); background: rgba(229,83,61,.10); color: var(--sc-danger); font: var(--sc-type-body-medium); font-weight: 600; cursor: pointer; }
 .btnDelText:active { background: rgba(255,90,90,0.18); }
 .errMsg { color: var(--sc-danger); font-size: 13px; margin-top: 8px; }
 .empty { text-align: center; color: rgba(255,255,255,0.4); font-size: 13px; padding: 18px 0; }

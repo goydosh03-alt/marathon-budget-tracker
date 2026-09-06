@@ -7,7 +7,7 @@
 .grabZone { padding: 4px 0 2px; cursor: grab; touch-action: none; }
 
 /* ---------- сума: знак = тип транзакції ---------- */
-.amtRow { display: flex; align-items: center; justify-content: center; gap: 10px; padding-top: 2px; }
+.amtRow { display: flex; align-items: center; justify-content: center; gap: 10px; padding-top: 6px; }
 .sign {
   width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; border: 0; cursor: pointer;
   background: var(--sc-surface-glass); box-shadow: inset 0 0 0 .5px var(--sc-glass-edge);
@@ -24,9 +24,9 @@
 }
 .amtInc { color: var(--sc-accent-text); }
 .amtCur { font: var(--sc-weight-semibold) 20px/1 var(--sc-font); color: var(--sc-ink-tertiary); align-self: flex-end; padding-bottom: 4px; }
-.amtConv { text-align: center; font: var(--sc-type-caption); color: var(--sc-ink-tertiary); margin-top: -4px; }
+.amtConv { text-align: center; font: var(--sc-type-caption); color: var(--sc-ink-tertiary); margin-top: calc(var(--sc-sheet-stack) * -1 + 6px); }
 
-.scanRow { display: flex; justify-content: center; }
+.scanRow { display: flex; justify-content: center; margin-top: calc(var(--sc-sheet-stack) * -1 + 4px); }
 .scanBtn {
   display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 16px; border: 0;
   border-radius: var(--sc-radius-pill); cursor: pointer;
@@ -36,7 +36,7 @@
 .scanBtn:disabled { opacity: .6; }
 
 /* ---------- смуги вибору ---------- */
-.label { display: block; font: var(--sc-type-caption); color: var(--sc-ink-tertiary); margin: 2px 4px -4px; }
+.label { display: block; font: var(--sc-type-caption); color: var(--sc-ink-tertiary); margin: 0 4px var(--sc-sheet-label-gap); }
 
 .catWrap { display: flex; gap: 8px; align-items: stretch; }
 .box {
@@ -104,7 +104,7 @@
 }
 .nameCard input::placeholder { color: var(--sc-ink-tertiary); }
 
-.stack { display: flex; flex-direction: column; gap: 12px; }
+.stack { display: flex; flex-direction: column; gap: var(--sc-sheet-stack); }
 
 /* ---------- пікер усіх категорій ---------- */
 .search {
@@ -114,6 +114,7 @@
 }
 .search input { flex: 1; min-width: 0; background: none; border: 0; outline: none; color: var(--sc-ink); font: var(--sc-type-body); }
 .search input::placeholder { color: var(--sc-ink-tertiary); }
+.searchGap { height: var(--sc-sheet-gap); flex: 0 0 auto; }
 .pickList {
   display: flex; flex-direction: column; border-radius: 24px; overflow: hidden;
   background: var(--sc-surface-card); box-shadow: var(--sc-shadow-card);

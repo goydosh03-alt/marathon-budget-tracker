@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon, IconSprite } from "@/components/IconSprite";
+import DsIcon from "@/components/ds/Icon";
 import BottomNav from "@/components/BottomNav";
 import TopBar from "@/components/TopBar";
 import TransactionViewer from "@/components/TransactionViewer";
@@ -142,7 +143,7 @@ export default function HistoryList({
 
       <section className={styles.periodcard} onTouchStart={swipeStart} onTouchEnd={swipeEnd}>
         <div className={styles.searchInline}>
-          <Icon id="i-search" />
+          <DsIcon name="BoldSearchMagnifer" size={18} />
           <input
             placeholder={t("hist.search")}
             value={query}

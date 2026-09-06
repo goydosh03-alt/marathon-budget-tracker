@@ -3,7 +3,6 @@
 import { useState, useEffect, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import styles from "@/app/dashboard/dashboard.module.css";
-import { Icon } from "@/components/IconSprite";
 import { CURRENCIES, currencyMeta, convert, formatMoney, type CurrencyCode } from "@/lib/currency";
 import { useCurrency, useConvertCurrency, useRates, useT } from "@/components/SettingsProvider";
 import { setMainCurrency, setConvertCurrency } from "@/app/dashboard/actions";
@@ -65,12 +64,7 @@ export default function CurrencySheet({ open, onClose }: { open: boolean; onClos
       <div data-sheet-back className={styles.sheetBack} onClick={onClose} />
       <div data-sheet className={styles.sheet}>
         <div className={styles.sheetBody}>
-          <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span>{t("menu.currency")}</span>
-            <button className={styles.iconBtn} onClick={onClose} aria-label={t("common.close")}>
-              <Icon id="i-x" />
-            </button>
-          </div>
+          <div className={styles.sheetTitle}>{t("menu.currency")}</div>
 
           <div className={styles.fieldLabel}>{t("menu.mainCurrency")}</div>
           {pick(main, setMain)}

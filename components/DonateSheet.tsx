@@ -59,12 +59,7 @@ export default function DonateSheet({ open, onClose }: { open: boolean; onClose:
       <div data-sheet-back className={styles.sheetBack} onClick={onClose} />
       <div data-sheet className={styles.sheet}>
         <div className={styles.sheetBody}>
-          <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span>{t("don.title")}</span>
-            <button className={styles.iconBtn} onClick={onClose} aria-label={t("common.close")}>
-              <Icon id="i-x" />
-            </button>
-          </div>
+          <div className={styles.sheetTitle}><span>{t("don.title")}</span></div>
 
           <div className={styles.donateHint}>
             {t("don.text")}

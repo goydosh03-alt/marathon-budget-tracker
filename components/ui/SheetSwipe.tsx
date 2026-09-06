@@ -53,5 +53,30 @@ export default function SheetSwipe() {
     };
   }, []);
 
+  // --sc-vvh = висота visualViewport. Коли відкривається клавіатура, шит більше
+  // не «злітає» вгору всім тілом: стеля обмежена реальним вікном, грабер лишається
+  // на місці, а контент скролиться всередині.
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const root = document.documentElement;
+    let raf = 0;
+    const sync = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        root.style.setProperty("--sc-vvh", `${Math.round(vv.height)}px`);
+      });
+    };
+    sync();
+    vv.addEventListener("resize", sync);
+    vv.addEventListener("scroll", sync);
+    return () => {
+      cancelAnimationFrame(raf);
+      vv.removeEventListener("resize", sync);
+      vv.removeEventListener("scroll", sync);
+      root.style.removeProperty("--sc-vvh");
+    };
+  }, []);
+
   return null;
 }

@@ -108,12 +108,7 @@ export default function CategoriesClient({ categories }: { categories: UserCateg
           <div data-sheet-back className={styles.sheetBack} onClick={() => setShowAdd(false)} />
           <div data-sheet className={styles.sheet}>
             <div className={styles.sheetBody}>
-              <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span>{editId ? t("cats.editTitle") : t("cats.newTitle")}</span>
-                <button className={styles.iconBtn} onClick={() => setShowAdd(false)} aria-label={t("common.close")}>
-                  <Icon id="i-x" />
-                </button>
-              </div>
+              <div className={styles.sheetTitle}>{editId ? t("cats.editTitle") : t("cats.newTitle")}</div>
 
               <div className={styles.preview}>
                 <span className={styles.catDot} style={{ background: color + "26" }}>{emoji}</span>

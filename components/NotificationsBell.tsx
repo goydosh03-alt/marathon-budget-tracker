@@ -80,9 +80,6 @@ export default function NotificationsBell() {
                       {t("notif.markAll")}
                     </button>
                   )}
-                  <button className={styles.iconBtn} onClick={() => setOpen(false)} aria-label={t("common.close")}>
-                    <Icon id="i-x" />
-                  </button>
                 </span>
               </div>
 
