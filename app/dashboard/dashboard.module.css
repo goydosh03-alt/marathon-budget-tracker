@@ -119,7 +119,7 @@
 .backdrop { position: fixed; inset: 0; z-index: 15; background: rgba(0,0,0,.28); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
 
 /* add transaction sheet */
-.sheetWrap { position: fixed; inset: 0; z-index: 40; display: flex; align-items: flex-end; justify-content: center; touch-action: none; }
+.sheetWrap { position: fixed; z-index: 40; left: 0; right: 0; top: var(--sc-vvt, 0px); height: var(--sc-vvh, 100dvh); display: flex; align-items: flex-end; justify-content: center; touch-action: none; }
 .sheetBack { position: absolute; inset: 0; background: rgba(0,0,0,.45); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
 
 /* add/edit sheet v2 */
@@ -167,7 +167,7 @@
 .sheet {
   position: relative; z-index: 1; width: 100%; max-width: 480px;
   display: flex; flex-direction: column;
-  max-height: min(88dvh, calc(var(--sc-vvh, 100dvh) - 24px));
+  max-height: calc(100% - 24px);
   padding: var(--sc-sheet-pad-top) var(--sc-sheet-pad-x) calc(var(--sc-sheet-pad-bottom) + env(safe-area-inset-bottom));
   border: 0; border-top: .5px solid var(--sc-sheet-edge);
   border-radius: var(--sc-radius-sheet) var(--sc-radius-sheet) 0 0;
@@ -339,7 +339,7 @@
 
 /* empty state */
 .emptyBox { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 30px 20px 24px; }
-.emptyIco { width: 64px; height: 64px; border-radius: 20px; display: flex; align-items: center; justify-content: center; background: rgba(74,222,180,0.10); color: var(--sc-accent-text); margin-bottom: 14px; }
+.emptyIco { width: 64px; height: 64px; border-radius: 20px; display: flex; align-items: center; justify-content: center; background: var(--sc-surface-glass); box-shadow: inset 0 0 0 .5px var(--sc-glass-edge); color: var(--sc-accent-text); margin-bottom: 14px; }
 .emptyIco svg { width: 30px; height: 30px; }
 .emptyTitle { font-size: 15px; font-weight: 600; color: var(--sc-ink); }
 .emptyHint { font-size: 13px; color: rgba(255,255,255,0.45); margin-top: 6px; max-width: 240px; line-height: 1.45; }
@@ -423,7 +423,7 @@
 .donateLabel { display: block; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.5px; margin: 18px 4px 8px; }
 .donateLabel + .setCard { margin-top: 0; }
 /* Сповіщення */
-.notifDot { position: absolute; top: 7px; right: 7px; width: 8px; height: 8px; border-radius: 50%; background: #ff6b6b; border: 1.5px solid #0c1a1d; }
+.notifDot { position: absolute; top: 7px; right: 7px; width: 8px; height: 8px; border-radius: 50%; background: var(--sc-danger); box-shadow: 0 0 0 1.5px var(--sc-bg); }
 .notifMarkAll { display: block; margin: 12px 0 0; padding: 0 4px; background: none; border: none; color: var(--sc-accent-text); font-size: 13px; font-weight: 600; cursor: pointer; }
 .notifRow { display: flex; align-items: center; gap: 10px; padding: 12px 8px; }
 .notifUnread .catName2 { color: #fff; }

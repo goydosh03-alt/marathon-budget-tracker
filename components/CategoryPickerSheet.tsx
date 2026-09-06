@@ -58,7 +58,7 @@ export default function CategoryPickerSheet({
           />
         </div>
         <div className={s.searchGap} />
-        <div className={sheetStyles.sheetBody}>
+        <div data-vfade className={sheetStyles.sheetBody}>
           <div className={s.pickList}>
             {list.map((c) => {
               const look = resolveCat(c, isIncome, customMap.get(c));

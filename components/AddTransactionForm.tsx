@@ -10,7 +10,7 @@ import AmountPad from "@/components/AmountPad";
 import CalendarSheet from "@/components/CalendarSheet";
 import { currencyMeta } from "@/lib/currency";
 import { dataLabel, type StringKey } from "@/lib/i18n";
-import { useCategories, useCurrency, useMoney, useConv, useT, useLang } from "@/components/SettingsProvider";
+import { useCategories, useCurrency, useConvertCurrency, useMoney, useConv, useT, useLang } from "@/components/SettingsProvider";
 import s from "@/app/dashboard/addsheet.module.css";
 import DsIcon from "@/components/ds/Icon";
 import CategoryPickerSheet from "@/components/CategoryPickerSheet";
@@ -134,7 +134,9 @@ export default function AddTransactionForm({
   }
 
 
-  const sym = currencyMeta(useCurrency()).symbol;
+  const homeCur = useCurrency();
+  const convCur = useConvertCurrency();
+  const sym = currencyMeta(homeCur).symbol;
 
   const today = isoOffset(0);
   const yest = isoOffset(1);
@@ -316,9 +318,10 @@ export default function AddTransactionForm({
     <div className={styles.sheetWrap}>
       <div data-sheet-back className={styles.sheetBack} onClick={onClose} />
       <div data-sheet className={styles.sheet}>
-        <div className={styles.sheetBody}>
+        <div data-vfade className={styles.sheetBody}>
         <div className={s.stack}>
 
+        <div className={s.amtBlock}>
         <div className={s.amtRow}>
           <button
             type="button"
@@ -338,7 +341,9 @@ export default function AddTransactionForm({
           </button>
           <span className={s.amtCur}>{sym}</span>
         </div>
-        <div className={s.amtConv}>\u2248 {conv(parsed, 2)}</div>
+        {convCur !== homeCur && parsed > 0 && (
+          <div className={s.amtConv}>≈ {conv(parsed, 2)}</div>
+        )}
 
         {!isIncome && (
           <div className={s.scanRow}>
@@ -348,6 +353,7 @@ export default function AddTransactionForm({
             <input ref={fileRef} type="file" accept="image/*" onChange={handleScan} style={{ display: "none" }} />
           </div>
         )}
+        </div>
 
 
         {scannedItems && scannedItems.length > 0 && (

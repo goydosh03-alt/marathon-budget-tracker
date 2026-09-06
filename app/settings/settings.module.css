@@ -1,0 +1,80 @@
+/* Налаштування. Рядки/групи беруться з menu.module.css — тут лише те,
+   чого немає в спільному шарі. Усі значення з app/tokens.css. */
+
+/* назва рахунку редагується прямо в рядку */
+.accName {
+  flex: 1; min-width: 0; background: none; border: 0; outline: none; padding: 0;
+  font: var(--sc-type-body-medium); line-height: 1.1; color: var(--sc-ink);
+}
+.accSub { font: var(--sc-type-caption); line-height: 1.1; color: var(--sc-ink-secondary); }
+
+.del {
+  width: 36px; height: 36px; flex-shrink: 0; border: 0; border-radius: var(--sc-radius-sm);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  background: rgba(229,83,61,.12); color: var(--sc-danger);
+  transition: background var(--sc-duration-fast) var(--sc-ease);
+}
+.del:active { background: rgba(229,83,61,.2); }
+
+/* «Усього транзакцій — 128»: рядок групи, значення праворуч */
+.dataRow {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: var(--sc-row-inset); font: var(--sc-type-body-medium); color: var(--sc-ink);
+}
+.dataVal { color: var(--sc-ink-secondary); font-variant-numeric: tabular-nums; }
+
+/* небезпечна зона — НЕ прибита донизу: до неї треба доскролити */
+.danger {
+  width: 100%; height: var(--sc-cta-h); border-radius: var(--sc-cta-radius); cursor: pointer;
+  border: .5px solid rgba(229,83,61,.35); background: rgba(229,83,61,.10);
+  color: var(--sc-danger); font: var(--sc-type-body-medium); font-weight: 600;
+}
+.danger:disabled { opacity: .38; }
+.dangerHint { font: var(--sc-type-caption); color: var(--sc-ink-tertiary); padding: 0 4px; }
+
+/* «Додати рахунок» прибитий донизу — заради нього сюди й заходять */
+.pinned {
+  position: fixed; z-index: 3; left: 0; right: 0;
+  bottom: calc(var(--sc-nav-bottom) + env(safe-area-inset-bottom, 0px));
+  max-width: 480px; margin: 0 auto; padding: 0 var(--sc-page-inset);
+}
+.addBtn {
+  width: 100%; height: var(--sc-cta-h); border: 0; border-radius: var(--sc-cta-radius); cursor: pointer;
+  background: var(--sc-cta-bg); color: var(--sc-cta-ink);
+  font: var(--sc-type-body-medium); font-weight: 600;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: var(--sc-shadow-fab);
+  transition: background var(--sc-duration-fast) var(--sc-ease), transform var(--sc-duration-fast) var(--sc-ease);
+}
+.addBtn:active { background: var(--sc-cta-bg-press); transform: scale(var(--sc-press-scale)); }
+
+/* поле назви в шиті «Новий рахунок» — картка з тайлом, як у формулі рядка */
+.nameCard {
+  display: flex; align-items: center; gap: 12px; padding: 13px 14px;
+  border-radius: var(--sc-radius-pill);
+  background: var(--sc-surface-card); box-shadow: var(--sc-shadow-card);
+}
+.nameCard input {
+  flex: 1; min-width: 0; background: none; border: 0; outline: none;
+  color: var(--sc-ink); font: var(--sc-type-body-medium);
+}
+.nameCard input::placeholder { color: var(--sc-ink-tertiary); }
+.nameTile {
+  width: 34px; height: 34px; border-radius: var(--sc-radius-sm); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.08); box-shadow: inset 0 0 0 .5px var(--sc-glass-edge);
+}
+
+/* тип рахунку — той самий сегмент, що всюди: активний = скло */
+.typeRow { display: flex; gap: 5px; padding: 5px; border-radius: var(--sc-radius-pill);
+  background: var(--sc-surface-glass); box-shadow: inset 0 0 0 .5px var(--sc-glass-edge); }
+.type {
+  flex: 1; min-width: 0; min-height: 44px; border: 0; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  border-radius: var(--sc-radius-pill); background: transparent;
+  color: var(--sc-ink-muted); font: var(--sc-type-caption-medium);
+}
+.typeOn { background: var(--sc-surface-glass-active); color: var(--sc-ink); }
+
+.stack { display: flex; flex-direction: column; gap: var(--sc-sheet-stack); }
+.err { font: var(--sc-type-caption); color: var(--sc-danger); padding: 0 4px; }

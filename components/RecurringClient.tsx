@@ -142,7 +142,7 @@ export default function RecurringClient({
       <SubHeader title={t("menu.recurring")} back="/menu" />
 
       {recurring.length === 0 ? (
-        <EmptyState icon="i-repeat" title={t("rec.emptyTitle")} hint={t("rec.emptyHint")} />
+        <EmptyState icon="BoldArrowsTransferHorizontal" title={t("rec.emptyTitle")} hint={t("rec.emptyHint")} />
       ) : (
         <div className={styles.setCard}>
           {recurring.map((r) => (
@@ -168,7 +168,7 @@ export default function RecurringClient({
         <div className={styles.sheetWrap}>
           <div data-sheet-back className={styles.sheetBack} onClick={() => setOpen(false)} />
           <div data-sheet className={styles.sheet}>
-            <div className={styles.sheetBody}>
+            <div data-vfade className={styles.sheetBody}>
               <div className={styles.sheetTitle}>{editId ? t("rec.editTitle") : t("rec.newTitle")}</div>
 
               <div className={styles.tabs}>

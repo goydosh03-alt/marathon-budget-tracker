@@ -53,18 +53,19 @@ export default function SheetSwipe() {
     };
   }, []);
 
-  // --sc-vvh = висота visualViewport. Коли відкривається клавіатура, шит більше
-  // не «злітає» вгору всім тілом: стеля обмежена реальним вікном, грабер лишається
-  // на місці, а контент скролиться всередині.
+  // --sc-vvh / --sc-vvt = розмір і зсув visualViewport.
+  // Шит живе рівно на видимій частині вікна: клавіатура його не піднімає
+  // і не з'їдає фон — він просто стає нижчим, а контент гортається.
   useEffect(() => {
     const vv = window.visualViewport;
-    if (!vv) return;
     const root = document.documentElement;
+    if (!vv) return;
     let raf = 0;
     const sync = () => {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
         root.style.setProperty("--sc-vvh", `${Math.round(vv.height)}px`);
+        root.style.setProperty("--sc-vvt", `${Math.round(vv.offsetTop)}px`);
       });
     };
     sync();
@@ -75,6 +76,50 @@ export default function SheetSwipe() {
       vv.removeEventListener("resize", sync);
       vv.removeEventListener("scroll", sync);
       root.style.removeProperty("--sc-vvh");
+      root.style.removeProperty("--sc-vvt");
+    };
+  }, []);
+
+  // Вертикальний фейд для скрол-контейнерів у шитах ([data-vfade]):
+  // контент тане в градієнт з того боку, куди ще є куди гортати.
+  useEffect(() => {
+    const seen = new WeakSet<Element>();
+
+    function paint(el: HTMLElement) {
+      const over = el.scrollHeight - el.clientHeight;
+      const canT = over > 2 && el.scrollTop > 2;
+      const canB = over > 2 && el.scrollTop < over - 2;
+      el.setAttribute("data-fade-t", canT ? "1" : "0");
+      el.setAttribute("data-fade-b", canB ? "1" : "0");
+    }
+
+    const ro = new ResizeObserver((entries) => {
+      for (const e of entries) paint(e.target as HTMLElement);
+    });
+
+    function scan() {
+      document.querySelectorAll<HTMLElement>("[data-vfade]").forEach((el) => {
+        paint(el);
+        if (!seen.has(el)) {
+          seen.add(el);
+          ro.observe(el);
+        }
+      });
+    }
+
+    function onScroll(e: Event) {
+      const el = e.target;
+      if (el instanceof HTMLElement && el.hasAttribute("data-vfade")) paint(el);
+    }
+
+    scan();
+    document.addEventListener("scroll", onScroll, true);
+    const mo = new MutationObserver(() => requestAnimationFrame(scan));
+    mo.observe(document.body, { childList: true, subtree: true });
+    return () => {
+      document.removeEventListener("scroll", onScroll, true);
+      mo.disconnect();
+      ro.disconnect();
     };
   }, []);
 

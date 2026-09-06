@@ -167,7 +167,7 @@ export default function HistoryList({
             </div>
             {searchResults.length === 0 ? (
               <EmptyState
-                icon="i-search"
+                icon="BoldSearchMagnifer"
                 title={t("hist.notFound")}
                 hint={`${t("hist.noTxFor")} «${query}»`}
               />
@@ -237,7 +237,7 @@ export default function HistoryList({
 
         {filtered.length === 0 ? (
           <EmptyState
-            icon="i-cal"
+            icon="BoldCalendar"
             title={t("hist.emptyPeriod")}
             hint={t("hist.emptyPeriodHint")}
           />

@@ -179,6 +179,7 @@ export const STRINGS = {
   "set.data": { uk: "Дані", en: "Data", ru: "Данные" },
   "set.total": { uk: "Усього транзакцій", en: "Total transactions", ru: "Всего транзакций" },
   "set.irreversible": { uk: "Видалення безповоротне.", en: "Deletion is permanent.", ru: "Удаление необратимо." },
+  "set.dangerZone": { uk: "Небезпечна зона", en: "Danger zone", ru: "Опасная зона" },
   "set.deleteAll": { uk: "Видалити всі транзакції", en: "Delete all transactions", ru: "Удалить все транзакции" },
   "set.clearTitle": { uk: "Видалити всі транзакції?", en: "Delete all transactions?", ru: "Удалить все транзакции?" },
   "set.allWord": { uk: "Усі", en: "All", ru: "Все" },

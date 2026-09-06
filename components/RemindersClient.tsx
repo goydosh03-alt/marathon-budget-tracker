@@ -132,7 +132,7 @@ export default function RemindersClient({ reminders }: { reminders: Reminder[] }
       )}
 
       {items.length === 0 ? (
-        <EmptyState icon="i-bell" title={t("rem.emptyTitle")} hint={t("rem.emptyHint")} />
+        <EmptyState icon="BoldNotificationsBell" title={t("rem.emptyTitle")} hint={t("rem.emptyHint")} />
       ) : (
         <div className={styles.setCard}>
           {items.map((r) => (
@@ -161,7 +161,7 @@ export default function RemindersClient({ reminders }: { reminders: Reminder[] }
         <div className={styles.sheetWrap}>
           <div data-sheet-back className={styles.sheetBack} onClick={() => setOpen(false)} />
           <div data-sheet className={styles.sheet}>
-            <div className={styles.sheetBody}>
+            <div data-vfade className={styles.sheetBody}>
               <div className={styles.sheetTitle}>{editId ? t("rem.editTitle") : t("rem.newTitle")}</div>
 
               {/* Час — головний елемент, як сума у формі транзакції. Тап = системний пікер. */}
