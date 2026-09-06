@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 
 // відомі id фіч (?f=...) → ключ перекладу + іконка
 const FEATURES: Record<string, { key: Parameters<typeof translate>[0]; icon: string }> = {
-  rate: { key: "menu.rate", icon: "i-star" },
+  rate: { key: "menu.rate", icon: "BoldAstronomyStarsMinimalistic" },
 };
 
 export default async function SoonPage({
@@ -38,7 +38,7 @@ export default async function SoonPage({
       <SubHeader title={feature} back="/menu" />
 
       <EmptyState
-        icon={known?.icon ?? "i-star"}
+        icon={known?.icon ?? "BoldAstronomyStarsMinimalistic"}
         title={translate("soon.title", lang)}
         hint={`«${feature}» ${translate("soon.body", lang)}`}
       />

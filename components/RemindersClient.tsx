@@ -132,7 +132,7 @@ export default function RemindersClient({ reminders }: { reminders: Reminder[] }
       )}
 
       {items.length === 0 ? (
-        <EmptyState icon="i-bell" title={t("rem.emptyTitle")} hint={t("rem.emptyHint")} />
+        <EmptyState icon="BoldNotificationsBell" title={t("rem.emptyTitle")} hint={t("rem.emptyHint")} />
       ) : (
         <div className={styles.setCard}>
           {items.map((r) => (

@@ -119,7 +119,7 @@ export default function CategoryView({
         </div>
 
         {filtered.length === 0 ? (
-          <EmptyState icon="i-search" title={tt("hist.notFound")} hint={tt("cat.tryAnother")} />
+          <EmptyState icon="BoldSearchMagnifer" title={tt("hist.notFound")} hint={tt("cat.tryAnother")} />
         ) : (
           filtered.map((t) => {
             const hasItems = (t.items?.length ?? 0) > 0;

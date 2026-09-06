@@ -142,7 +142,7 @@ export default function RecurringClient({
       <SubHeader title={t("menu.recurring")} back="/menu" />
 
       {recurring.length === 0 ? (
-        <EmptyState icon="i-repeat" title={t("rec.emptyTitle")} hint={t("rec.emptyHint")} />
+        <EmptyState icon="BoldArrowsTransferHorizontal" title={t("rec.emptyTitle")} hint={t("rec.emptyHint")} />
       ) : (
         <div className={styles.setCard}>
           {recurring.map((r) => (

@@ -1,6 +1,7 @@
 import styles from "@/app/dashboard/dashboard.module.css";
-import { Icon } from "@/components/IconSprite";
+import DsIcon from "@/components/ds/Icon";
 
+/** Порожній стан. `icon` — назва гліфа Solar з lib/ds-icons. */
 export default function EmptyState({
   icon,
   title,
@@ -13,7 +14,7 @@ export default function EmptyState({
   return (
     <div className={styles.emptyBox}>
       <div className={styles.emptyIco}>
-        <Icon id={icon} />
+        <DsIcon name={icon} size={30} />
       </div>
       <div className={styles.emptyTitle}>{title}</div>
       <div className={styles.emptyHint}>{hint}</div>

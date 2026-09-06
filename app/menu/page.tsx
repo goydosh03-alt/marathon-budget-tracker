@@ -81,7 +81,7 @@ export default async function MenuPage() {
           <span className={m.groupLabel}>{t("menu.group.manage")}</span>
           <div className={m.list}>
             <MenuRow icon="BoldSettings" href="/settings" title={t("menu.settings")} sub={t("menu.settings.sub")} />
-            <MenuRow icon="BoldEssentionalUIHamburgerMenu" href="/categories" title={t("menu.categories")} sub={t("menu.categories.sub")} />
+            <MenuRow icon="BoldSale" href="/categories" title={t("menu.categories")} sub={t("menu.categories.sub")} />
           </div>
         </section>
 
@@ -105,7 +105,7 @@ export default async function MenuPage() {
           <div className={m.list}>
             <LangMenuItem />
             <MenuRow icon="BoldAstronomyStarsMinimalistic" href="/soon?f=rate" title={t("menu.rate")} sub={t("menu.rate.sub")} badge={t("common.soon")} />
-            <MenuRow icon="BoldEssentionalUICopy" href="/privacy" title={t("legal.privacy")} sub={t("legal.privacy.sub")} />
+            <MenuRow icon="BoldBook" href="/privacy" title={t("legal.privacy")} sub={t("legal.privacy.sub")} />
           </div>
         </section>
       </div>

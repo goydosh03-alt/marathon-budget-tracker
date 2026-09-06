@@ -34,7 +34,8 @@
   min-height: 100dvh;
   max-width: 480px;
   margin: 0 auto;
-  padding: calc(env(safe-area-inset-top, 0px) + 20px) var(--sc-page-inset) 0;
+  padding: calc(env(safe-area-inset-top, 0px) + 20px) var(--sc-page-inset)
+           calc(var(--sc-content-bottom) + env(safe-area-inset-bottom, 0px));
 }
 
 /* ---------- скло ---------- */
@@ -73,10 +74,14 @@
   background: var(--sc-accent); color: var(--sc-ink-inverse);
   display: inline-flex; align-items: center; justify-content: center;
 }
-.balance { display: inline-flex; align-items: baseline; gap: 8px; flex-wrap: wrap; justify-content: center; }
+/* висота зафіксована: ховаємо суму — рядок не перескакує [ours] */
+.balance {
+  display: inline-flex; align-items: baseline; gap: 8px; flex-wrap: nowrap;
+  justify-content: center; min-height: calc(var(--sc-text-display) * var(--sc-leading-display));
+}
 .big {
   font: var(--sc-type-display); letter-spacing: var(--sc-tracking-display);
-  color: var(--sc-ink); font-variant-numeric: tabular-nums;
+  color: var(--sc-ink); font-variant-numeric: tabular-nums; white-space: nowrap;
 }
 .conv { font: var(--sc-type-body); color: var(--sc-ink-tertiary); }
 .accounts { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }

@@ -77,7 +77,7 @@ export default function CategoriesClient({ categories }: { categories: UserCateg
       <SubHeader title={t("menu.categories")} back="/menu" />
 
       {categories.length === 0 ? (
-        <EmptyState icon="i-list" title={t("cats.emptyTitle")} hint={t("cats.emptyHint")} />
+        <EmptyState icon="BoldSale" title={t("cats.emptyTitle")} hint={t("cats.emptyHint")} />
       ) : (
         <div className={styles.setCard}>
           {categories.map((c) => (

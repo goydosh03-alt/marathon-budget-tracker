@@ -84,7 +84,7 @@ export default function NotificationsBell() {
               </div>
 
               {items.length === 0 ? (
-                <EmptyState icon="i-bell" title={t("notif.emptyTitle")} hint={t("notif.emptyHint")} />
+                <EmptyState icon="BoldNotificationsBell" title={t("notif.emptyTitle")} hint={t("notif.emptyHint")} />
               ) : (
                 <div className={styles.setCard}>
                   {items.map((n) => (

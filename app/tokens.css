@@ -122,6 +122,8 @@
   --sc-page-inset: 20px;
   --sc-safe-top: 56px;
   --sc-nav-bottom: 34px;
+  /* нижній відступ контенту: док (62) + його offset + повітря [ours] */
+  --sc-content-bottom: calc(var(--sc-nav-bottom) + 62px + 28px);
   --sc-section-gap: 24px;
   --sc-header-gap: 24px;      /* [ours] заголовок сторінки -> контент. ОДНЕ значення на весь застосунок */
   --sc-header-arrow-gap: 12px;/* [ours] стрілка «назад» -> заголовок */
