@@ -137,6 +137,39 @@ export default function SheetSwipe() {
     };
   }, []);
 
+  // Коли клавіатура відкривається, у зоні видимості має лишитись ПОЛЕ,
+  // яке заповнюють, а не те, що вгорі шита. Прокручуємо .sheetBody до нього
+  // після того, як вікно вже перерахувалось.
+  useEffect(() => {
+    let t1 = 0, t2 = 0;
+
+    function bring(el: HTMLElement) {
+      const box = el.closest("[data-vfade]") as HTMLElement | null;
+      if (!box) return;
+      const b = box.getBoundingClientRect();
+      const e = el.getBoundingClientRect();
+      const target = box.scrollTop + (e.bottom - b.bottom) + 24;
+      if (target > box.scrollTop) box.scrollTo({ top: target, behavior: "smooth" });
+    }
+
+    function onFocus(e: FocusEvent) {
+      const el = e.target as HTMLElement | null;
+      if (!el) return;
+      if (!(el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement)) return;
+      if (!el.closest("[data-sheet]")) return;
+      // двічі: одразу і після того, як клавіатура доїхала
+      window.clearTimeout(t1); window.clearTimeout(t2);
+      t1 = window.setTimeout(() => bring(el), 60);
+      t2 = window.setTimeout(() => bring(el), 340);
+    }
+
+    document.addEventListener("focusin", onFocus);
+    return () => {
+      document.removeEventListener("focusin", onFocus);
+      window.clearTimeout(t1); window.clearTimeout(t2);
+    };
+  }, []);
+
   // У нативній збірці (Capacitor, iPhone) системну панель над клавіатурою
   // можна прибрати одним викликом. У браузері/PWA вона системна: зі сторінки
   // не ховається — це не наш елемент.
