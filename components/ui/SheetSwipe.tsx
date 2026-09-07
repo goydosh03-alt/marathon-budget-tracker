@@ -66,6 +66,11 @@ export default function SheetSwipe() {
       raf = requestAnimationFrame(() => {
         root.style.setProperty("--sc-vvh", `${Math.round(vv.height)}px`);
         root.style.setProperty("--sc-vvt", `${Math.round(vv.offsetTop)}px`);
+        // Клавіатура забрала помітну частину вікна. Тоді home indicator нею
+        // перекритий, і нижня safe-area стає зайвою смугою під шитом.
+        const kb = window.innerHeight - vv.height > 120;
+        root.style.setProperty("--sc-safe-b", kb ? "0px" : "env(safe-area-inset-bottom, 0px)");
+        root.toggleAttribute("data-kb", kb);
       });
     };
     sync();
@@ -77,6 +82,8 @@ export default function SheetSwipe() {
       vv.removeEventListener("scroll", sync);
       root.style.removeProperty("--sc-vvh");
       root.style.removeProperty("--sc-vvt");
+      root.style.removeProperty("--sc-safe-b");
+      root.removeAttribute("data-kb");
     };
   }, []);
 

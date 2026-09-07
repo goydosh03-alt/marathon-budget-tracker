@@ -216,8 +216,8 @@
 .padPanel {
   flex: 0 0 auto; position: relative; z-index: 1;
   display: flex; flex-direction: column; gap: 14px;
-  margin: -10px calc(var(--sc-inset) * -1) calc((var(--sc-sheet-pad-bottom) + env(safe-area-inset-bottom, 0px)) * -1);
-  padding: 16px var(--sc-inset) calc(var(--sc-sheet-pad-bottom) + env(safe-area-inset-bottom, 0px));
+  margin: -10px calc(var(--sc-inset) * -1) calc((var(--sc-sheet-pad-bottom) + var(--sc-safe-b)) * -1);
+  padding: 16px var(--sc-inset) calc(var(--sc-sheet-pad-bottom) + var(--sc-safe-b));
   border-radius: var(--sc-radius-sheet) var(--sc-radius-sheet) 0 0;
   border-top: .5px solid var(--sc-sheet-edge);
   background: var(--sc-surface-sheet);

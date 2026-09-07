@@ -78,6 +78,9 @@
   --sc-sheet-pad-bottom: 20px;
   --sc-sheet-gap: 20px;
   --sc-sheet-gap-tight: 10px;
+  --sc-sheet-top-gap: 40px;   /* шит ніколи не підходить до статус-бара [ours] */
+  /* нижня safe-area, яку SheetSwipe обнуляє при відкритій клавіатурі [ours] */
+  --sc-safe-b: env(safe-area-inset-bottom, 0px);
   --sc-sheet-stack: 16px;      /* між блоками форми в попапі */
   --sc-sheet-label-gap: 8px;   /* лейбл блоку -> сам контрол */
 

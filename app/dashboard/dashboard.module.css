@@ -158,7 +158,7 @@
 .createAcc { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 12px; margin-bottom: 14px; }
 .createAcc input { width: 100%; height: 40px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: var(--sc-ink); padding: 0 12px; font-size: 14px; outline: none; margin-bottom: 8px; }
 .createAccRow { display: flex; gap: 8px; }
-.createAccRow .btnPrimary { height: 40px; font-size: 14px; }
+
 .dayBtnOn { background: rgba(74,222,180,0.12); border-color: rgba(74,222,180,0.45); }
 .dayBtnOn b, .dayBtnOn { color: var(--sc-accent-text); }
 .dayCalBtn { position: relative; flex: 0 0 48px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); color: var(--sc-accent-text); cursor: pointer; }
@@ -167,8 +167,8 @@
 .sheet {
   position: relative; z-index: 1; width: 100%; max-width: 480px;
   display: flex; flex-direction: column;
-  max-height: calc(100% - 24px);
-  padding: var(--sc-sheet-pad-top) var(--sc-sheet-pad-x) calc(var(--sc-sheet-pad-bottom) + env(safe-area-inset-bottom));
+  max-height: calc(100% - env(safe-area-inset-top, 0px) - var(--sc-sheet-top-gap));
+  padding: var(--sc-sheet-pad-top) var(--sc-sheet-pad-x) calc(var(--sc-sheet-pad-bottom) + var(--sc-safe-b));
   border: 0; border-top: .5px solid var(--sc-sheet-edge);
   border-radius: var(--sc-radius-sheet) var(--sc-radius-sheet) 0 0;
   background: var(--sc-surface-sheet);
@@ -193,11 +193,11 @@
 .input, .select { width: 100%; height: 44px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: var(--sc-ink); padding: 0 12px; font-size: 15px; outline: none; }
 .amountInput { height: 56px; font-size: 26px; font-weight: 700; }
 .sheetActions { display: flex; gap: 10px; margin-top: var(--sc-sheet-gap); flex-shrink: 0; }
-.btnPrimary { flex: 1; height: var(--sc-cta-h); border-radius: var(--sc-cta-radius); border: 0; background: var(--sc-cta-bg); color: var(--sc-cta-ink); font: var(--sc-type-body-medium); font-weight: 600; cursor: pointer; transition: background var(--sc-duration-fast) var(--sc-ease), transform var(--sc-duration-fast) var(--sc-ease); }
+.btnPrimary { flex: 1 1 auto; height: var(--sc-cta-h); min-height: var(--sc-cta-h); border-radius: var(--sc-cta-radius); border: 0; background: var(--sc-cta-bg); color: var(--sc-cta-ink); font: var(--sc-type-body-medium); font-weight: 600; cursor: pointer; transition: background var(--sc-duration-fast) var(--sc-ease), transform var(--sc-duration-fast) var(--sc-ease); }
 .btnPrimary:active:not(:disabled) { background: var(--sc-cta-bg-press); transform: scale(var(--sc-press-scale)); }
 .btnPrimary:disabled { opacity: .38; }
-.btnGhost { flex: 0 0 auto; height: var(--sc-cta-h); padding: 0 18px; border-radius: var(--sc-cta-radius); border: .5px solid var(--sc-glass-edge); background: var(--sc-surface-glass); color: var(--sc-ink); font: var(--sc-type-body-medium); font-weight: 500; cursor: pointer; }
-.btnDelText { flex: 0 0 auto; height: var(--sc-cta-h); padding: 0 18px; border-radius: var(--sc-cta-radius); border: .5px solid rgba(229,83,61,.35); background: rgba(229,83,61,.10); color: var(--sc-danger); font: var(--sc-type-body-medium); font-weight: 600; cursor: pointer; }
+.btnGhost { flex: 0 0 auto; height: var(--sc-cta-h); min-height: var(--sc-cta-h); padding: 0 18px; border-radius: var(--sc-cta-radius); border: .5px solid var(--sc-glass-edge); background: var(--sc-surface-glass); color: var(--sc-ink); font: var(--sc-type-body-medium); font-weight: 500; cursor: pointer; }
+.btnDelText { flex: 0 0 auto; height: var(--sc-cta-h); min-height: var(--sc-cta-h); padding: 0 18px; border-radius: var(--sc-cta-radius); border: .5px solid rgba(229,83,61,.35); background: rgba(229,83,61,.10); color: var(--sc-danger); font: var(--sc-type-body-medium); font-weight: 600; cursor: pointer; }
 .btnDelText:active { background: rgba(255,90,90,0.18); }
 .errMsg { color: var(--sc-danger); font-size: 13px; margin-top: 8px; }
 .empty { text-align: center; color: rgba(255,255,255,0.4); font-size: 13px; padding: 18px 0; }
