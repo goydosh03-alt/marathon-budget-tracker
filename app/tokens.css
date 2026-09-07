@@ -76,6 +76,7 @@
   --sc-sheet-pad-x: var(--sc-inset);
   --sc-sheet-pad-top: 10px;
   --sc-sheet-pad-bottom: 20px;
+  --sc-sheet-pad-bottom-kb: 8px;  /* при відкритій клавіатурі — впритул [ours] */
   --sc-sheet-gap: 20px;
   --sc-sheet-gap-tight: 10px;
   --sc-sheet-top-gap: 40px;   /* шит ніколи не підходить до статус-бара [ours] */

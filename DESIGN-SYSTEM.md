@@ -203,6 +203,14 @@ purple `#B57BEE` · red `#E5533D` · teal `#2BA7A0`.
   пунктів плюс того, що обгортка живе на visual-viewport (§7.1).
 - `interactiveWidget: "resizes-content"` — Android стискає layout сам, і
   цілий клас розсинхронів між `100dvh` і реальним вікном просто зникає.
+- **Системна панель над клавіатурою на iPhone** (стрілки + «Готово») — це
+  UI операційної системи, а не наш елемент. У браузері та PWA прибрати її
+  зі сторінки НЕМОЖЛИВО. У нативній збірці — можна:
+  `Keyboard.setAccessoryBarVisible({ isVisible: false })` (тільки iPhone).
+  Виклик уже стоїть у `SheetSwipe` через глобальний `Capacitor.Plugins`,
+  тож спрацює сам, щойно з'явиться iOS-проєкт із плагіном `@capacitor/keyboard`.
+  Поки її не прибрано — CTA має стояти впритул НАД нею, без власної діри:
+  `--sc-safe-b` = 0 і `--sc-sheet-pad-bottom` = `--sc-sheet-pad-bottom-kb` (8).
 
 ## 7.5 Сума вводиться в тому ж контейнері
 

@@ -69,8 +69,14 @@ export default function SheetSwipe() {
         // Клавіатура забрала помітну частину вікна. Тоді home indicator нею
         // перекритий, і нижня safe-area стає зайвою смугою під шитом.
         const kb = window.innerHeight - vv.height > 120;
-        root.style.setProperty("--sc-safe-b", kb ? "0px" : "env(safe-area-inset-bottom, 0px)");
         root.toggleAttribute("data-kb", kb);
+        if (kb) {
+          root.style.setProperty("--sc-safe-b", "0px");
+          root.style.setProperty("--sc-sheet-pad-bottom", "var(--sc-sheet-pad-bottom-kb)");
+        } else {
+          root.style.removeProperty("--sc-safe-b");
+          root.style.removeProperty("--sc-sheet-pad-bottom");
+        }
       });
     };
     sync();
@@ -83,6 +89,7 @@ export default function SheetSwipe() {
       root.style.removeProperty("--sc-vvh");
       root.style.removeProperty("--sc-vvt");
       root.style.removeProperty("--sc-safe-b");
+      root.style.removeProperty("--sc-sheet-pad-bottom");
       root.removeAttribute("data-kb");
     };
   }, []);
@@ -128,6 +135,20 @@ export default function SheetSwipe() {
       mo.disconnect();
       ro.disconnect();
     };
+  }, []);
+
+  // У нативній збірці (Capacitor, iPhone) системну панель над клавіатурою
+  // можна прибрати одним викликом. У браузері/PWA вона системна: зі сторінки
+  // не ховається — це не наш елемент.
+  // Звертаємось через глобальний Capacitor.Plugins, щоб не тягнути залежність
+  // у веб-збірку: якщо плагіна немає, просто нічого не станеться.
+  useEffect(() => {
+    type KB = { setAccessoryBarVisible?: (o: { isVisible: boolean }) => Promise<void> };
+    const cap = (window as unknown as {
+      Capacitor?: { isNativePlatform?: () => boolean; Plugins?: { Keyboard?: KB } };
+    }).Capacitor;
+    if (!cap?.isNativePlatform?.()) return;
+    cap.Plugins?.Keyboard?.setAccessoryBarVisible?.({ isVisible: false })?.catch(() => {});
   }, []);
 
   return null;
