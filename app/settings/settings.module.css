@@ -60,7 +60,7 @@
 }
 .nameCard input::placeholder { color: var(--sc-ink-tertiary); }
 .nameTile {
-  width: 34px; height: 34px; border-radius: var(--sc-radius-sm); flex-shrink: 0;
+  width: 34px; height: 34px; border-radius: var(--sc-radius-tile); flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   background: rgba(255,255,255,.08); box-shadow: inset 0 0 0 .5px var(--sc-glass-edge);
 }

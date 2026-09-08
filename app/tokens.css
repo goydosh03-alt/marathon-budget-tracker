@@ -146,6 +146,7 @@
   --sc-radius-sheet: 24px;
   --sc-radius-group: 24px;
   --sc-radius-pill: 100px;
+  --sc-radius-tile: 50%;     /* [ours] контейнер іконки в рядку — коло */
 
   /* Звіти (/reports) — з хендофф-специфікації. Дописано в кінець. */
   --sc-sheet: #2C2D2A;       /* блок «Витрати» */

@@ -370,7 +370,7 @@
 
 /* empty state */
 .emptyBox { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 30px 20px 24px; }
-.emptyIco { width: 64px; height: 64px; border-radius: 20px; display: flex; align-items: center; justify-content: center; background: var(--sc-surface-glass); box-shadow: inset 0 0 0 .5px var(--sc-glass-edge); color: var(--sc-accent-text); margin-bottom: 14px; }
+.emptyIco { width: 64px; height: 64px; border-radius: var(--sc-radius-tile); display: flex; align-items: center; justify-content: center; background: var(--sc-surface-glass); box-shadow: inset 0 0 0 .5px var(--sc-glass-edge); color: var(--sc-accent-text); margin-bottom: 14px; }
 .emptyIco svg { width: 30px; height: 30px; }
 .emptyTitle { font-size: 15px; font-weight: 600; color: var(--sc-ink); }
 .emptyHint { font-size: 13px; color: rgba(255,255,255,0.45); margin-top: 6px; max-width: 240px; line-height: 1.45; }

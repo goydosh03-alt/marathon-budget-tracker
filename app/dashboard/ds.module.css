@@ -37,6 +37,10 @@
   padding: calc(env(safe-area-inset-top, 0px) + 20px) var(--sc-page-inset)
            calc(var(--sc-content-bottom) + env(safe-area-inset-bottom, 0px));
 }
+/* SubHeader має власний margin-bottom заради легасі-сторінок зі звичайним
+   потоком. Усередині .content відступ дає gap контейнера, тому власний
+   прибираємо — інакше 24 + 24 = 48. */
+.content > header { margin-bottom: 0; }
 
 /* ---------- скло ---------- */
 .glass {
