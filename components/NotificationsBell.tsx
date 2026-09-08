@@ -2,14 +2,21 @@
 
 import { useState, useEffect } from "react";
 import styles from "@/app/dashboard/dashboard.module.css";
-import { Icon } from "@/components/IconSprite";
+import m from "@/app/menu/menu.module.css";
 import DsIcon from "@/components/ds/Icon";
 import EmptyState from "@/components/EmptyState";
 import { useT } from "@/components/SettingsProvider";
 
 // Поки що сповіщення зберігаються локально (на пристрої).
-// Структура готова під прочитані / непрочитані — наповнимо реальними подіями згодом.
 type Notif = { id: string; title: string; body: string; date: string; read: boolean };
+
+// Вигляд рядка залежить від того, хто подію створив:
+// rem-* пише ReminderWatcher, rec-* — RecurringRunner.
+function look(id: string): { icon: string; color: string } {
+  if (id.startsWith("rem-")) return { icon: "BoldNotificationsBell", color: "var(--sc-cat-orange)" };
+  if (id.startsWith("rec-")) return { icon: "BoldArrowsTransferHorizontal", color: "var(--sc-accent-text)" };
+  return { icon: "BoldEssentionalUIMenuDotsCircle", color: "var(--sc-ink-tertiary)" };
+}
 
 export default function NotificationsBell() {
   const t = useT();
@@ -24,7 +31,6 @@ export default function NotificationsBell() {
       } catch {}
     }
     load();
-    // оновлення без перезавантаження, коли RecurringRunner пише нову подію
     window.addEventListener("sc:notifs-updated", load);
     return () => window.removeEventListener("sc:notifs-updated", load);
   }, []);
@@ -59,7 +65,12 @@ export default function NotificationsBell() {
 
   return (
     <>
-      <button className={styles.iconBtn} onClick={() => setOpen(true)} aria-label={t("notif.title")} style={{ position: "relative" }}>
+      <button
+        className={styles.iconBtn}
+        onClick={() => setOpen(true)}
+        aria-label={t("notif.title")}
+        style={{ position: "relative" }}
+      >
         <DsIcon name="BoldNotificationsBell" size={20} />
         {unread > 0 && <span className={styles.notifDot} />}
       </button>
@@ -69,42 +80,50 @@ export default function NotificationsBell() {
           <div data-sheet-back className={styles.sheetBack} onClick={() => setOpen(false)} />
           <div data-sheet className={styles.sheet}>
             <div data-vfade className={styles.sheetBody}>
-              <div className={styles.sheetTitle} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
-                <span>{t("notif.title")}</span>
-                <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  {unread > 0 && (
-                    <button
-                      onClick={markAllRead}
-                      style={{ background: "none", border: "none", color: "#6ee7b7", fontSize: 13, fontWeight: 600, cursor: "pointer", padding: "4px 6px" }}
-                    >
-                      {t("notif.markAll")}
-                    </button>
-                  )}
-                </span>
-              </div>
+              <div className={styles.sheetTitle}>{t("notif.title")}</div>
 
               {items.length === 0 ? (
-                <EmptyState icon="BoldNotificationsBell" title={t("notif.emptyTitle")} hint={t("notif.emptyHint")} />
+                <EmptyState
+                  icon="BoldNotificationsBell"
+                  title={t("notif.emptyTitle")}
+                  hint={t("notif.emptyHint")}
+                />
               ) : (
-                <div className={styles.setCard}>
-                  {items.map((n) => (
-                    <div
-                      key={n.id}
-                      className={`${styles.notifRow} ${n.read ? "" : styles.notifUnread} ${styles.clickable}`}
-                      onClick={() => tapNotif(n)}
-                      style={{ cursor: "pointer" }}
-                    >
-                      {!n.read && <span className={styles.notifDot2} />}
-                      <div className={styles.curMid}>
-                        <span className={styles.catName2}>{n.title}</span>
-                        <span className={styles.catType2}>{n.body}</span>
-                      </div>
-                      <span className={styles.notifDate}>{n.date}</span>
-                    </div>
-                  ))}
+                <div className={m.list}>
+                  {items.map((n) => {
+                    const l = look(n.id);
+                    return (
+                      <button
+                        key={n.id}
+                        type="button"
+                        className={`${m.row} ${n.read ? styles.notifRead : ""}`}
+                        onClick={() => tapNotif(n)}
+                      >
+                        <span className={m.tile} style={{ color: l.color }}>
+                          <DsIcon name={l.icon} size={20} />
+                        </span>
+                        <span className={m.mid}>
+                          <span className={m.name}>{n.title}</span>
+                          <span className={m.sub}>{n.body}</span>
+                        </span>
+                        <span className={styles.notifMeta}>
+                          <span className={styles.notifDate}>{n.date}</span>
+                          {!n.read && <span className={styles.notifDot2} />}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             </div>
+
+            {unread > 0 && (
+              <div className={styles.sheetActions}>
+                <button className={styles.btnPrimary} onClick={markAllRead}>
+                  {t("notif.markAll")}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

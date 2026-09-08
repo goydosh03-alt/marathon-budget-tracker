@@ -431,10 +431,12 @@
 /* Сповіщення */
 .notifDot { position: absolute; top: 7px; right: 7px; width: 8px; height: 8px; border-radius: 50%; background: var(--sc-danger); box-shadow: 0 0 0 1.5px var(--sc-bg); }
 .notifMarkAll { display: block; margin: 12px 0 0; padding: 0 4px; background: none; border: none; color: var(--sc-accent-text); font-size: 13px; font-weight: 600; cursor: pointer; }
-.notifRow { display: flex; align-items: center; gap: 10px; padding: 12px 8px; }
-.notifUnread .catName2 { color: #fff; }
-.notifDot2 { width: 8px; height: 8px; border-radius: 50%; background: var(--sc-accent-text); flex-shrink: 0; }
-.notifDate { font-size: 11px; color: rgba(255,255,255,0.4); flex-shrink: 0; margin-left: auto; }
+/* Рядок сповіщення = формула рядка системи (menu.module.css .row).
+   Тут лишається тільки права мета-частина. */
+.notifDot2 { width: 7px; height: 7px; border-radius: 50%; background: var(--sc-accent); flex-shrink: 0; }
+.notifDate { font: var(--sc-type-caption); color: var(--sc-ink-tertiary); flex-shrink: 0; font-variant-numeric: tabular-nums; }
+.notifMeta { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.notifRead { opacity: .55; }
 .donateBadge { width: 34px; height: 34px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 16px; font-weight: 800; color: #fff; }
 .donateItem { display: flex; align-items: center; gap: 12px; width: 100%; padding: 11px 8px; background: none; border: none; text-align: left; cursor: pointer; }
 .donateItemTitle { font-size: 13px; font-weight: 600; color: var(--sc-ink); line-height: 1.2; }
