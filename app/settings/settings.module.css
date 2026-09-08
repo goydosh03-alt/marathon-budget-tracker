@@ -50,7 +50,7 @@
 
 /* поле назви в шиті «Новий рахунок» — картка з тайлом, як у формулі рядка */
 .nameCard {
-  display: flex; align-items: center; gap: 12px; padding: 13px 14px;
+  display: flex; align-items: center; gap: 12px; padding: var(--sc-row-inset);
   border-radius: var(--sc-radius-pill);
   background: var(--sc-surface-card); box-shadow: var(--sc-shadow-card);
 }
@@ -68,13 +68,14 @@
 /* тип рахунку — той самий сегмент, що всюди: активний = скло */
 /* Контейнер-пігулка: типи важать по контенту й гортаються, якщо їх стане більше */
 .typeRow {
-  display: flex; gap: 5px; padding: 5px; border-radius: var(--sc-radius-pill);
+  display: flex; gap: var(--sc-seg-gap); padding: var(--sc-seg-pad); border-radius: var(--sc-radius-pill);
   background: var(--sc-surface-glass); box-shadow: inset 0 0 0 .5px var(--sc-glass-edge);
   overflow-x: auto; scrollbar-width: none;
 }
 .typeRow::-webkit-scrollbar { display: none; }
 .type {
-  flex: 0 0 auto; min-height: 50px; padding: 0 16px; white-space: nowrap; border: 0; cursor: pointer;
+  flex: 0 0 auto; height: var(--sc-seg-h-secondary); padding: 0 var(--sc-seg-item-pad);
+  white-space: nowrap; border: 0; cursor: pointer;
   display: flex; align-items: center; justify-content: center; gap: 8px;
   border-radius: var(--sc-radius-pill); background: transparent;
   color: var(--sc-ink-muted); font: var(--sc-type-caption-medium);

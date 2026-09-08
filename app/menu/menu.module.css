@@ -60,8 +60,8 @@
 .toggleOn .knob { transform: translateX(18px); }
 
 /* ---------- групи ---------- */
-.group { display: flex; flex-direction: column; gap: 8px; }
-.groupLabel { font: var(--sc-type-caption); color: var(--sc-ink-tertiary); padding: 0 4px; }
+.group { display: flex; flex-direction: column; gap: var(--sc-sheet-label-gap); }
+.groupLabel { font: var(--sc-type-caption); color: var(--sc-ink-tertiary); padding: 0 var(--sc-label-inset); }
 .list {
   display: flex; flex-direction: column;
   border-radius: var(--sc-radius-group);

@@ -154,9 +154,9 @@
 .amtConv { font-size: 13px; color: rgba(255,255,255,0.45); margin-top: 4px; }
 .scanBtn { position: absolute; top: 12px; right: 0; display: flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 999px; background: rgba(95,179,127,0.10); border: 1px solid rgba(95,179,127,0.4); color: var(--sc-accent-text); font-size: 12px; font-weight: 600; cursor: pointer; }
 .scanBtn svg { width: 15px; height: 15px; }
-.chips2 { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 14px;
+.chips2 { display: flex; gap: var(--sc-seg-gap); overflow-x: auto; padding: var(--sc-seg-pad); margin-bottom: var(--sc-sheet-stack); border-radius: var(--sc-radius-pill); background: var(--sc-surface-glass); box-shadow: inset 0 0 0 .5px var(--sc-glass-edge);
   -webkit-mask-image: linear-gradient(to right, #000 92%, transparent 100%); mask-image: linear-gradient(to right, #000 92%, transparent 100%); }
-.chip2 { flex-shrink: 0; display: flex; align-items: center; gap: 7px; padding: 9px 12px; border-radius: 999px; white-space: nowrap; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.7); cursor: pointer; }
+.chip2 { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: var(--sc-seg-h-secondary); padding: 0 var(--sc-seg-item-pad); border-radius: var(--sc-radius-pill); white-space: nowrap; background: transparent; border: 0; font: var(--sc-type-caption-medium); color: var(--sc-ink-muted); cursor: pointer; }
 .chip2On { background: var(--sc-surface-glass-active); border-color: var(--sc-glass-edge); color: var(--sc-ink); }
 .fcard { position: relative; display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 13px 14px; margin-bottom: 14px; }
 .fcIcon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -361,8 +361,8 @@
 .catBoxSum { display: block; font-size: 38px; font-weight: 700; letter-spacing: -1.2px; line-height: 1; }
 .catBoxSub { display: block; font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 8px; }
 .viewToggleRow { display: flex; gap: 8px; margin: 0 0 8px; }
-.sortChip { padding: 8px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 500; cursor: pointer; }
-.sortChipOn { background: rgba(95,179,127,0.10); border-color: rgba(95,179,127,0.4); color: var(--sc-accent-text); }
+.sortChip { flex: 0 0 auto; display: inline-flex; align-items: center; height: var(--sc-seg-h-secondary); padding: 0 var(--sc-seg-item-pad); border-radius: var(--sc-radius-pill); border: 0; background: transparent; color: var(--sc-ink-muted); font: var(--sc-type-caption-medium); cursor: pointer; }
+.sortChipOn { background: var(--sc-surface-glass-active); color: var(--sc-ink); }
 .txExpand { flex-shrink: 0; width: 28px; height: 28px; margin-left: 4px; border: none; background: rgba(255,255,255,0.05); border-radius: 8px; color: rgba(255,255,255,0.5); display: flex; align-items: center; justify-content: center; cursor: pointer; }
 .txExpand svg { width: 16px; height: 16px; transition: transform 0.2s; }
 .txExpandOn svg { transform: rotate(180deg); }
@@ -470,7 +470,7 @@
 .donateBname { font-size: 15px; font-weight: 700; line-height: 1.15; }
 .donateBsub { font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.2; margin-top: 2px; }
 .donateHint { font: var(--sc-type-caption); color: var(--sc-ink-secondary); margin-top: var(--sc-sheet-gap-tight); }
-.donateLabel { display: block; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.5px; margin: 18px 4px 8px; }
+.donateLabel { display: block; font: var(--sc-type-caption); color: var(--sc-ink-tertiary); margin: var(--sc-sheet-stack) var(--sc-label-inset) var(--sc-sheet-label-gap); }
 .donateLabel + .setCard { margin-top: 0; }
 /* Сповіщення */
 .notifDot { position: absolute; top: 7px; right: 7px; width: 8px; height: 8px; border-radius: 50%; background: var(--sc-danger); box-shadow: 0 0 0 1.5px var(--sc-bg); }
