@@ -149,8 +149,8 @@
   --sc-surface-shelf: #2F302C;
   --sc-surface-panel: rgba(255,255,255,.04);
   --sc-menu: #33342F;        /* дропдауни */
-  --sc-text-hero: 36px;      /* головна сума екрана звітів */
-  --sc-tracking-hero: -1.2px;
+  --sc-text-hero: 31px;      /* головна сума екрана звітів (36 -15%) */
+  --sc-tracking-hero: -1px;  /* трекінг масштабовано разом із кеглем */
 
   /* Legacy aliases so untouched screens follow the new palette */
   --background: var(--sc-bg);

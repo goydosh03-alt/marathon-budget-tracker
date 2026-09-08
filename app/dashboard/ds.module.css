@@ -342,15 +342,22 @@
 }
 .repTick {
   flex: 1; min-width: 0; max-width: 8px; min-height: 8px;
-  border-radius: var(--sc-radius-pill); background: rgba(241,239,234,.42);
+  border-radius: var(--sc-radius-pill);
+  /* усі штрихи нейтральні; глибина — легким вертикальним градієнтом
+     у тих самих тонах, без білої підсвітки останніх */
+  background: linear-gradient(180deg,
+    rgba(241,239,234,.56) 0%,
+    rgba(241,239,234,.40) 45%,
+    rgba(241,239,234,.26) 100%);
 }
-.repTickOn { background: var(--sc-ink); }
 
 /* смуга з датами — full-bleed, заходить на графік */
 .repAxis {
   display: flex; justify-content: space-between; gap: 4px;
   margin: -10px -24px 0; position: relative; z-index: 1;
-  padding: 14px 24px 20px;
+  /* низ 28 замість 20: блок «Витрати» з'їдає 14px знизу,
+     тож видима зона стає 14 зверху / 14 знизу — текст рівно посередині */
+  padding: 14px 24px 28px;
   border-radius: var(--sc-radius-sheet) var(--sc-radius-sheet) 0 0;
   background: var(--sc-axis);
   box-shadow: inset 0 .5px 0 var(--sc-glass-edge);
@@ -362,12 +369,17 @@
 
 /* ---------- блок «Витрати» ---------- */
 .repList {
-  margin: -20px -20px calc(-150px - env(safe-area-inset-bottom, 0px));
+  /* -inset гасить gap батька, ще -14 — реальне нашарування на смугу з датами */
+  margin: calc(-1 * var(--sc-inset) - 14px) calc(-1 * var(--sc-inset))
+          calc(-150px - env(safe-area-inset-bottom, 0px));
   position: relative; z-index: 2;
-  padding: 18px 20px calc(150px + env(safe-area-inset-bottom, 0px));
+  padding: 18px var(--sc-inset) calc(150px + env(safe-area-inset-bottom, 0px));
   border-radius: var(--sc-radius-sheet) var(--sc-radius-sheet) 0 0;
   background: var(--sc-sheet);
   border-top: .5px solid rgba(255,255,255,.14);
+  /* тягнемо до низу екрана: інакше при кількох категоріях під блоком
+     світиться канва, а шит має бути суцільним до самого краю */
+  flex: 1;
   display: flex; flex-direction: column; gap: 6px;
 }
 .repListHead {
@@ -382,27 +394,41 @@
 .repRowDiv { height: 1px; margin: 0 4px 0 54px; background: var(--sc-hairline); }
 .repRowDivFirst { background: transparent; }
 .repRow {
-  display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 9px 4px;
+  display: flex; align-items: center; gap: 10px; min-height: 50px; padding: 11px 4px;
   color: inherit; text-decoration: none;
   transition: transform var(--sc-duration-fast) var(--sc-ease);
 }
 .repRow:active { transform: scale(var(--sc-press-scale)); }
 .repDisc {
-  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+  width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
   color: #fff; display: flex; align-items: center; justify-content: center;
 }
-.repRowMid { display: flex; flex-direction: column; gap: 1px; flex: 1; min-width: 0; }
+.repRowMid { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.repRowHead { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
 .repRowName {
-  font: var(--sc-weight-medium) 14px/1.2 var(--sc-font); color: var(--sc-ink);
+  font: var(--sc-type-body-medium); color: var(--sc-ink);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.repRowPct { font: var(--sc-weight-regular) 12px/1.2 var(--sc-font); color: var(--sc-ink-secondary); }
-.repRowRight {
-  display: inline-flex; flex-direction: column; align-items: flex-end; gap: 1px;
+.repRowSum {
+  font: var(--sc-type-body-medium); color: var(--sc-ink);
   flex-shrink: 0; font-variant-numeric: tabular-nums;
 }
-.repRowSum { font: var(--sc-weight-medium) 14px/1.2 var(--sc-font); color: var(--sc-ink); }
-.repRowConv { font: var(--sc-weight-regular) 12px/1.2 var(--sc-font); color: var(--sc-ink-tertiary); }
+/* смуга частки категорії — та сама механіка, що в категоріях історії.
+   Заливка нейтральна: колір категорії живе на диску, не тут. */
+.repBar {
+  height: 4px; margin: 7px 0 5px; border-radius: var(--sc-radius-pill);
+  background: rgba(241, 239, 234, .08); overflow: hidden;
+}
+.repBarFill {
+  display: block; height: 100%; border-radius: var(--sc-radius-pill);
+  background: linear-gradient(90deg, rgba(241, 239, 234, .26) 0%, rgba(241, 239, 234, .60) 100%);
+}
+.repRowSub {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+  font: var(--sc-type-caption); color: var(--sc-ink-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.repRowConv { color: var(--sc-ink-tertiary); flex-shrink: 0; }
 
 .repEmpty {
   display: flex; flex-direction: column; align-items: center; gap: 6px;
@@ -414,8 +440,9 @@
 /* ---------- низ ---------- */
 .repScrim {
   position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; pointer-events: none;
-  height: calc(130px + env(safe-area-inset-bottom, 0px));
-  background: linear-gradient(rgba(35,36,33,0), rgba(35,36,33,.55) 45%, rgba(35,36,33,.93));
+  /* тон шита, а не канви: рядки мають зникати ПІД доком, а не просвічувати */
+  height: calc(152px + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(rgba(44,45,42,0), rgba(44,45,42,.88) 44%, rgba(44,45,42,1) 74%);
 }
 .repDock {
   position: absolute; z-index: 4;
