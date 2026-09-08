@@ -242,8 +242,14 @@
 .repScroll {
   position: absolute;
   inset: 0;
+  /* тільки вертикальна прокрутка: смуга з датами навмисно виходить
+     за інсет (full-bleed), і без цього браузер дозволяв тягнути екран
+     убік. z-index не ставимо: він створював контекст накладання,
+     через який дропдауни опинялися ПІД своїм бекдропом і не тапалися. */
   overflow-y: auto;
-  z-index: 1;
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+  touch-action: pan-y;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -485,7 +491,10 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  animation: repSlideIn var(--sc-duration-base) var(--sc-ease) both;
+  /* backwards, а не both: both лишає застосованим transform (навіть
+     нульовий), а це створює контекст накладання — і дропдауни
+     опиняються під своїм бекдропом. */
+  animation: repSlideIn var(--sc-duration-base) var(--sc-ease) backwards;
 }
 @keyframes repSlideIn {
   from { opacity: 0; transform: translateX(var(--rep-from, 16px)); }
