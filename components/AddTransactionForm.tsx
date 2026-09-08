@@ -130,8 +130,16 @@ export default function AddTransactionForm({
     setOrdered(sortByRecent(cats));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cats.join("|")]);
-  const rowA = ordered.filter((_, i) => i % 2 === 0);
-  const rowB = ordered.filter((_, i) => i % 2 === 1);
+  // Скільки рядків під категорії.
+  // До порога — ОДИН ряд: інакше чотири категорії розповзались на два ряди
+  // по дві й лишали півсмуги порожньою. Понад поріг — два ряди, бо гортати
+  // довгу одноряддя незручно: за один рух видно вдвічі менше.
+  // Розкладка по колонках (i % 2), тому пари стоять одна під одною і
+  // порядок за свіжістю читається зліва направо.
+  const CATS_ONE_ROW_MAX = 4;
+  const twoRows = ordered.length > CATS_ONE_ROW_MAX;
+  const rowA = twoRows ? ordered.filter((_, i) => i % 2 === 0) : ordered;
+  const rowB = twoRows ? ordered.filter((_, i) => i % 2 === 1) : [];
 
   function pickCategory(c: string) {
     setCategory(c);
@@ -400,7 +408,7 @@ export default function AddTransactionForm({
                   ref={catFade.ref}
                   className={`${s.scrollY} ${catFade.left ? s.fadeL : ""} ${catFade.right ? s.fadeR : ""}`}
                 >
-                  {[rowA, rowB].map((row, ri) => (
+                  {(twoRows ? [rowA, rowB] : [rowA]).map((row, ri) => (
                     <div className={s.row} key={ri}>
                       {row.map((c) => {
                         const look = resolveCat(c, isIncome, customMap.get(c));
