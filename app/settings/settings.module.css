@@ -32,6 +32,14 @@
 .danger:disabled { opacity: .38; }
 .dangerHint { font: var(--sc-type-caption); color: var(--sc-ink-tertiary); padding: 0 4px; }
 
+/* Затемнення під прибитою кнопкою, щоб контент не «в'їжджав» у неї.
+   Раніше брався styles.scrimbar із dashboard.module.css, де його немає. */
+.scrim {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 2;
+  height: calc(130px + env(safe-area-inset-bottom, 0px));
+  background: var(--sc-scrim); pointer-events: none;
+}
+
 /* «Додати рахунок» прибитий донизу — заради нього сюди й заходять */
 .pinned {
   position: fixed; z-index: 3; left: 0; right: 0;
