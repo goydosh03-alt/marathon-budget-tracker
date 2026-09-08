@@ -142,7 +142,7 @@ export default function CalendarSheet({
 
           <div className={styles.sheetActions}>
             <button
-              className={styles.calReset}
+              className={styles.btnGhost}
               onClick={() => {
                 setFrom(null);
                 setTo(null);

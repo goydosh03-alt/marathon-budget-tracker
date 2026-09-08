@@ -6,6 +6,7 @@ import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon, IconSprite } from "@/components/IconSprite";
 import SubHeader from "@/components/SubHeader";
 import EmptyState from "@/components/EmptyState";
+import { useScrollFade } from "@/components/ui/useScrollFade";
 import { useT } from "@/components/SettingsProvider";
 import { addCategory, updateCategory, deleteCategory, type UserCategory } from "@/app/dashboard/actions";
 import SheetPortal from "@/components/ui/SheetPortal";
@@ -24,6 +25,7 @@ const COLORS = [
 export default function CategoriesClient({ categories }: { categories: UserCategory[] }) {
   const t = useT();
   const [showAdd, setShowAdd] = useState(false);
+  const emojiFade = useScrollFade<HTMLDivElement>();
   const [editId, setEditId] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [emoji, setEmoji] = useState(EMOJIS[0]);
@@ -131,7 +133,10 @@ export default function CategoriesClient({ categories }: { categories: UserCateg
                 </div>
 
                 <div className={styles.fieldLabel}>{t("cats.icon")}</div>
-                <div className={styles.emojiGrid}>
+                <div
+                  ref={emojiFade.ref}
+                  className={`${styles.emojiGrid} ${emojiFade.left ? styles.fadeL : ""} ${emojiFade.right ? styles.fadeR : ""}`}
+                >
                   {EMOJIS.map((e) => (
                     <button key={e} className={`${styles.emojiBtn} ${emoji === e ? styles.emojiBtnOn : ""}`} onClick={() => setEmoji(e)}>{e}</button>
                   ))}

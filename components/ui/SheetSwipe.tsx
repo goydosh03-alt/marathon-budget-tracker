@@ -13,14 +13,49 @@ import { useEffect } from "react";
 function startedInScrollable(target: HTMLElement, sheet: HTMLElement) {
   let el: HTMLElement | null = target;
   while (el && el !== sheet) {
-    const oy = getComputedStyle(el).overflowY;
-    if ((oy === "auto" || oy === "scroll") && el.scrollHeight > el.clientHeight + 2) return true;
+    const st = getComputedStyle(el);
+    if ((st.overflowY === "auto" || st.overflowY === "scroll") && el.scrollHeight > el.clientHeight + 2) return true;
+    // горизонтальні смуги (категорії, рахунки, дати) теж «свої»:
+    // жест по них не має закривати шит
+    if ((st.overflowX === "auto" || st.overflowX === "scroll") && el.scrollWidth > el.clientWidth + 2) return true;
     el = el.parentElement;
   }
   return false;
 }
 
+/**
+ * Після протягування браузер усе одно шле click по елементу, на якому палець
+ * зупинився. На смузі категорій це відкривало чужий попап. Глушимо click,
+ * якщо палець проїхав більше порога — тобто це був драг, а не тап.
+ */
+function useTapGuard() {
+  useEffect(() => {
+    let x = 0, y = 0, moved = false;
+    const down = (e: TouchEvent) => { x = e.touches[0].clientX; y = e.touches[0].clientY; moved = false; };
+    const move = (e: TouchEvent) => {
+      const t = e.touches[0];
+      if (Math.abs(t.clientX - x) > 8 || Math.abs(t.clientY - y) > 8) moved = true;
+    };
+    const click = (e: MouseEvent) => {
+      if (!moved) return;
+      moved = false;
+      e.stopPropagation();
+      e.preventDefault();
+    };
+    document.addEventListener("touchstart", down, { passive: true, capture: true });
+    document.addEventListener("touchmove", move, { passive: true, capture: true });
+    document.addEventListener("click", click, true);
+    return () => {
+      document.removeEventListener("touchstart", down, true);
+      document.removeEventListener("touchmove", move, true);
+      document.removeEventListener("click", click, true);
+    };
+  }, []);
+}
+
 export default function SheetSwipe() {
+  useTapGuard();
+
   useEffect(() => {
     let sheet: HTMLElement | null = null;
     let startY = 0;

@@ -113,6 +113,7 @@ export default function AddTransactionForm({
   const [pickerOpen, setPickerOpen] = useState(false);
   const catFade = useScrollFade<HTMLDivElement>();
   const accFade = useScrollFade<HTMLDivElement>();
+  const dayFade = useScrollFade<HTMLDivElement>();
   const customCats = useCategories();
   const cats = [
     ...(isIncome ? INCOME_CATS : EXPENSE_CATS),
@@ -335,7 +336,10 @@ export default function AddTransactionForm({
               onClick={() => switchType(isIncome ? "expense" : "income")}
               aria-label={isIncome ? t("common.income") : t("common.expense")}
             >
-              {isIncome ? "+" : "\u2212"}
+              <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" style={{ display: "block" }}>
+                {isIncome && <path d="M9 2.6v12.8" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />}
+                <path d="M2.6 9h12.8" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+              </svg>
             </button>
             <button
               type="button"
@@ -451,7 +455,10 @@ export default function AddTransactionForm({
           <div>
             <span className={s.label}>{t("det.date")}</span>
             <div className={s.dateCtl}>
-              <div className={s.dateScroll}>
+              <div
+              ref={dayFade.ref}
+              className={`${s.dateScroll} ${dayFade.left ? s.fadeL : ""} ${dayFade.right ? s.fadeR : ""}`}
+            >
               {dayOptions.map((o) => (
                 <button
                   key={o.label}
