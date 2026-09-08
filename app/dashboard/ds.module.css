@@ -394,6 +394,8 @@
      світиться канва, а шит має бути суцільним до самого краю */
   flex: 1;
   display: flex; flex-direction: column; gap: 6px;
+  /* вертикальний рух тут тягне шит, а не скролить сторінку */
+  touch-action: pan-x;
 }
 .repListHead {
   display: flex; justify-content: space-between; align-items: center;
@@ -403,6 +405,7 @@
 .repListLink {
   font: var(--sc-type-body); color: var(--sc-accent-text); text-decoration: none;
   display: inline-flex; align-items: center; gap: 4px;
+  border: 0; background: none; padding: 0; cursor: pointer;
 }
 .repRowDiv { height: 1px; margin: 0 4px 0 54px; background: var(--sc-hairline); }
 .repRowDivFirst { background: transparent; }
@@ -535,3 +538,63 @@
   display: inline-flex; align-items: center; justify-content: center;
 }
 .segIconOn { color: var(--sc-accent-text); }
+
+/* ============================================================
+   Розгорнутий список категорій (звіти)
+   Блок «Витрати» тягнеться пальцем угору й перекриває звіт,
+   лишаючи зверху 10% екрана. Док і FAB лишаються над шитом,
+   тож із розгорнутого стану можна піти на інший екран.
+   ============================================================ */
+.repDim {
+  position: fixed; inset: 0; z-index: 2;
+  background: rgba(0,0,0,.5);
+  transition: opacity var(--sc-duration-base) var(--sc-ease);
+}
+.repFull {
+  position: fixed; left: 0; right: 0; z-index: 3;
+  top: 10vh; height: 90vh;
+  max-width: 480px; margin: 0 auto;
+  display: flex; flex-direction: column;
+  padding: 8px var(--sc-inset) 0;
+  border-radius: var(--sc-radius-sheet) var(--sc-radius-sheet) 0 0;
+  background: var(--sc-sheet);
+  border-top: .5px solid rgba(255,255,255,.14);
+  box-shadow: 0 -18px 48px rgba(0,0,0,.45);
+  transition: transform var(--sc-duration-base) var(--sc-ease);
+  visibility: hidden;
+  touch-action: pan-y;
+}
+.repFullOn { visibility: visible; }
+.repGrab {
+  width: 40px; height: 4px; margin: 2px auto 12px; border-radius: var(--sc-radius-pill);
+  background: rgba(241,239,234,.22);
+}
+.repFullHead {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+  padding: 0 4px 12px;
+}
+.repFullSum {
+  font: var(--sc-type-body-medium); color: var(--sc-ink-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.repSearch {
+  display: flex; align-items: center; gap: 8px;
+  height: 42px; padding: 0 12px; margin-bottom: 6px;
+  border-radius: var(--sc-radius-pill); color: var(--sc-ink-secondary);
+}
+.repSearchIco { display: inline-flex; opacity: .7; }
+.repSearchInput {
+  flex: 1; min-width: 0; border: 0; background: none; outline: none;
+  font: var(--sc-type-body); color: var(--sc-ink);
+}
+.repSearchInput::placeholder { color: var(--sc-ink-tertiary); }
+.repSearchClear {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; flex-shrink: 0; padding: 0; border: 0; cursor: pointer;
+  border-radius: 50%; background: rgba(241,239,234,.10); color: var(--sc-ink-secondary);
+}
+.repFullList {
+  flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden;
+  overscroll-behavior: contain;
+  padding-bottom: calc(150px + env(safe-area-inset-bottom, 0px));
+}

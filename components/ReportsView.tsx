@@ -54,6 +54,17 @@ const TrendGlyph = ({ down }: { down: boolean }) => (
     {down ? <path d="M7 7l10 10M15 17H7V9" /> : <path d="M7 17L17 7M9 7h8v8" />}
   </svg>
 );
+const SearchGlyph = () => (
+  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true" style={{ display: "block" }}>
+    <circle cx="11" cy="11" r="6.5" />
+    <path d="M16 16l4 4" />
+  </svg>
+);
+const CrossGlyph = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" aria-hidden="true" style={{ display: "block" }}>
+    <path d="M6 6l12 12M18 6L6 18" />
+  </svg>
+);
 const CheckGlyph = () => (
   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M5 13l4 4L19 7" />
@@ -308,7 +319,7 @@ export default function ReportsView({
     touch.current = { x: p.clientX, y: p.clientY };
   }
   function swipeEnd(e: React.TouchEvent) {
-    if (range || menu) return;
+    if (range || menu || full || pull !== null) return;
     const p = e.changedTouches[0];
     const dx = p.clientX - touch.current.x;
     const dy = p.clientY - touch.current.y;
@@ -322,6 +333,132 @@ export default function ReportsView({
     setNavIdx(0);
     setPeriod(id);
     setMenu(null);
+  }
+
+  /* ---------- розгорнутий список категорій ----------
+     Блок «Витрати» тягнеться пальцем угору й перекриває звіт, лишаючи
+     зверху 10% екрана. Той самий стан відкриває лінк «Всі». */
+  const listRef = useRef<HTMLElement | null>(null);
+  const fullListRef = useRef<HTMLDivElement | null>(null);
+  const [full, setFull] = useState(false);
+  const [pull, setPull] = useState<number | null>(null); // px, поки палець на екрані
+  const [query, setQuery] = useState("");
+  const geom = useRef({ closed: 0 });   // з якої висоти стартує шит
+  const grab = useRef({ y: 0, atTop: true, live: false });
+  // Поточний зсув тримаємо і в рефі: у touchend стан ще може бути
+  // не перемальований, а рішення «відкрити чи повернути» треба зараз.
+  const dragY = useRef<number | null>(null);
+  const movePull = (v: number | null) => { dragY.current = v; setPull(v); };
+
+  // 10% зверху лишаємо видимими; closed — скільки шиту треба проїхати
+  function measure() {
+    const gap = Math.round(window.innerHeight * 0.1);
+    const top = listRef.current?.getBoundingClientRect().top ?? window.innerHeight;
+    geom.current.closed = Math.max(top - gap, 1);
+    return geom.current.closed;
+  }
+
+  const sheetY = full ? (pull ?? 0) : pull;
+  const progress =
+    sheetY === null ? 0 : Math.min(Math.max(1 - sheetY / (geom.current.closed || 1), 0), 1);
+
+  function openFull() {
+    measure();
+    setQuery("");
+    movePull(null);
+    setFull(true);
+  }
+  function closeFull() {
+    setFull(false);
+    movePull(null);
+    setQuery("");
+  }
+
+  // тягнемо згорнутий блок угору
+  function pullStart(e: React.TouchEvent) {
+    if (full) return;
+    grab.current = { y: e.touches[0].clientY, atTop: true, live: false };
+  }
+  function pullMove(e: React.TouchEvent) {
+    if (full) return;
+    const dy = e.touches[0].clientY - grab.current.y;
+    if (!grab.current.live) {
+      if (dy > -8) return;           // ще не зрозуміло, чи це тяга
+      grab.current.live = true;
+      measure();
+    }
+    movePull(Math.min(Math.max(geom.current.closed + dy, 0), geom.current.closed));
+  }
+  function pullEnd() {
+    if (full || !grab.current.live) return;
+    const passed = geom.current.closed - (dragY.current ?? geom.current.closed);
+    grab.current.live = false;
+    movePull(null);
+    if (passed > geom.current.closed * 0.28) setFull(true);
+  }
+
+  // тягнемо розгорнутий шит униз — тільки коли список на самому верху
+  function fullStart(e: React.TouchEvent) {
+    if (!full) return;
+    grab.current = {
+      y: e.touches[0].clientY,
+      atTop: (fullListRef.current?.scrollTop ?? 0) <= 0,
+      live: false,
+    };
+  }
+  function fullMove(e: React.TouchEvent) {
+    if (!full || !grab.current.atTop) return;
+    const dy = e.touches[0].clientY - grab.current.y;
+    if (dy <= 0) return;
+    grab.current.live = true;
+    movePull(Math.min(dy, geom.current.closed));
+  }
+  function fullEnd() {
+    if (!full || !grab.current.live) return;
+    grab.current.live = false;
+    if ((dragY.current ?? 0) > geom.current.closed * 0.28) closeFull();
+    else movePull(null);
+  }
+
+  const found = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return cats;
+    return cats.filter((c) => dataLabel(c.cat, lang).toLowerCase().includes(q));
+  }, [cats, query, lang]);
+
+  // Один рядок категорії. Частки рахуємо від УСІХ витрат періоду, а не від
+  // знайденого, інакше пошук почав би змінювати цифри.
+  function catRow(c: { cat: string; sum: number; count: number }, i: number) {
+    const vis = catVisual(c.cat, !isExpenses);
+    const shareRaw = total > 0 ? (c.sum / total) * 100 : 0;
+    const share = Math.round(shareRaw);
+    return (
+      <div key={c.cat}>
+        <div className={`${styles.repRowDiv} ${i === 0 ? styles.repRowDivFirst : ""}`} />
+        <Link
+          className={styles.repRow}
+          href={`/category?cat=${encodeURIComponent(c.cat)}&from=${cur.start}&to=${cur.end}&type=${isExpenses ? "expense" : "income"}`}
+        >
+          <span className={styles.repDisc} style={{ background: vis.color }}>
+            <DsIcon name={vis.icon ?? "BoldMoneyMoneyBag"} size={18} />
+          </span>
+          <span className={styles.repRowMid}>
+            <span className={styles.repRowHead}>
+              <span className={styles.repRowName}>{dataLabel(c.cat, lang)}</span>
+              <span className={styles.repRowSum}>{sign}{money(c.sum, dec)}</span>
+            </span>
+            {/* смуга частки — як у категоріях історії */}
+            <span className={styles.repBar}>
+              <span className={styles.repBarFill} style={{ width: `${Math.max(shareRaw, 1.5)}%` }} />
+            </span>
+            <span className={styles.repRowSub}>
+              <span>{c.count} {opsLabel(c.count, lang)} · {share}%</span>
+              <span className={styles.repRowConv}>≈ {conv(c.sum, dec)}</span>
+            </span>
+          </span>
+        </Link>
+      </div>
+    );
   }
 
   // Ключ перерисовки: змінюється на кожен новий період -> перезапускає анімацію.
@@ -513,16 +650,22 @@ export default function ReportsView({
         </div>
         </div>
 
-        {/* блок категорій */}
-        <section className={styles.repList}>
+        {/* блок категорій — тягнеться вгору й розкривається на весь екран */}
+        <section
+          className={styles.repList}
+          ref={listRef}
+          onTouchStart={pullStart}
+          onTouchMove={pullMove}
+          onTouchEnd={pullEnd}
+        >
           <div className={styles.repListHead}>
             <span className={styles.repListTitle}>
               {isExpenses ? t("common.expenses") : t("common.income")}
             </span>
-            <Link href="/history" className={styles.repListLink}>
+            <button type="button" className={styles.repListLink} onClick={openFull}>
               {t("dash.all")}
               <ArrowRight />
-            </Link>
+            </button>
           </div>
 
           {isEmpty || !anyAccountOn ? (
@@ -533,44 +676,65 @@ export default function ReportsView({
               </span>
             </div>
           ) : (
-            cats.map((c, i) => {
-              const vis = catVisual(c.cat, !isExpenses);
-              const shareRaw = total > 0 ? (c.sum / total) * 100 : 0;
-              const share = Math.round(shareRaw);
-              return (
-                <div key={c.cat}>
-                  <div className={`${styles.repRowDiv} ${i === 0 ? styles.repRowDivFirst : ""}`} />
-                  <Link
-                    className={styles.repRow}
-                    href={`/category?cat=${encodeURIComponent(c.cat)}&from=${cur.start}&to=${cur.end}&type=${isExpenses ? "expense" : "income"}`}
-                  >
-                    <span className={styles.repDisc} style={{ background: vis.color }}>
-                      <DsIcon name={vis.icon ?? "BoldMoneyMoneyBag"} size={18} />
-                    </span>
-                    <span className={styles.repRowMid}>
-                      <span className={styles.repRowHead}>
-                        <span className={styles.repRowName}>{dataLabel(c.cat, lang)}</span>
-                        <span className={styles.repRowSum}>{sign}{money(c.sum, dec)}</span>
-                      </span>
-                      {/* смуга частки — як у категоріях історії */}
-                      <span className={styles.repBar}>
-                        <span
-                          className={styles.repBarFill}
-                          style={{ width: `${Math.max(shareRaw, 1.5)}%` }}
-                        />
-                      </span>
-                      <span className={styles.repRowSub}>
-                        <span>{c.count} {opsLabel(c.count, lang)} · {share}%</span>
-                        <span className={styles.repRowConv}>≈ {conv(c.sum, dec)}</span>
-                      </span>
-                    </span>
-                  </Link>
-                </div>
-              );
-            })
+            cats.map(catRow)
           )}
         </section>
       </div>
+
+      {/* розгорнутий список категорій */}
+      <div
+        className={styles.repDim}
+        style={{ opacity: progress, pointerEvents: full ? "auto" : "none" }}
+        onClick={closeFull}
+      />
+      <section
+        className={`${styles.repFull} ${full || pull !== null ? styles.repFullOn : ""}`}
+        style={{
+          transform: sheetY === null ? "translateY(100%)" : `translateY(${sheetY}px)`,
+          transition: pull === null ? undefined : "none",
+        }}
+        onTouchStart={fullStart}
+        onTouchMove={fullMove}
+        onTouchEnd={fullEnd}
+      >
+        <span className={styles.repGrab} />
+        <div className={styles.repFullHead}>
+          <span className={styles.repListTitle}>
+            {isExpenses ? t("common.expenses") : t("common.income")}
+          </span>
+          <span className={styles.repFullSum}>{total > 0 ? sign : ""}{money(total, 0)}</span>
+        </div>
+        <label className={`${styles.repSearch} ${styles.glass}`}>
+          <span className={styles.repSearchIco}><SearchGlyph /></span>
+          <input
+            className={styles.repSearchInput}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={t("cat.search")}
+            enterKeyHint="search"
+            aria-label={t("cat.search")}
+          />
+          {query && (
+            <button
+              type="button"
+              className={styles.repSearchClear}
+              onClick={() => setQuery("")}
+              aria-label={t("common.close")}
+            >
+              <CrossGlyph />
+            </button>
+          )}
+        </label>
+        <div className={styles.repFullList} ref={fullListRef}>
+          {found.length === 0 ? (
+            <div className={styles.repEmpty}>
+              <span className={styles.repEmptyTitle}>{t("hist.notFound")}</span>
+            </div>
+          ) : (
+            found.map(catRow)
+          )}
+        </div>
+      </section>
 
       {/* низ */}
       <div className={styles.repScrim} />
