@@ -220,7 +220,13 @@
 .segType button { flex: 1; padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.6); font-weight: 600; font-size: 14px; cursor: pointer; }
 .segOn { background: var(--sc-surface-glass) !important; color: var(--sc-ink) !important; border-color: var(--sc-glass-edge) !important; }
 .field { margin-bottom: 12px; }
-.fieldLabel { display: block; font: var(--sc-type-caption); color: var(--sc-ink-tertiary); margin: 0 0 var(--sc-sheet-gap-tight); }
+/* Лейбл над сегментом/контролом: 8 донизу, 4 з боків.
+   Зверху — відстань між блоками; перший лейбл її не отримує. */
+.fieldLabel {
+  display: block; font: var(--sc-type-caption); color: var(--sc-ink-tertiary);
+  margin: var(--sc-sheet-stack) var(--sc-label-inset) var(--sc-sheet-label-gap);
+}
+.fieldLabel:first-child { margin-top: 0; }
 .input, .select { width: 100%; height: 44px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: var(--sc-ink); padding: 0 12px; font-size: 15px; outline: none; }
 .amountInput { height: 56px; font-size: 26px; font-weight: 700; }
 .sheetActions { display: flex; gap: 10px; margin-top: var(--sc-sheet-gap); flex-shrink: 0; }
@@ -418,7 +424,20 @@
 .menuItemOff { opacity: 0.5; cursor: default; }
 
 /* settings */
-.setCard { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 8px; margin-top: 12px; }
+/* Список-картка: та сама поверхня, що .list у меню. Роздільник між рядками
+   починається від ТЕКСТУ, не від краю картки. */
+.setCard {
+  display: flex; flex-direction: column;
+  background: var(--sc-surface-card); border: 0;
+  border-radius: var(--sc-radius-group); box-shadow: var(--sc-shadow-card);
+  margin-top: var(--sc-sheet-gap-tight);
+}
+.setCard > * + * { position: relative; }
+.setCard > * + *::before {
+  content: ""; position: absolute; top: 0;
+  left: var(--sc-row-divider-left); right: var(--sc-row-inset);
+  height: 1px; background: var(--sc-hairline);
+}
 .setAccRow { display: flex; align-items: center; gap: 10px; padding: 10px 8px; }
 .setAccRow + .setAccRow { border-top: 1px solid rgba(255,255,255,0.05); }
 .setAccEmoji { font-size: 20px; flex-shrink: 0; }
@@ -472,13 +491,13 @@
 .donateCopy { font-size: 12px; font-weight: 600; color: var(--sc-accent-text); flex-shrink: 0; margin-left: auto; }
 .curGroupLabel + .setCard { margin-top: 0; }
 .curGroupSub + .setCard { margin-top: 0; }
-.curRow { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 8px; background: none; border: none; cursor: pointer; text-align: left; }
+.curRow { display: flex; align-items: center; gap: 10px; width: 100%; padding: var(--sc-row-inset); background: none; border: 0; cursor: pointer; text-align: left; color: inherit; }
 .curMid { display: flex; flex-direction: column; flex: 1; }
 .notice { display: flex; gap: 10px; align-items: flex-start; margin: 12px 0 0; padding: 12px 14px; border-radius: 14px; background: rgba(245,180,90,0.09); border: 1px solid rgba(245,180,90,0.22); color: rgba(245,200,124,0.92); font-size: 13px; line-height: 1.4; }
 .notice svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; color: #f5c87c; }
 .notice b { color: #f5d79a; font-weight: 700; }
 .curBadge { width: 38px; height: 38px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 11px; background: rgba(110,231,183,0.14); color: var(--sc-accent-text); font-size: 16px; font-weight: 700; }
-.langFlag { width: 38px; height: 38px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 11px; background: rgba(255,255,255,0.06); font-size: 20px; }
+.langFlag { width: 40px; height: 40px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: var(--sc-radius-tile); background: rgba(255,255,255,.08); box-shadow: inset 0 0 0 .5px var(--sc-glass-edge); font-size: 20px; }
 .curCheck { margin-left: auto; color: var(--sc-accent-text); font-size: 18px; font-weight: 800; }
 .quickCur { font-size: 18px; font-weight: 800; color: var(--sc-accent-text); }
 .addLineBtn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 46px; margin-top: 8px; border-radius: 14px; border: 1px dashed rgba(255,255,255,0.18); background: rgba(255,255,255,0.03); color: var(--sc-accent-text); font-size: 14px; font-weight: 600; cursor: pointer; }

@@ -85,6 +85,7 @@
   --sc-safe-b: env(safe-area-inset-bottom, 0px);
   --sc-sheet-stack: 16px;      /* між блоками форми в попапі */
   --sc-sheet-label-gap: 8px;   /* лейбл блоку -> сам контрол */
+  --sc-label-inset: 4px;       /* лейбл трохи всередину від краю [ours] */
 
   /* Effects */
   --sc-blur-glass: blur(24px) saturate(140%);

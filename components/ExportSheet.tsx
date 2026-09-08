@@ -92,7 +92,7 @@ export default function ExportSheet({
 
             {!fixedType && (
               <>
-                <div className={styles.fieldLabel} style={{ marginTop: 16 }}>{t("exp.what")}</div>
+                <div className={styles.fieldLabel}>{t("exp.what")}</div>
                 <div className={`${ds.seg} ${ds.segScroll}`}>
                   <button className={`${ds.segItem} ${type === "all" ? ds.segOn : ""}`} onClick={() => setType("all")}>{t("exp.all")}</button>
                   <button className={`${ds.segItem} ${type === "expense" ? ds.segOn : ""}`} onClick={() => setType("expense")}>{t("common.expenses")}</button>
@@ -101,7 +101,7 @@ export default function ExportSheet({
               </>
             )}
 
-            <div className={styles.fieldLabel} style={{ marginTop: 16 }}>{t("common.period")}</div>
+            <div className={styles.fieldLabel}>{t("common.period")}</div>
             <div className={`${ds.seg} ${ds.segScroll}`}>
               <button className={`${ds.segItem} ${period === "all" ? ds.segOn : ""}`} onClick={() => setPeriod("all")}>{t("exp.allTime")}</button>
               <button className={`${ds.segItem} ${period === "month" ? ds.segOn : ""}`} onClick={() => setPeriod("month")}>{t("period.month")}</button>

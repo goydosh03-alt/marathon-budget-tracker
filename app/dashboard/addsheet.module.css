@@ -41,7 +41,7 @@
 .scanBtn:disabled { opacity: .6; }
 
 /* ---------- смуги вибору ---------- */
-.label { display: block; font: var(--sc-type-caption); color: var(--sc-ink-tertiary); margin: 0 4px var(--sc-sheet-label-gap); }
+.label { display: block; font: var(--sc-type-caption); color: var(--sc-ink-tertiary); margin: 0 var(--sc-label-inset) var(--sc-sheet-label-gap); }
 
 .catWrap { display: flex; gap: 8px; align-items: stretch; }
 .box {

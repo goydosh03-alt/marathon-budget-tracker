@@ -103,7 +103,7 @@ export default function TransactionDetail({
 
             {items.length > 0 && (
               <>
-                <div className={styles.fieldLabel} style={{ marginTop: 16 }}>{t("det.items")}</div>
+                <div className={styles.fieldLabel}>{t("det.items")}</div>
                 <div className={styles.itemsEdit}>
                   {items.map((it, i) => (
                     <div className={styles.itemRow} key={i}>
@@ -117,7 +117,7 @@ export default function TransactionDetail({
 
             {photoUrl && (
               <>
-                <div className={styles.fieldLabel} style={{ marginTop: 16 }}>{t("det.receipt")}</div>
+                <div className={styles.fieldLabel}>{t("det.receipt")}</div>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img className={styles.detPhoto} src={photoUrl} alt={t("det.receipt")} />
               </>
