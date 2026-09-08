@@ -80,8 +80,8 @@ export default function CategoryView({
         title={dataLabel(cat, lang)}
         back="/reports"
         right={
-          <button className={styles.exportBtn} onClick={() => setShowExport(true)} aria-label={tt("common.export")}>
-            <Icon id="i-download" />
+          <button className={styles.iconBtn} onClick={() => setShowExport(true)} aria-label={tt("common.export")}>
+            <DsIcon name="BoldArrowsArrowDown" size={20} />
           </button>
         }
       />

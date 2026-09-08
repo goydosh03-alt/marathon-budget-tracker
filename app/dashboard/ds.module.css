@@ -65,8 +65,11 @@
   font: var(--sc-type-heading); line-height: 1.1; color: var(--sc-ink);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
+/* Скляна пігулка під іконки шапки. Одна іконка (‹ назад на підсторінці)
+   чи три — контейнер той самий, тому шапка читається однаково всюди. */
 .actions {
-  display: inline-flex; align-items: center; height: 42px; padding: 0 4px;
+  display: inline-flex; align-items: center; gap: 2px;
+  height: 42px; padding: 0 4px;
   border-radius: var(--sc-radius-pill); flex-shrink: 0;
 }
 
