@@ -7,6 +7,7 @@ import DsIcon from "@/components/ds/Icon";
 import { resolveCat } from "@/lib/catIcon";
 import { useT, useLang, useCategories } from "@/components/SettingsProvider";
 import { dataLabel } from "@/lib/i18n";
+import SheetPortal from "@/components/ui/SheetPortal";
 
 function Check() {
   return (
@@ -45,45 +46,47 @@ export default function CategoryPickerSheet({
   }, [cats, q, lang]);
 
   return (
-    <div className={sheetStyles.sheetWrap}>
-      <div data-sheet-back className={sheetStyles.sheetBack} onClick={onClose} />
-      <div data-sheet className={sheetStyles.sheet}>
-        <div className={s.search}>
-          <DsIcon name="BoldSearchMagnifer" size={18} />
-          <input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder={t("det.category")}
-            inputMode="search"
-          />
-        </div>
-        <div className={s.searchGap} />
-        <div data-vfade className={sheetStyles.sheetBody}>
-          <div className={s.pickList}>
-            {list.map((c) => {
-              const look = resolveCat(c, isIncome, customMap.get(c));
-              return (
-                <button
-                  key={c}
-                  type="button"
-                  className={`${s.pickRow} ${c === value ? s.pickOn : ""}`}
-                  onClick={() => {
-                    onPick(c);
-                    onClose();
-                  }}
-                >
-                  <span className={s.pickIco} style={{ color: look.color }}>
-                    {look.icon ? <DsIcon name={look.icon} size={20} /> : look.emoji}
-                  </span>
-                  <span className={s.pickName}>{dataLabel(c, lang)}</span>
-                  {c === value && <span className={s.pickCheck}><Check /></span>}
-                </button>
-              );
-            })}
-            {list.length === 0 && <div className={s.pickEmpty}>{t("dash.empty.exp")}</div>}
+    <SheetPortal>
+      <div className={sheetStyles.sheetWrap}>
+        <div data-sheet-back className={sheetStyles.sheetBack} onClick={onClose} />
+        <div data-sheet className={sheetStyles.sheet}>
+          <div className={s.search}>
+            <DsIcon name="BoldSearchMagnifer" size={18} />
+            <input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder={t("det.category")}
+              inputMode="search"
+            />
+          </div>
+          <div className={s.searchGap} />
+          <div data-vfade className={sheetStyles.sheetBody}>
+            <div className={s.pickList}>
+              {list.map((c) => {
+                const look = resolveCat(c, isIncome, customMap.get(c));
+                return (
+                  <button
+                    key={c}
+                    type="button"
+                    className={`${s.pickRow} ${c === value ? s.pickOn : ""}`}
+                    onClick={() => {
+                      onPick(c);
+                      onClose();
+                    }}
+                  >
+                    <span className={s.pickIco} style={{ color: look.color }}>
+                      {look.icon ? <DsIcon name={look.icon} size={20} /> : look.emoji}
+                    </span>
+                    <span className={s.pickName}>{dataLabel(c, lang)}</span>
+                    {c === value && <span className={s.pickCheck}><Check /></span>}
+                  </button>
+                );
+              })}
+              {list.length === 0 && <div className={s.pickEmpty}>{t("dash.empty.exp")}</div>}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </SheetPortal>
   );
 }

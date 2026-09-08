@@ -8,6 +8,7 @@ import SubHeader from "@/components/SubHeader";
 import { useT } from "@/components/SettingsProvider";
 import { createClient } from "@/lib/supabase/client";
 import { updateProfileName, deleteUserAccount, saveAvatarUrl } from "@/app/dashboard/actions";
+import SheetPortal from "@/components/ui/SheetPortal";
 
 // Стискаємо фото до квадрата 256px (центр-кроп) → jpeg.
 async function toAvatarBlob(file: File): Promise<Blob | null> {
@@ -198,24 +199,26 @@ export default function ProfileClient({
       </button>
 
       {delOpen && (
-        <div className={styles.sheetWrap}>
-          <div data-sheet-back className={styles.sheetBack} onClick={() => setDelOpen(false)} />
-          <div data-sheet className={styles.sheet}>
-            <div data-vfade className={styles.sheetBody}>
-              <div className={styles.sheetTitle}>{t("prof.delTitle")}</div>
-              <div className={styles.confirmText}>
-                {t("prof.delBody")} <b>{t("prof.forever")}</b>. {t("confirm.typeWord")} <b>{t("confirm.deleteWord")}</b>.
+        <SheetPortal>
+          <div className={styles.sheetWrap}>
+            <div data-sheet-back className={styles.sheetBack} onClick={() => setDelOpen(false)} />
+            <div data-sheet className={styles.sheet}>
+              <div data-vfade className={styles.sheetBody}>
+                <div className={styles.sheetTitle}>{t("prof.delTitle")}</div>
+                <div className={styles.confirmText}>
+                  {t("prof.delBody")} <b>{t("prof.forever")}</b>. {t("confirm.typeWord")} <b>{t("confirm.deleteWord")}</b>.
+                </div>
+                <input className={styles.confirmInput} placeholder={t("confirm.deleteWord")} value={delWord} onChange={(e) => setDelWord(e.target.value)} autoFocus />
               </div>
-              <input className={styles.confirmInput} placeholder={t("confirm.deleteWord")} value={delWord} onChange={(e) => setDelWord(e.target.value)} autoFocus />
-            </div>
-            <div className={styles.sheetActions}>
-              <button className={styles.btnGhost} onClick={() => setDelOpen(false)}>{t("common.cancel")}</button>
-              <button className={styles.confirmDel} onClick={confirmDelete} disabled={!canDelete || deleting}>
-                {deleting ? t("common.deleting") : t("common.delete")}
-              </button>
+              <div className={styles.sheetActions}>
+                <button className={styles.btnGhost} onClick={() => setDelOpen(false)}>{t("common.cancel")}</button>
+                <button className={styles.confirmDel} onClick={confirmDelete} disabled={!canDelete || deleting}>
+                  {deleting ? t("common.deleting") : t("common.delete")}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        </SheetPortal>
       )}
     </div>
   );

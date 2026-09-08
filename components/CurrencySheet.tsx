@@ -6,6 +6,7 @@ import styles from "@/app/dashboard/dashboard.module.css";
 import { CURRENCIES, currencyMeta, convert, formatMoney, type CurrencyCode } from "@/lib/currency";
 import { useCurrency, useConvertCurrency, useRates, useT } from "@/components/SettingsProvider";
 import { setMainCurrency, setConvertCurrency } from "@/app/dashboard/actions";
+import SheetPortal from "@/components/ui/SheetPortal";
 
 export default function CurrencySheet({ open, onClose }: { open: boolean; onClose: () => void }) {
   const router = useRouter();
@@ -60,30 +61,32 @@ export default function CurrencySheet({ open, onClose }: { open: boolean; onClos
   );
 
   return (
-    <div className={styles.sheetWrap}>
-      <div data-sheet-back className={styles.sheetBack} onClick={onClose} />
-      <div data-sheet className={styles.sheet}>
-        <div data-vfade className={styles.sheetBody}>
-          <div className={styles.sheetTitle}>{t("menu.currency")}</div>
+    <SheetPortal>
+      <div className={styles.sheetWrap}>
+        <div data-sheet-back className={styles.sheetBack} onClick={onClose} />
+        <div data-sheet className={styles.sheet}>
+          <div data-vfade className={styles.sheetBody}>
+            <div className={styles.sheetTitle}>{t("menu.currency")}</div>
 
-          <div className={styles.fieldLabel}>{t("menu.mainCurrency")}</div>
-          {pick(main, setMain)}
+            <div className={styles.fieldLabel}>{t("menu.mainCurrency")}</div>
+            {pick(main, setMain)}
 
-          <div className={styles.curSwap}>
-            <span className={styles.curSwapArrow}>↓</span>
-            <span className={styles.curSwapRate}>{rateText}</span>
+            <div className={styles.curSwap}>
+              <span className={styles.curSwapArrow}>↓</span>
+              <span className={styles.curSwapRate}>{rateText}</span>
+            </div>
+
+            <div className={styles.fieldLabel}>{t("cur.convTo")}</div>
+            {pick(conv, setConv)}
           </div>
 
-          <div className={styles.fieldLabel}>{t("cur.convTo")}</div>
-          {pick(conv, setConv)}
-        </div>
-
-        <div className={styles.sheetActions}>
-          <button className={styles.btnPrimary} onClick={apply} disabled={saving}>
-            {saving ? t("form.saving") : changed ? t("common.apply") : t("common.done")}
-          </button>
+          <div className={styles.sheetActions}>
+            <button className={styles.btnPrimary} onClick={apply} disabled={saving}>
+              {saving ? t("form.saving") : changed ? t("common.apply") : t("common.done")}
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </SheetPortal>
   );
 }

@@ -152,3 +152,10 @@ Next.js 14 (App Router, TS) + Supabase + Claude API (OCR) + Vercel.
 5. `npx tsc --noEmit` і `npm run build` — обидва мають бути чисті
 6. Оновив реєстр, якщо намалював щось без логіки
 7. `git pull --rebase` → коміт → пуш
+
+
+## Попапи
+
+Будь-який bottom sheet обгортається у `<SheetPortal>` — інакше `backdrop-filter`
+на батьківському склі перетворює `position: fixed` на локальний і попап
+малюється всередині кнопки. Деталі — DESIGN-SYSTEM.md §7.1.1.

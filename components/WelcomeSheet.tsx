@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from "react";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon } from "@/components/IconSprite";
 import { useT } from "@/components/SettingsProvider";
+import SheetPortal from "@/components/ui/SheetPortal";
 
 const FLAG = "sc_onboarded";
 const SHOTS = ["/onboarding/step1.png", "/onboarding/step2.png", "/onboarding/step3.png"];
@@ -53,50 +54,52 @@ export default function WelcomeSheet({ txCount }: { txCount: number }) {
   const subs = [t("onb.s1.sub"), t("onb.s2.sub"), t("onb.s3.sub")];
 
   return (
-    <div className={styles.sheetWrap}>
-      <div data-sheet-back className={styles.sheetBack} onClick={close} />
-      <div data-sheet className={styles.sheet}>
-        <div data-vfade className={styles.sheetBody}>
-          <div className={styles.sheetTitle}><span>{t("onb.welcome")}</span></div>
+    <SheetPortal>
+      <div className={styles.sheetWrap}>
+        <div data-sheet-back className={styles.sheetBack} onClick={close} />
+        <div data-sheet className={styles.sheet}>
+          <div data-vfade className={styles.sheetBody}>
+            <div className={styles.sheetTitle}><span>{t("onb.welcome")}</span></div>
 
-          <div className={styles.onbView} onTouchStart={swipeStart} onTouchEnd={swipeEnd}>
-            <div className={styles.onbTrack} style={{ transform: `translateX(-${idx * 100}%)` }}>
-              {SHOTS.map((src, i) => (
-                <div className={styles.onbSlide} key={src}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    className={styles.onbShot}
-                    src={src}
-                    alt={titles[i]}
-                    loading="eager"
-                    onError={(e) => { e.currentTarget.style.visibility = "hidden"; }}
-                  />
-                </div>
+            <div className={styles.onbView} onTouchStart={swipeStart} onTouchEnd={swipeEnd}>
+              <div className={styles.onbTrack} style={{ transform: `translateX(-${idx * 100}%)` }}>
+                {SHOTS.map((src, i) => (
+                  <div className={styles.onbSlide} key={src}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      className={styles.onbShot}
+                      src={src}
+                      alt={titles[i]}
+                      loading="eager"
+                      onError={(e) => { e.currentTarget.style.visibility = "hidden"; }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className={styles.onbTitle}>{titles[idx]}</div>
+            <div className={styles.onbText}>{subs[idx]}</div>
+
+            <div className={styles.onbDots}>
+              {[0, 1, 2].map((i) => (
+                <button key={i} className={`${styles.onbDot} ${idx === i ? styles.onbDotOn : ""}`} onClick={() => setIdx(i)} aria-label={`${i + 1}`} />
               ))}
             </div>
           </div>
 
-          <div className={styles.onbTitle}>{titles[idx]}</div>
-          <div className={styles.onbText}>{subs[idx]}</div>
-
-          <div className={styles.onbDots}>
-            {[0, 1, 2].map((i) => (
-              <button key={i} className={`${styles.onbDot} ${idx === i ? styles.onbDotOn : ""}`} onClick={() => setIdx(i)} aria-label={`${i + 1}`} />
-            ))}
+          <div className={styles.sheetActions}>
+            {idx < 2 ? (
+              <>
+                <button className={styles.btnGhost} onClick={close}>{t("onb.skip")}</button>
+                <button className={styles.btnPrimary} onClick={() => setIdx((i) => i + 1)}>{t("onb.next")}</button>
+              </>
+            ) : (
+              <button className={styles.btnPrimary} onClick={close}>{t("onb.start")}</button>
+            )}
           </div>
         </div>
-
-        <div className={styles.sheetActions}>
-          {idx < 2 ? (
-            <>
-              <button className={styles.btnGhost} onClick={close}>{t("onb.skip")}</button>
-              <button className={styles.btnPrimary} onClick={() => setIdx((i) => i + 1)}>{t("onb.next")}</button>
-            </>
-          ) : (
-            <button className={styles.btnPrimary} onClick={close}>{t("onb.start")}</button>
-          )}
-        </div>
       </div>
-    </div>
+    </SheetPortal>
   );
 }

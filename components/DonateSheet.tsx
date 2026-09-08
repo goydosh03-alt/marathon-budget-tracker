@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon } from "@/components/IconSprite";
 import { useT } from "@/components/SettingsProvider";
+import SheetPortal from "@/components/ui/SheetPortal";
 
 type Row = { id: string; title: string; value: string; badge?: string; badgeBg?: string };
 
@@ -55,23 +56,25 @@ export default function DonateSheet({ open, onClose }: { open: boolean; onClose:
   );
 
   return (
-    <div className={styles.sheetWrap}>
-      <div data-sheet-back className={styles.sheetBack} onClick={onClose} />
-      <div data-sheet className={styles.sheet}>
-        <div data-vfade className={styles.sheetBody}>
-          <div className={styles.sheetTitle}><span>{t("don.title")}</span></div>
+    <SheetPortal>
+      <div className={styles.sheetWrap}>
+        <div data-sheet-back className={styles.sheetBack} onClick={onClose} />
+        <div data-sheet className={styles.sheet}>
+          <div data-vfade className={styles.sheetBody}>
+            <div className={styles.sheetTitle}><span>{t("don.title")}</span></div>
 
-          <div className={styles.donateHint}>
-            {t("don.text")}
+            <div className={styles.donateHint}>
+              {t("don.text")}
+            </div>
+
+            <div className={styles.donateLabel}>{t("don.crypto")}</div>
+            <div className={styles.setCard}>{CRYPTO.map(row)}</div>
+
+            <div className={styles.donateLabel}>{t("don.bank")}</div>
+            <div className={styles.setCard}>{BANK.map(row)}</div>
           </div>
-
-          <div className={styles.donateLabel}>{t("don.crypto")}</div>
-          <div className={styles.setCard}>{CRYPTO.map(row)}</div>
-
-          <div className={styles.donateLabel}>{t("don.bank")}</div>
-          <div className={styles.setCard}>{BANK.map(row)}</div>
         </div>
       </div>
-    </div>
+    </SheetPortal>
   );
 }

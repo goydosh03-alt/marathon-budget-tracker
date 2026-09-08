@@ -6,6 +6,7 @@ import m from "@/app/menu/menu.module.css";
 import DsIcon from "@/components/ds/Icon";
 import EmptyState from "@/components/EmptyState";
 import { useT } from "@/components/SettingsProvider";
+import SheetPortal from "@/components/ui/SheetPortal";
 
 // Поки що сповіщення зберігаються локально (на пристрої).
 type Notif = { id: string; title: string; body: string; date: string; read: boolean };
@@ -76,56 +77,58 @@ export default function NotificationsBell() {
       </button>
 
       {open && (
-        <div className={styles.sheetWrap}>
-          <div data-sheet-back className={styles.sheetBack} onClick={() => setOpen(false)} />
-          <div data-sheet className={styles.sheet}>
-            <div data-vfade className={styles.sheetBody}>
-              <div className={styles.sheetTitle}>{t("notif.title")}</div>
+        <SheetPortal>
+          <div className={styles.sheetWrap}>
+            <div data-sheet-back className={styles.sheetBack} onClick={() => setOpen(false)} />
+            <div data-sheet className={styles.sheet}>
+              <div data-vfade className={styles.sheetBody}>
+                <div className={styles.sheetTitle}>{t("notif.title")}</div>
 
-              {items.length === 0 ? (
-                <EmptyState
-                  icon="BoldNotificationsBell"
-                  title={t("notif.emptyTitle")}
-                  hint={t("notif.emptyHint")}
-                />
-              ) : (
-                <div className={m.list}>
-                  {items.map((n) => {
-                    const l = look(n.id);
-                    return (
-                      <button
-                        key={n.id}
-                        type="button"
-                        className={`${m.row} ${n.read ? styles.notifRead : ""}`}
-                        onClick={() => tapNotif(n)}
-                      >
-                        <span className={m.tile} style={{ color: l.color }}>
-                          <DsIcon name={l.icon} size={20} />
-                        </span>
-                        <span className={m.mid}>
-                          <span className={m.name}>{n.title}</span>
-                          <span className={m.sub}>{n.body}</span>
-                        </span>
-                        <span className={styles.notifMeta}>
-                          <span className={styles.notifDate}>{n.date}</span>
-                          {!n.read && <span className={styles.notifDot2} />}
-                        </span>
-                      </button>
-                    );
-                  })}
+                {items.length === 0 ? (
+                  <EmptyState
+                    icon="BoldNotificationsBell"
+                    title={t("notif.emptyTitle")}
+                    hint={t("notif.emptyHint")}
+                  />
+                ) : (
+                  <div className={m.list}>
+                    {items.map((n) => {
+                      const l = look(n.id);
+                      return (
+                        <button
+                          key={n.id}
+                          type="button"
+                          className={`${m.row} ${n.read ? styles.notifRead : ""}`}
+                          onClick={() => tapNotif(n)}
+                        >
+                          <span className={m.tile} style={{ color: l.color }}>
+                            <DsIcon name={l.icon} size={20} />
+                          </span>
+                          <span className={m.mid}>
+                            <span className={m.name}>{n.title}</span>
+                            <span className={m.sub}>{n.body}</span>
+                          </span>
+                          <span className={styles.notifMeta}>
+                            <span className={styles.notifDate}>{n.date}</span>
+                            {!n.read && <span className={styles.notifDot2} />}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {unread > 0 && (
+                <div className={styles.sheetActions}>
+                  <button className={styles.btnPrimary} onClick={markAllRead}>
+                    {t("notif.markAll")}
+                  </button>
                 </div>
               )}
             </div>
-
-            {unread > 0 && (
-              <div className={styles.sheetActions}>
-                <button className={styles.btnPrimary} onClick={markAllRead}>
-                  {t("notif.markAll")}
-                </button>
-              </div>
-            )}
           </div>
-        </div>
+        </SheetPortal>
       )}
     </>
   );
