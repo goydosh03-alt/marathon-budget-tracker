@@ -67,10 +67,11 @@
 }
 /* Скляна пігулка під іконки шапки. Одна іконка (‹ назад на підсторінці)
    чи три — контейнер той самий, тому шапка читається однаково всюди. */
+/* Скляна пігулка під іконки шапки. Одна іконка чи три — контейнер той самий.
+   Висота = --sc-hit, тобто кнопка всередині рівно 42x42 без зайвого padding. */
 .actions {
-  display: inline-flex; align-items: center; gap: 2px;
-  height: 42px; padding: 0 4px;
-  border-radius: var(--sc-radius-pill); flex-shrink: 0;
+  display: inline-flex; align-items: center;
+  height: var(--sc-hit); border-radius: var(--sc-radius-pill); flex-shrink: 0;
 }
 
 /* ---------- герой ---------- */
@@ -527,7 +528,10 @@
               color var(--sc-duration-fast) var(--sc-ease);
 }
 .segOn { background: var(--sc-surface-glass-active); color: var(--sc-ink); }
+/* Фіксований невеликий набір (2-3 варіанти, які завжди влазять) ділить
+   ширину порівну. Змінна кількість — по контенту, див. .segScroll. */
 .segPrimary .segItem { flex: 1 1 0; height: var(--sc-seg-h-primary); font: var(--sc-type-body-medium); }
+.segPrimary .segIcon { height: var(--sc-seg-h-primary); width: var(--sc-seg-h-primary); }
 .segScroll { overflow-x: auto; scrollbar-width: none; }
 .segScroll::-webkit-scrollbar { display: none; }
 .segDiv { flex: 0 0 1px; width: 1px; height: 16px; margin: 0 4px; background: var(--sc-glass-edge); }
@@ -598,3 +602,17 @@
   overscroll-behavior: contain;
   padding-bottom: calc(150px + env(safe-area-inset-bottom, 0px));
 }
+
+
+/* ============================================================
+   Плаваючий «+» на підсторінці стоїть РІВНО там, де FAB у доці:
+   той самий bottom, той самий боковий відступ, та сама max-width,
+   тому при переході зі списку в категорію кнопка не «стрибає».
+   ============================================================ */
+.fabFloat {
+  position: fixed; z-index: 3; left: 0; right: 0;
+  bottom: calc(var(--sc-nav-bottom) + env(safe-area-inset-bottom, 0px));
+  max-width: 480px; margin: 0 auto; padding: 0 var(--sc-inset);
+  display: flex; justify-content: flex-end; pointer-events: none;
+}
+.fabFloat > * { pointer-events: auto; }

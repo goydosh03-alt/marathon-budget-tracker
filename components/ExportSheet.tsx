@@ -93,7 +93,7 @@ export default function ExportSheet({
             {!fixedType && (
               <>
                 <div className={styles.fieldLabel}>{t("exp.what")}</div>
-                <div className={`${ds.seg} ${ds.segScroll}`}>
+                <div className={`${ds.seg} ${ds.segPrimary}`}>
                   <button className={`${ds.segItem} ${type === "all" ? ds.segOn : ""}`} onClick={() => setType("all")}>{t("exp.all")}</button>
                   <button className={`${ds.segItem} ${type === "expense" ? ds.segOn : ""}`} onClick={() => setType("expense")}>{t("common.expenses")}</button>
                   <button className={`${ds.segItem} ${type === "income" ? ds.segOn : ""}`} onClick={() => setType("income")}>{t("common.incomes")}</button>
@@ -102,13 +102,13 @@ export default function ExportSheet({
             )}
 
             <div className={styles.fieldLabel}>{t("common.period")}</div>
-            <div className={`${ds.seg} ${ds.segScroll}`}>
+            <div className={`${ds.seg} ${ds.segPrimary}`}>
               <button className={`${ds.segItem} ${period === "all" ? ds.segOn : ""}`} onClick={() => setPeriod("all")}>{t("exp.allTime")}</button>
               <button className={`${ds.segItem} ${period === "month" ? ds.segOn : ""}`} onClick={() => setPeriod("month")}>{t("period.month")}</button>
               <button className={`${ds.segItem} ${period === "year" ? ds.segOn : ""}`} onClick={() => setPeriod("year")}>{t("period.year")}</button>
               <span className={ds.segDiv} />
               <button className={`${ds.segIcon} ${period === "custom" ? ds.segIconOn : ""}`} aria-label={t("exp.pickDates")} onClick={() => setCalOpen(true)}>
-                <DsIcon name="BoldCalendar" size={18} />
+                <DsIcon name="BoldCalendar" size={20} />
               </button>
             </div>
           </div>
