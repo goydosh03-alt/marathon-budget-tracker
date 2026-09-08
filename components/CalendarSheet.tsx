@@ -149,7 +149,7 @@ export default function CalendarSheet({
                 onReset();
               }}
             >
-              <Icon id="i-refresh" /> {t("cal.reset")}
+              {t("cal.reset")}
             </button>
             <button
               className={styles.btnPrimary}

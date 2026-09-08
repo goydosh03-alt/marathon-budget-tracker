@@ -197,7 +197,7 @@ export default function SettingsClient({
 
       {error && <div className={st.err}>{error}</div>}
 
-      <div className={styles.scrimbar} />
+      <div className={st.scrim} />
       <div className={st.pinned}>
         <button className={st.addBtn} onClick={() => setShowCreate(true)}>
           <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
