@@ -1,0 +1,3 @@
+#!/bin/sh
+# Автоматично прибирає дублікати iCloud у .git — див. scripts/clean-icloud-strays.sh
+sh "$(git rev-parse --show-toplevel)/scripts/clean-icloud-strays.sh" || true

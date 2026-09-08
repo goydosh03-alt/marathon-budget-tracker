@@ -19,6 +19,7 @@ import {
   type Recurring,
   type UserCategory,
 } from "@/app/dashboard/actions";
+import SheetPortal from "@/components/ui/SheetPortal";
 
 const EXPENSE_CATS = ["Їжа", "Кафе", "Транспорт", "Розваги", "Аптека", "Одяг", "Комунальні", "Інше"];
 const INCOME_CATS = ["Зарплата", "Фриланс", "Подарунок", "Інше"];
@@ -165,91 +166,93 @@ export default function RecurringClient({
       </button>
 
       {open && (
-        <div className={styles.sheetWrap}>
-          <div data-sheet-back className={styles.sheetBack} onClick={() => setOpen(false)} />
-          <div data-sheet className={styles.sheet}>
-            <div data-vfade className={styles.sheetBody}>
-              <div className={styles.sheetTitle}>{editId ? t("rec.editTitle") : t("rec.newTitle")}</div>
+        <SheetPortal>
+          <div className={styles.sheetWrap}>
+            <div data-sheet-back className={styles.sheetBack} onClick={() => setOpen(false)} />
+            <div data-sheet className={styles.sheet}>
+              <div data-vfade className={styles.sheetBody}>
+                <div className={styles.sheetTitle}>{editId ? t("rec.editTitle") : t("rec.newTitle")}</div>
 
-              <div className={styles.tabs}>
-                <button className={`${styles.tab} ${!isIncome ? styles.tabOnExp : ""}`} onClick={() => { setType("expense"); setCategory("Комунальні"); }}>{t("common.expense")}</button>
-                <button className={`${styles.tab} ${isIncome ? styles.tabOnInc : ""}`} onClick={() => { setType("income"); setCategory("Зарплата"); }}>{t("common.income")}</button>
-              </div>
-
-              <div className={styles.amtWrap}>
-                <div className={styles.amtRow}>
-                  <button
-                    type="button"
-                    className={styles.amtField}
-                    onClick={() => setCalcAmount(true)}
-                    style={{ width: `${Math.max(1, amount.length || 1)}ch`, color: amount ? undefined : "rgba(255,255,255,0.3)" }}
-                  >
-                    {amount || "0"}
-                  </button>
-                  <span className={styles.amtZl}>{sym}</span>
+                <div className={styles.tabs}>
+                  <button className={`${styles.tab} ${!isIncome ? styles.tabOnExp : ""}`} onClick={() => { setType("expense"); setCategory("Комунальні"); }}>{t("common.expense")}</button>
+                  <button className={`${styles.tab} ${isIncome ? styles.tabOnInc : ""}`} onClick={() => { setType("income"); setCategory("Зарплата"); }}>{t("common.income")}</button>
                 </div>
-                <div className={styles.amtConv}>≈ {conv(parsed, dec)}</div>
-              </div>
 
-              <div className={styles.fcard}>
-                <div className={styles.fcIcon} style={{ background: "rgba(124,92,255,0.16)", color: "#b9a8ff" }}>
-                  <Icon id="i-edit" />
+                <div className={styles.amtWrap}>
+                  <div className={styles.amtRow}>
+                    <button
+                      type="button"
+                      className={styles.amtField}
+                      onClick={() => setCalcAmount(true)}
+                      style={{ width: `${Math.max(1, amount.length || 1)}ch`, color: amount ? undefined : "rgba(255,255,255,0.3)" }}
+                    >
+                      {amount || "0"}
+                    </button>
+                    <span className={styles.amtZl}>{sym}</span>
+                  </div>
+                  <div className={styles.amtConv}>≈ {conv(parsed, dec)}</div>
                 </div>
-                <input placeholder={t("rec.namePh")} value={name} onChange={(e) => setName(e.target.value)} />
-              </div>
 
-              <div className={styles.fieldLabel}>{t("det.category")}</div>
-              <div className={styles.chips2}>
-                {cats.map((c) => (
-                  <button key={c} className={`${styles.chip2} ${category === c ? styles.chip2On : ""}`} onClick={() => setCategory(c)}>
-                    {iconFor(c)} {dataLabel(c, lang)}
-                  </button>
-                ))}
-              </div>
-
-              <div className={styles.fieldLabel}>{t("det.account")}</div>
-              <div className={styles.accChips}>
-                {accounts.map((a) => (
-                  <button key={a.id} className={`${styles.accChip} ${accountId === a.id ? styles.accChipOn : ""}`} onClick={() => setAccountId(a.id)}>
-                    {ACC_EMOJI[a.type] ?? "👛"} {dataLabel(a.name, lang)}
-                  </button>
-                ))}
-              </div>
-
-              <div className={styles.fieldLabel}>{t("rec.freqDay")}</div>
-              <div className={styles.daysRow}>
-                <button className={`${styles.dayBtn} ${styles.dayBtnOn}`} style={{ flex: 1 }}>
-                  <b>{t("rec.monthly")}</b><span>{dm(startDate)}</span>
-                </button>
-                <button className={styles.dayCalBtn} onClick={() => setDateOpen(true)} aria-label={t("det.date")}>
-                  <Icon id="i-cal" />
-                </button>
-              </div>
-
-              <div className={styles.fieldLabel}>{t("rem.time")}</div>
-              <input className={styles.confirmInput} type="time" value={time} onChange={(e) => e.target.value && setTime(e.target.value)} />
-
-              <div className={styles.autoRow}>
-                <div>
-                  <span className={styles.autoName}>{t("rec.autoAdd")}</span>
-                  <span className={styles.autoSub}>{autoAdd ? t("rec.autoOn") : t("rec.autoOff")}</span>
+                <div className={styles.fcard}>
+                  <div className={styles.fcIcon} style={{ background: "rgba(124,92,255,0.16)", color: "#b9a8ff" }}>
+                    <Icon id="i-edit" />
+                  </div>
+                  <input placeholder={t("rec.namePh")} value={name} onChange={(e) => setName(e.target.value)} />
                 </div>
-                <button type="button" className={`${styles.toggle} ${autoAdd ? styles.toggleOn : ""}`} onClick={() => setAutoAdd((v) => !v)} aria-label={t("rec.auto")}>
-                  <span className={styles.toggleKnob} />
+
+                <div className={styles.fieldLabel}>{t("det.category")}</div>
+                <div className={styles.chips2}>
+                  {cats.map((c) => (
+                    <button key={c} className={`${styles.chip2} ${category === c ? styles.chip2On : ""}`} onClick={() => setCategory(c)}>
+                      {iconFor(c)} {dataLabel(c, lang)}
+                    </button>
+                  ))}
+                </div>
+
+                <div className={styles.fieldLabel}>{t("det.account")}</div>
+                <div className={styles.accChips}>
+                  {accounts.map((a) => (
+                    <button key={a.id} className={`${styles.accChip} ${accountId === a.id ? styles.accChipOn : ""}`} onClick={() => setAccountId(a.id)}>
+                      {ACC_EMOJI[a.type] ?? "👛"} {dataLabel(a.name, lang)}
+                    </button>
+                  ))}
+                </div>
+
+                <div className={styles.fieldLabel}>{t("rec.freqDay")}</div>
+                <div className={styles.daysRow}>
+                  <button className={`${styles.dayBtn} ${styles.dayBtnOn}`} style={{ flex: 1 }}>
+                    <b>{t("rec.monthly")}</b><span>{dm(startDate)}</span>
+                  </button>
+                  <button className={styles.dayCalBtn} onClick={() => setDateOpen(true)} aria-label={t("det.date")}>
+                    <Icon id="i-cal" />
+                  </button>
+                </div>
+
+                <div className={styles.fieldLabel}>{t("rem.time")}</div>
+                <input className={styles.confirmInput} type="time" value={time} onChange={(e) => e.target.value && setTime(e.target.value)} />
+
+                <div className={styles.autoRow}>
+                  <div>
+                    <span className={styles.autoName}>{t("rec.autoAdd")}</span>
+                    <span className={styles.autoSub}>{autoAdd ? t("rec.autoOn") : t("rec.autoOff")}</span>
+                  </div>
+                  <button type="button" className={`${styles.toggle} ${autoAdd ? styles.toggleOn : ""}`} onClick={() => setAutoAdd((v) => !v)} aria-label={t("rec.auto")}>
+                    <span className={styles.toggleKnob} />
+                  </button>
+                </div>
+              </div>
+
+              <div className={styles.sheetActions}>
+                {editId && (
+                  <button className={styles.btnDelText} onClick={remove}>{t("common.delete")}</button>
+                )}
+                <button className={styles.btnPrimary} onClick={save} disabled={saving || !name.trim() || parsed <= 0}>
+                  {saving ? t("form.saving") : editId ? t("common.save") : t("common.create")}
                 </button>
               </div>
-            </div>
-
-            <div className={styles.sheetActions}>
-              {editId && (
-                <button className={styles.btnDelText} onClick={remove}>{t("common.delete")}</button>
-              )}
-              <button className={styles.btnPrimary} onClick={save} disabled={saving || !name.trim() || parsed <= 0}>
-                {saving ? t("form.saving") : editId ? t("common.save") : t("common.create")}
-              </button>
             </div>
           </div>
-        </div>
+        </SheetPortal>
       )}
 
       {calcAmount && (

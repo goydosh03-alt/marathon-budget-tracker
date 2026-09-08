@@ -18,6 +18,7 @@ import {
   type PushSub,
 } from "@/app/dashboard/actions";
 import { subscribeToPush, pushSupported } from "@/lib/push";
+import SheetPortal from "@/components/ui/SheetPortal";
 
 const FREQ_IDS = ["daily", "weekdays", "weekends", "weekly"] as const;
 
@@ -158,69 +159,71 @@ export default function RemindersClient({ reminders }: { reminders: Reminder[] }
       </button>
 
       {open && (
-        <div className={styles.sheetWrap}>
-          <div data-sheet-back className={styles.sheetBack} onClick={() => setOpen(false)} />
-          <div data-sheet className={styles.sheet}>
-            <div data-vfade className={styles.sheetBody}>
-              <div className={styles.sheetTitle}>{editId ? t("rem.editTitle") : t("rem.newTitle")}</div>
+        <SheetPortal>
+          <div className={styles.sheetWrap}>
+            <div data-sheet-back className={styles.sheetBack} onClick={() => setOpen(false)} />
+            <div data-sheet className={styles.sheet}>
+              <div data-vfade className={styles.sheetBody}>
+                <div className={styles.sheetTitle}>{editId ? t("rem.editTitle") : t("rem.newTitle")}</div>
 
-              {/* Час — головний елемент, як сума у формі транзакції. Тап = системний пікер. */}
-              <div className={styles.remTimeWrap}>
-                <input
-                  className={styles.remTimeInput}
-                  type="time"
-                  value={time}
-                  onChange={(e) => e.target.value && setTime(e.target.value)}
-                  aria-label={t("rem.time")}
-                />
-                <span className={styles.remTimeHint}>{t("rem.time")}</span>
-              </div>
-
-              <div className={styles.fcard}>
-                <div className={styles.fcIcon} style={{ background: "rgba(245,180,90,0.16)", color: "#f5c87c" }}>
-                  <Icon id="i-bell" />
+                {/* Час — головний елемент, як сума у формі транзакції. Тап = системний пікер. */}
+                <div className={styles.remTimeWrap}>
+                  <input
+                    className={styles.remTimeInput}
+                    type="time"
+                    value={time}
+                    onChange={(e) => e.target.value && setTime(e.target.value)}
+                    aria-label={t("rem.time")}
+                  />
+                  <span className={styles.remTimeHint}>{t("rem.time")}</span>
                 </div>
-                <input placeholder={t("rem.namePh")} value={name} onChange={(e) => setName(e.target.value)} />
-              </div>
 
-              <div className={styles.fieldLabel}>{t("rem.freq")}</div>
-              <div className={styles.chips2}>
-                {FREQ_IDS.map((f) => (
-                  <button key={f} className={`${styles.chip2} ${freq === f ? styles.chip2On : ""}`} onClick={() => setFreq(f)}>
-                    {t(("freq." + f) as StringKey)}
-                  </button>
-                ))}
-              </div>
+                <div className={styles.fcard}>
+                  <div className={styles.fcIcon} style={{ background: "rgba(245,180,90,0.16)", color: "#f5c87c" }}>
+                    <Icon id="i-bell" />
+                  </div>
+                  <input placeholder={t("rem.namePh")} value={name} onChange={(e) => setName(e.target.value)} />
+                </div>
 
-              {freq === "weekly" && (
-                <div className={styles.chips2} style={{ marginTop: 8 }}>
-                  {WEEKDAYS_SHORT[lang].map((w, i) => (
-                    <button key={w} className={`${styles.chip2} ${weekday === i ? styles.chip2On : ""}`} onClick={() => setWeekday(i)}>
-                      {w}
+                <div className={styles.fieldLabel}>{t("rem.freq")}</div>
+                <div className={styles.chips2}>
+                  {FREQ_IDS.map((f) => (
+                    <button key={f} className={`${styles.chip2} ${freq === f ? styles.chip2On : ""}`} onClick={() => setFreq(f)}>
+                      {t(("freq." + f) as StringKey)}
                     </button>
                   ))}
                 </div>
-              )}
 
-              <div className={styles.autoRow}>
-                <div>
-                  <span className={styles.autoName}>{t("rem.enabled")}</span>
-                  <span className={styles.autoSub}>{enabled ? t("rem.activeSub") : t("rem.offSub")}</span>
+                {freq === "weekly" && (
+                  <div className={styles.chips2} style={{ marginTop: 8 }}>
+                    {WEEKDAYS_SHORT[lang].map((w, i) => (
+                      <button key={w} className={`${styles.chip2} ${weekday === i ? styles.chip2On : ""}`} onClick={() => setWeekday(i)}>
+                        {w}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                <div className={styles.autoRow}>
+                  <div>
+                    <span className={styles.autoName}>{t("rem.enabled")}</span>
+                    <span className={styles.autoSub}>{enabled ? t("rem.activeSub") : t("rem.offSub")}</span>
+                  </div>
+                  <button type="button" className={`${styles.toggle} ${enabled ? styles.toggleOn : ""}`} onClick={() => setEnabled((v) => !v)} aria-label={t("rem.enabled")}>
+                    <span className={styles.toggleKnob} />
+                  </button>
                 </div>
-                <button type="button" className={`${styles.toggle} ${enabled ? styles.toggleOn : ""}`} onClick={() => setEnabled((v) => !v)} aria-label={t("rem.enabled")}>
-                  <span className={styles.toggleKnob} />
+              </div>
+
+              <div className={styles.sheetActions}>
+                {editId && <button className={styles.btnDelText} onClick={remove}>{t("common.delete")}</button>}
+                <button className={styles.btnPrimary} onClick={save} disabled={saving || !name.trim()}>
+                  {saving ? t("form.saving") : editId ? t("common.save") : t("common.create")}
                 </button>
               </div>
             </div>
-
-            <div className={styles.sheetActions}>
-              {editId && <button className={styles.btnDelText} onClick={remove}>{t("common.delete")}</button>}
-              <button className={styles.btnPrimary} onClick={save} disabled={saving || !name.trim()}>
-                {saving ? t("form.saving") : editId ? t("common.save") : t("common.create")}
-              </button>
-            </div>
           </div>
-        </div>
+        </SheetPortal>
       )}
     </div>
   );

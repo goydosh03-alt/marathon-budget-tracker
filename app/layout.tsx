@@ -27,6 +27,9 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
+  // Android сам стискає layout під клавіатуру — це прибирає цілий клас
+  // розсинхронів між 100dvh і реальним вікном.
+  interactiveWidget: "resizes-content",
 };
 
 export default async function RootLayout({

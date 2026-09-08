@@ -70,16 +70,22 @@
 
   /* ПРАВИЛО: один боковий відступ на всю платформу. Сторінка, шит,
      повноширинна полиця — усі міряються від нього. [ours] */
-  --sc-inset: 20px;
+  --sc-inset: 16px;
 
   /* Попапи — єдині відступи для ВСІХ шитів [ours] */
   --sc-sheet-pad-x: var(--sc-inset);
   --sc-sheet-pad-top: 10px;
   --sc-sheet-pad-bottom: 20px;
+  --sc-sheet-pad-bottom-kb: 8px;  /* при відкритій клавіатурі — впритул [ours] */
   --sc-sheet-gap: 20px;
-  --sc-sheet-gap-tight: 10px;
+  --sc-sheet-gap-tight: 12px; /* підзаголовок -> контент */
+  --sc-title-sub-gap: 4px;    /* заголовок -> підзаголовок [ours] */
+  --sc-sheet-top-gap: 40px;   /* шит ніколи не підходить до статус-бара [ours] */
+  /* нижня safe-area, яку SheetSwipe обнуляє при відкритій клавіатурі [ours] */
+  --sc-safe-b: env(safe-area-inset-bottom, 0px);
   --sc-sheet-stack: 16px;      /* між блоками форми в попапі */
   --sc-sheet-label-gap: 8px;   /* лейбл блоку -> сам контрол */
+  --sc-label-inset: 4px;       /* лейбл трохи всередину від краю [ours] */
 
   /* Effects */
   --sc-blur-glass: blur(24px) saturate(140%);
@@ -130,9 +136,9 @@
   --sc-content-bottom: calc(var(--sc-nav-bottom) + 62px + 28px);
   --sc-section-gap: 24px;
   --sc-header-gap: 24px;      /* [ours] заголовок сторінки -> контент. ОДНЕ значення на весь застосунок */
-  --sc-header-arrow-gap: 12px;/* [ours] стрілка «назад» -> заголовок */
+  --sc-header-arrow-gap: 4px; /* [ours] стрілка «назад» -> заголовок */
   --sc-row-inset: 16px;      /* [ours] row padding on all four sides */
-  --sc-row-divider-left: 66px; /* [ours] 16 inset + 40 disc + 10 gap */
+  --sc-row-divider-left: 66px; /* [ours] 16 row-inset + 40 тайл + 10 gap */
 
   /* Radius */
   --sc-radius-sm: 11px;
@@ -141,6 +147,14 @@
   --sc-radius-sheet: 24px;
   --sc-radius-group: 24px;
   --sc-radius-pill: 100px;
+  --sc-radius-tile: 50%;     /* [ours] контейнер іконки в рядку — коло */
+
+  /* Сегмент — ОДИН компонент, два розміри [ours] */
+  --sc-seg-pad: 4px;         /* контейнер -> елемент */
+  --sc-seg-gap: 3px;         /* між елементами */
+  --sc-seg-h-primary: 40px;  /* рівно 2 таби, ділять ширину порівну */
+  --sc-seg-h-secondary: 34px;/* багато елементів, ширина по контенту */
+  --sc-seg-item-pad: 16px;
 
   /* Звіти (/reports) — з хендофф-специфікації. Дописано в кінець. */
   --sc-sheet: #2C2D2A;       /* блок «Витрати» */

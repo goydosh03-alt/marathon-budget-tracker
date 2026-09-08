@@ -3,11 +3,14 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import styles from "@/app/dashboard/dashboard.module.css";
+import ds from "@/app/dashboard/ds.module.css";
 import { Icon, IconSprite } from "@/components/IconSprite";
 import SubHeader from "@/components/SubHeader";
 import EmptyState from "@/components/EmptyState";
+import { useScrollFade } from "@/components/ui/useScrollFade";
 import { useT } from "@/components/SettingsProvider";
 import { addCategory, updateCategory, deleteCategory, type UserCategory } from "@/app/dashboard/actions";
+import SheetPortal from "@/components/ui/SheetPortal";
 
 const EMOJIS = [
   "🛒", "☕", "🚌", "🎉", "💊", "👕", "🏠", "🎮", "🍔", "🎬", "✈️", "🐶",
@@ -23,6 +26,7 @@ const COLORS = [
 export default function CategoriesClient({ categories }: { categories: UserCategory[] }) {
   const t = useT();
   const [showAdd, setShowAdd] = useState(false);
+  const emojiFade = useScrollFade<HTMLDivElement>();
   const [editId, setEditId] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [emoji, setEmoji] = useState(EMOJIS[0]);
@@ -104,52 +108,57 @@ export default function CategoriesClient({ categories }: { categories: UserCateg
       </button>
 
       {showAdd && (
-        <div className={styles.sheetWrap}>
-          <div data-sheet-back className={styles.sheetBack} onClick={() => setShowAdd(false)} />
-          <div data-sheet className={styles.sheet}>
-            <div data-vfade className={styles.sheetBody}>
-              <div className={styles.sheetTitle}>{editId ? t("cats.editTitle") : t("cats.newTitle")}</div>
+        <SheetPortal>
+          <div className={styles.sheetWrap}>
+            <div data-sheet-back className={styles.sheetBack} onClick={() => setShowAdd(false)} />
+            <div data-sheet className={styles.sheet}>
+              <div data-vfade className={styles.sheetBody}>
+                <div className={styles.sheetTitle}>{editId ? t("cats.editTitle") : t("cats.newTitle")}</div>
 
-              <div className={styles.preview}>
-                <span className={styles.catDot} style={{ background: color + "26" }}>{emoji}</span>
-                <span className={styles.previewName}>{name.trim() || t("cats.nameDefault")}</span>
+                <div className={styles.preview}>
+                  <span className={styles.catDot} style={{ background: color + "26" }}>{emoji}</span>
+                  <span className={styles.previewName}>{name.trim() || t("cats.nameDefault")}</span>
+                </div>
+
+                <input
+                  className={styles.confirmInput}
+                  placeholder={t("cats.namePh")}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  autoFocus
+                />
+
+                <div className={`${ds.seg} ${ds.segPrimary}`}>
+                  <button className={`${ds.segItem} ${type === "expense" ? ds.segOn : ""}`} onClick={() => setType("expense")}>{t("common.expense")}</button>
+                  <button className={`${ds.segItem} ${type === "income" ? ds.segOn : ""}`} onClick={() => setType("income")}>{t("common.income")}</button>
+                </div>
+
+                <div className={styles.fieldLabel}>{t("cats.icon")}</div>
+                <div
+                  ref={emojiFade.ref}
+                  className={`${styles.emojiGrid} ${emojiFade.left ? styles.fadeL : ""} ${emojiFade.right ? styles.fadeR : ""}`}
+                >
+                  {EMOJIS.map((e) => (
+                    <button key={e} className={`${styles.emojiBtn} ${emoji === e ? styles.emojiBtnOn : ""}`} onClick={() => setEmoji(e)}>{e}</button>
+                  ))}
+                </div>
+
+                <div className={styles.fieldLabel}>{t("cats.color")}</div>
+                <div className={styles.colorGrid}>
+                  {COLORS.map((c) => (
+                    <button key={c} className={`${styles.colorBtn} ${color === c ? styles.colorBtnOn : ""}`} style={{ background: c }} onClick={() => setColor(c)} aria-label={t("cats.color")} />
+                  ))}
+                </div>
               </div>
 
-              <input
-                className={styles.confirmInput}
-                placeholder={t("cats.namePh")}
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                autoFocus
-              />
-
-              <div className={styles.tabs}>
-                <button className={`${styles.tab} ${type === "expense" ? styles.tabOnExp : ""}`} onClick={() => setType("expense")}>{t("common.expense")}</button>
-                <button className={`${styles.tab} ${type === "income" ? styles.tabOnInc : ""}`} onClick={() => setType("income")}>{t("common.income")}</button>
+              <div className={styles.sheetActions}>
+                <button className={styles.btnPrimary} onClick={save} disabled={saving || !name.trim()}>
+                  {saving ? t("form.saving") : editId ? t("common.save") : t("common.create")}
+                </button>
               </div>
-
-              <div className={styles.fieldLabel}>{t("cats.icon")}</div>
-              <div className={styles.emojiGrid}>
-                {EMOJIS.map((e) => (
-                  <button key={e} className={`${styles.emojiBtn} ${emoji === e ? styles.emojiBtnOn : ""}`} onClick={() => setEmoji(e)}>{e}</button>
-                ))}
-              </div>
-
-              <div className={styles.fieldLabel}>{t("cats.color")}</div>
-              <div className={styles.colorGrid}>
-                {COLORS.map((c) => (
-                  <button key={c} className={`${styles.colorBtn} ${color === c ? styles.colorBtnOn : ""}`} style={{ background: c }} onClick={() => setColor(c)} aria-label={t("cats.color")} />
-                ))}
-              </div>
-            </div>
-
-            <div className={styles.sheetActions}>
-              <button className={styles.btnPrimary} onClick={save} disabled={saving || !name.trim()}>
-                {saving ? t("form.saving") : editId ? t("common.save") : t("common.create")}
-              </button>
             </div>
           </div>
-        </div>
+        </SheetPortal>
       )}
     </div>
   );

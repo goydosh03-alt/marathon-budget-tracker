@@ -152,3 +152,32 @@ Next.js 14 (App Router, TS) + Supabase + Claude API (OCR) + Vercel.
 5. `npx tsc --noEmit` і `npm run build` — обидва мають бути чисті
 6. Оновив реєстр, якщо намалював щось без логіки
 7. `git pull --rebase` → коміт → пуш
+
+
+## Попапи
+
+Будь-який bottom sheet обгортається у `<SheetPortal>` — інакше `backdrop-filter`
+на батьківському склі перетворює `position: fixed` на локальний і попап
+малюється всередині кнопки. Деталі — DESIGN-SYSTEM.md §7.1.1.
+
+
+## Репозиторій і синхронізація (iCloud/Dropbox)
+
+Репо лежить у `~/Documents/GitHub/`, а `Documents` на macOS синхронізується
+з iCloud. Git пише в `.git` десятки дрібних файлів за секунду, iCloud подекуди
+вважає це конфліктом і створює копію з пробілом і цифрою — `HEAD 2`, `index 2`.
+Git читає папку рефів цілком, натикається на таку назву і падає:
+
+    fatal: bad object refs/remotes/origin/HEAD 2
+    error: ... did not send all necessary objects
+
+**Захист уже стоїть:** `scripts/clean-icloud-strays.sh` + хуки в `.githooks`
+(`core.hooksPath=.githooks`). Чистка йде перед пушем і після
+commit/merge/checkout/rebase. Видаляється лише «X N» за наявності «X».
+
+Після клонування на нову машину один раз виконати:
+
+    git config core.hooksPath .githooks
+
+**Остаточне рішення** — тримати репо поза iCloud, напр. `~/Developer/`.
+Тоді хуки просто ніколи не спрацьовують.

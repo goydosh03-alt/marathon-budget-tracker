@@ -5,6 +5,7 @@ import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon } from "@/components/IconSprite";
 import { useT, useLang } from "@/components/SettingsProvider";
 import { MONTHS_FULL, WEEKDAYS_SHORT } from "@/lib/i18n";
+import SheetPortal from "@/components/ui/SheetPortal";
 
 function iso(y: number, m: number, d: number): string {
   return `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
@@ -96,68 +97,70 @@ export default function CalendarSheet({
         : "";
 
   return (
-    <div className={styles.sheetWrap}>
-      <div data-sheet-back className={styles.sheetBack} onClick={onClose} />
-      <div data-sheet className={styles.sheet}>
-        <div data-vfade className={styles.sheetBody}>
-          <div className={styles.sheetTitle}>
-            {sheetTitle}{label ? ` (${label})` : ""}
+    <SheetPortal>
+      <div className={styles.sheetWrap}>
+        <div data-sheet-back className={styles.sheetBack} onClick={onClose} />
+        <div data-sheet className={styles.sheet}>
+          <div data-vfade className={styles.sheetBody}>
+            <div className={styles.sheetTitle}>
+              {sheetTitle}{label ? ` (${label})` : ""}
+            </div>
+
+            <div className={styles.calSheetHead}>
+              <button className={styles.calNav} onClick={prevMonth} aria-label={t("cal.prev")}>
+                <Icon id="i-arrow-left" />
+              </button>
+              <span className={styles.calMonth}>{MONTHS_FULL[lang][month]} {year}</span>
+              <button className={styles.calNav} onClick={nextMonth} aria-label={t("cal.next")}>
+                <Icon id="i-arrow-right" />
+              </button>
+            </div>
+
+            <div className={styles.calWeek}>
+              {WEEKDAYS_SHORT[lang].map((w) => (
+                <span key={w}>{w}</span>
+              ))}
+            </div>
+
+            <div className={styles.calGrid}>
+              {cells.map((c, i) => {
+                if (!c) return <span key={`e${i}`} />;
+                const isEdge = c === from || c === to;
+                const isIn = from && to && c > from && c < to;
+                return (
+                  <button
+                    key={c}
+                    className={`${styles.calCell} ${isEdge ? styles.calCellEdge : ""} ${isIn ? styles.calCellIn : ""}`}
+                    onClick={() => pick(c)}
+                  >
+                    {Number(c.split("-")[2])}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
-          <div className={styles.calSheetHead}>
-            <button className={styles.calNav} onClick={prevMonth} aria-label={t("cal.prev")}>
-              <Icon id="i-arrow-left" />
+          <div className={styles.sheetActions}>
+            <button
+              className={styles.btnGhost}
+              onClick={() => {
+                setFrom(null);
+                setTo(null);
+                onReset();
+              }}
+            >
+              <Icon id="i-refresh" /> {t("cal.reset")}
             </button>
-            <span className={styles.calMonth}>{MONTHS_FULL[lang][month]} {year}</span>
-            <button className={styles.calNav} onClick={nextMonth} aria-label={t("cal.next")}>
-              <Icon id="i-arrow-right" />
+            <button
+              className={styles.btnPrimary}
+              disabled={!from}
+              onClick={() => from && onApply(from, to ?? from)}
+            >
+              {t("common.apply")}
             </button>
           </div>
-
-          <div className={styles.calWeek}>
-            {WEEKDAYS_SHORT[lang].map((w) => (
-              <span key={w}>{w}</span>
-            ))}
-          </div>
-
-          <div className={styles.calGrid}>
-            {cells.map((c, i) => {
-              if (!c) return <span key={`e${i}`} />;
-              const isEdge = c === from || c === to;
-              const isIn = from && to && c > from && c < to;
-              return (
-                <button
-                  key={c}
-                  className={`${styles.calCell} ${isEdge ? styles.calCellEdge : ""} ${isIn ? styles.calCellIn : ""}`}
-                  onClick={() => pick(c)}
-                >
-                  {Number(c.split("-")[2])}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className={styles.sheetActions}>
-          <button
-            className={styles.calReset}
-            onClick={() => {
-              setFrom(null);
-              setTo(null);
-              onReset();
-            }}
-          >
-            <Icon id="i-refresh" /> {t("cal.reset")}
-          </button>
-          <button
-            className={styles.btnPrimary}
-            disabled={!from}
-            onClick={() => from && onApply(from, to ?? from)}
-          >
-            {t("common.apply")}
-          </button>
         </div>
       </div>
-    </div>
+    </SheetPortal>
   );
 }

@@ -33,7 +33,7 @@
 
 .scanRow { display: flex; justify-content: center; }
 .scanBtn {
-  display: inline-flex; align-items: center; gap: 8px; height: 28px; padding: 0 16px; border: 0;
+  display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 16px; border: 0;
   border-radius: var(--sc-radius-pill); cursor: pointer;
   background: var(--sc-surface-glass); box-shadow: inset 0 0 0 .5px var(--sc-glass-edge);
   color: var(--sc-ink); font: var(--sc-type-caption-medium);
@@ -41,19 +41,21 @@
 .scanBtn:disabled { opacity: .6; }
 
 /* ---------- смуги вибору ---------- */
-.label { display: block; font: var(--sc-type-caption); color: var(--sc-ink-tertiary); margin: 0 4px var(--sc-sheet-label-gap); }
+.label { display: block; font: var(--sc-type-caption); color: var(--sc-ink-tertiary); margin: 0 var(--sc-label-inset) var(--sc-sheet-label-gap); }
 
 .catWrap { display: flex; gap: 8px; align-items: stretch; }
 .box {
-  padding: 5px; border-radius: 24px; overflow: hidden; min-width: 0;
+  padding: var(--sc-seg-pad); border-radius: 24px; overflow: hidden; min-width: 0;
   background: var(--sc-surface-glass); box-shadow: inset 0 0 0 .5px var(--sc-glass-edge);
 }
 .boxPill { border-radius: var(--sc-radius-pill); }
+/* Висота смуги задається вмістом: один ряд — низька, два — вища.
+   Порожнього другого ряду не буває, див. CATS_ONE_ROW_MAX. */
 .catBox { flex: 1; }
-.scrollY { display: flex; flex-direction: column; gap: 5px; overflow-x: auto; scrollbar-width: none; }
-.scrollX { display: flex; gap: 5px; overflow-x: auto; scrollbar-width: none; }
+.scrollY { display: flex; flex-direction: column; gap: var(--sc-seg-gap); overflow-x: auto; scrollbar-width: none; }
+.scrollX { display: flex; gap: var(--sc-seg-gap); overflow-x: auto; scrollbar-width: none; }
 .scrollY::-webkit-scrollbar, .scrollX::-webkit-scrollbar { display: none; }
-.row { display: flex; gap: 5px; width: max-content; }
+.row { display: flex; gap: var(--sc-seg-gap); width: max-content; }
 
 /* затемнення лише з того боку, куди ще є куди гортати */
 .fadeR { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); }
@@ -61,7 +63,8 @@
 .fadeL.fadeR { -webkit-mask-image: linear-gradient(to right, transparent, #000 28px, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to right, transparent, #000 28px, #000 calc(100% - 28px), transparent); }
 
 .chip {
-  display: inline-flex; align-items: center; gap: 8px; padding: 11px 15px; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; flex: 0 0 auto;
+  height: var(--sc-seg-h-secondary); padding: 0 var(--sc-seg-item-pad);
   border: 0; border-radius: var(--sc-radius-pill); background: transparent; cursor: pointer;
   color: var(--sc-ink-muted); font: var(--sc-type-caption-medium); white-space: nowrap;
   transition: background var(--sc-duration-fast) var(--sc-ease), color var(--sc-duration-fast) var(--sc-ease);
@@ -77,21 +80,23 @@
 .dots i { width: 4px; height: 4px; border-radius: 50%; background: currentColor; display: block; }
 
 /* ---------- дата ---------- */
-.dateCtl { display: flex; align-items: center; gap: 5px; padding: 5px; border-radius: var(--sc-radius-pill);
+.dateCtl { display: flex; align-items: center; gap: var(--sc-seg-gap); padding: var(--sc-seg-pad); border-radius: var(--sc-radius-pill);
   background: var(--sc-surface-glass); box-shadow: inset 0 0 0 .5px var(--sc-glass-edge); }
 /* дні гортаються й важать по контенту — як чіпи категорій */
-.dateScroll { display: flex; align-items: center; gap: 5px; flex: 1; min-width: 0;
+.dateScroll { display: flex; align-items: center; gap: var(--sc-seg-gap); flex: 1; min-width: 0;
   overflow-x: auto; scrollbar-width: none; }
 .dateScroll::-webkit-scrollbar { display: none; }
 .day {
-  flex: 0 0 auto; min-height: 50px; padding: 8px 16px; border: 0; cursor: pointer;
+  /* виняток: у дні ДВА рядки (назва + число), тому висота більша
+     за --sc-seg-h-secondary. Решта — за правилом сегмента. */
+  flex: 0 0 auto; min-height: 50px; padding: 8px var(--sc-seg-item-pad); border: 0; cursor: pointer;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
   border-radius: var(--sc-radius-pill); background: transparent; color: var(--sc-ink-muted);
 }
 .day b { font: var(--sc-type-body-medium); line-height: 1.15; }
 .day span { font: 400 12px/1 var(--sc-font); opacity: .72; font-variant-numeric: tabular-nums; }
 .dayOn { background: var(--sc-surface-glass-active); color: var(--sc-ink); }
-.vdiv { flex: 0 0 1px; width: 1px; height: 16px; margin: 0 4px; background: var(--sc-glass-edge); }
+.vdiv { flex: 0 0 1px; width: 1px; height: 16px; margin: 0 var(--sc-seg-pad); background: var(--sc-glass-edge); }
 .calBtn {
   flex: 0 0 50px; height: 50px; border: 0; border-radius: var(--sc-radius-pill); cursor: pointer;
   background: transparent; color: var(--sc-ink-muted); display: flex; align-items: center; justify-content: center;
@@ -99,11 +104,11 @@
 
 /* ---------- назва ---------- */
 .nameCard {
-  display: flex; align-items: center; gap: 12px; padding: 13px 14px; border-radius: var(--sc-radius-pill);
+  display: flex; align-items: center; gap: 12px; padding: var(--sc-row-inset); border-radius: var(--sc-radius-pill);
   background: var(--sc-surface-card); box-shadow: var(--sc-shadow-card);
 }
 .nameTile {
-  width: 34px; height: 34px; border-radius: var(--sc-radius-sm); flex-shrink: 0;
+  width: 34px; height: 34px; border-radius: var(--sc-radius-tile); flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   background: rgba(255,255,255,.08); box-shadow: inset 0 0 0 .5px var(--sc-glass-edge); color: var(--sc-ink);
 }
@@ -216,8 +221,8 @@
 .padPanel {
   flex: 0 0 auto; position: relative; z-index: 1;
   display: flex; flex-direction: column; gap: 14px;
-  margin: -10px calc(var(--sc-inset) * -1) calc((var(--sc-sheet-pad-bottom) + env(safe-area-inset-bottom, 0px)) * -1);
-  padding: 16px var(--sc-inset) calc(var(--sc-sheet-pad-bottom) + env(safe-area-inset-bottom, 0px));
+  margin: -10px calc(var(--sc-inset) * -1) calc((var(--sc-sheet-pad-bottom) + var(--sc-safe-b)) * -1);
+  padding: 16px var(--sc-inset) calc(var(--sc-sheet-pad-bottom) + var(--sc-safe-b));
   border-radius: var(--sc-radius-sheet) var(--sc-radius-sheet) 0 0;
   border-top: .5px solid var(--sc-sheet-edge);
   background: var(--sc-surface-sheet);

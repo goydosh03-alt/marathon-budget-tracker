@@ -14,6 +14,7 @@ import {
   deleteAllTransactions,
   createAccount,
 } from "@/app/dashboard/actions";
+import SheetPortal from "@/components/ui/SheetPortal";
 
 type Account = { id: string; name: string; type: string };
 const ACC_TYPE_KEY: Record<string, "acc.cash" | "acc.card" | "acc.savings"> = {
@@ -207,108 +208,114 @@ export default function SettingsClient({
       </div>
 
       {clearOpen && (
-        <div className={styles.sheetWrap}>
-          <div data-sheet-back className={styles.sheetBack} onClick={() => setClearOpen(false)} />
-          <div data-sheet className={styles.sheet}>
-            <div data-vfade className={styles.sheetBody}>
-              <div className={styles.sheetTitle}>{t("set.clearTitle")}</div>
-              <div className={styles.confirmText}>
-                {t("set.allWord")} <b>{txCount}</b> {t("set.clearBody")}{" "}
-                {t("confirm.typeWord")} <b>{t("confirm.yes")}</b>.
+        <SheetPortal>
+          <div className={styles.sheetWrap}>
+            <div data-sheet-back className={styles.sheetBack} onClick={() => setClearOpen(false)} />
+            <div data-sheet className={styles.sheet}>
+              <div data-vfade className={styles.sheetBody}>
+                <div className={styles.sheetTitle}>{t("set.clearTitle")}</div>
+                <div className={styles.sheetSub}>
+                  {t("set.allWord")} <b>{txCount}</b> {t("set.clearBody")}{" "}
+                  {t("confirm.typeWord")} <b>{t("confirm.yes")}</b>.
+                </div>
+                <input
+                  className={styles.confirmInput}
+                  placeholder={t("confirm.yes")}
+                  value={clearWord}
+                  onChange={(e) => setClearWord(e.target.value)}
+                  autoFocus
+                />
               </div>
-              <input
-                className={styles.confirmInput}
-                placeholder={t("confirm.yes")}
-                value={clearWord}
-                onChange={(e) => setClearWord(e.target.value)}
-                autoFocus
-              />
-            </div>
-            <div className={styles.sheetActions}>
-              <button className={styles.btnGhost} onClick={() => setClearOpen(false)}>{t("common.cancel")}</button>
-              <button className={styles.confirmDel} onClick={clearAll} disabled={!canClear || clearing}>
-                {clearing ? t("common.deleting") : t("common.delete")}
-              </button>
+              <div className={styles.sheetActions}>
+                <button className={styles.btnGhost} onClick={() => setClearOpen(false)}>{t("common.cancel")}</button>
+                <button className={styles.confirmDel} onClick={clearAll} disabled={!canClear || clearing}>
+                  {clearing ? t("common.deleting") : t("common.delete")}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        </SheetPortal>
       )}
 
       {/* bottom sheet: новий рахунок */}
       {showCreate && (
-        <div className={styles.sheetWrap}>
-          <div data-sheet-back className={styles.sheetBack} onClick={() => setShowCreate(false)} />
-          <div data-sheet className={styles.sheet}>
-            <div data-vfade className={styles.sheetBody}>
-              <div className={styles.sheetTitle}>{t("set.newAccount")}</div>
-              <div className={st.stack}>
-                <div className={st.nameCard}>
-                  <span className={st.nameTile}><AccIcon type={newType} size={18} /></span>
-                  <input
-                    placeholder={t("set.accNamePh")}
-                    value={newName}
-                    onChange={(e) => setNewName(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <div className={styles.fieldLabel}>{t("common.type")}</div>
-                  <div className={st.typeRow}>
-                    {ACC_TYPES.map((tp) => (
-                      <button
-                        key={tp}
-                        type="button"
-                        className={`${st.type} ${newType === tp ? st.typeOn : ""}`}
-                        onClick={() => setNewType(tp)}
-                      >
-                        <AccIcon type={tp} size={16} />
-                        {t(ACC_TYPE_KEY[tp])}
-                      </button>
-                    ))}
+        <SheetPortal>
+          <div className={styles.sheetWrap}>
+            <div data-sheet-back className={styles.sheetBack} onClick={() => setShowCreate(false)} />
+            <div data-sheet className={styles.sheet}>
+              <div data-vfade className={styles.sheetBody}>
+                <div className={styles.sheetTitle}>{t("set.newAccount")}</div>
+                <div className={st.stack}>
+                  <div className={st.nameCard}>
+                    <span className={st.nameTile}><AccIcon type={newType} size={18} /></span>
+                    <input
+                      placeholder={t("set.accNamePh")}
+                      value={newName}
+                      onChange={(e) => setNewName(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <div className={styles.fieldLabel}>{t("common.type")}</div>
+                    <div className={st.typeRow}>
+                      {ACC_TYPES.map((tp) => (
+                        <button
+                          key={tp}
+                          type="button"
+                          className={`${st.type} ${newType === tp ? st.typeOn : ""}`}
+                          onClick={() => setNewType(tp)}
+                        >
+                          <AccIcon type={tp} size={16} />
+                          {t(ACC_TYPE_KEY[tp])}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div className={styles.sheetActions}>
-              <button className={styles.btnGhost} onClick={() => setShowCreate(false)}>
-                {t("common.cancel")}
-              </button>
-              <button className={styles.btnPrimary} onClick={createAcc} disabled={creating || !newName.trim()}>
-                {creating ? t("common.creating") : t("common.create")}
-              </button>
+              <div className={styles.sheetActions}>
+                <button className={styles.btnGhost} onClick={() => setShowCreate(false)}>
+                  {t("common.cancel")}
+                </button>
+                <button className={styles.btnPrimary} onClick={createAcc} disabled={creating || !newName.trim()}>
+                  {creating ? t("common.creating") : t("common.create")}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        </SheetPortal>
       )}
 
       {/* bottom sheet: видалення рахунку */}
       {delTarget && (
-        <div className={styles.sheetWrap}>
-          <div data-sheet-back className={styles.sheetBack} onClick={() => setDelTarget(null)} />
-          <div data-sheet className={styles.sheet}>
-            <div data-vfade className={styles.sheetBody}>
-              <div className={styles.sheetTitle}>{t("set.delAccTitle")}</div>
-              <div className={styles.confirmText}>
-                {t("set.delAccPre")} «{delTarget.name}» {t("set.delAccPost")}{" "}
-                {t("confirm.typeWord")} <b>{t("confirm.yes")}</b>.
+        <SheetPortal>
+          <div className={styles.sheetWrap}>
+            <div data-sheet-back className={styles.sheetBack} onClick={() => setDelTarget(null)} />
+            <div data-sheet className={styles.sheet}>
+              <div data-vfade className={styles.sheetBody}>
+                <div className={styles.sheetTitle}>{t("set.delAccTitle")}</div>
+                <div className={styles.sheetSub}>
+                  {t("set.delAccPre")} «{delTarget.name}» {t("set.delAccPost")}{" "}
+                  {t("confirm.typeWord")} <b>{t("confirm.yes")}</b>.
+                </div>
+                <input
+                  className={styles.confirmInput}
+                  placeholder={t("confirm.yes")}
+                  value={delWord}
+                  onChange={(e) => setDelWord(e.target.value)}
+                  autoFocus
+                />
               </div>
-              <input
-                className={styles.confirmInput}
-                placeholder={t("confirm.yes")}
-                value={delWord}
-                onChange={(e) => setDelWord(e.target.value)}
-                autoFocus
-              />
-            </div>
-            <div className={styles.sheetActions}>
-              <button className={styles.btnGhost} onClick={() => setDelTarget(null)}>
-                {t("common.cancel")}
-              </button>
-              <button className={styles.confirmDel} onClick={confirmDeleteAcc} disabled={!canDelete}>
-                {t("common.delete")}
-              </button>
+              <div className={styles.sheetActions}>
+                <button className={styles.btnGhost} onClick={() => setDelTarget(null)}>
+                  {t("common.cancel")}
+                </button>
+                <button className={styles.confirmDel} onClick={confirmDeleteAcc} disabled={!canDelete}>
+                  {t("common.delete")}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        </SheetPortal>
       )}
     </>
   );

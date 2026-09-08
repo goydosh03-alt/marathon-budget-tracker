@@ -7,6 +7,7 @@ import { Icon } from "@/components/IconSprite";
 import { LANGS, type Lang } from "@/lib/i18n";
 import { useLang, useT } from "@/components/SettingsProvider";
 import { setLanguage } from "@/app/dashboard/actions";
+import SheetPortal from "@/components/ui/SheetPortal";
 
 export default function LangSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
   const router = useRouter();
@@ -36,27 +37,29 @@ export default function LangSheet({ open, onClose }: { open: boolean; onClose: (
   }
 
   return (
-    <div className={styles.sheetWrap}>
-      <div data-sheet-back className={styles.sheetBack} onClick={onClose} />
-      <div data-sheet className={styles.sheet}>
-        <div data-vfade className={styles.sheetBody}>
-          <div className={styles.sheetTitle}><span>{t("lang.title")}</span></div>
+    <SheetPortal>
+      <div className={styles.sheetWrap}>
+        <div data-sheet-back className={styles.sheetBack} onClick={onClose} />
+        <div data-sheet className={styles.sheet}>
+          <div data-vfade className={styles.sheetBody}>
+            <div className={styles.sheetTitle}>{t("lang.title")}</div>
 
-          <div className={styles.donateHint}>{t("lang.hint")}</div>
+            <div className={styles.sheetSub}>{t("lang.hint")}</div>
 
-          <div className={styles.setCard}>
-            {LANGS.map((l) => (
-              <button key={l.code} type="button" className={styles.curRow} onClick={() => pick(l.code)}>
-                <span className={styles.langFlag}>{l.flag}</span>
-                <div className={styles.curMid}>
-                  <span className={styles.catName2}>{l.label}</span>
-                </div>
-                {sel === l.code && <span className={styles.curCheck}>✓</span>}
-              </button>
-            ))}
+            <div className={styles.setCard}>
+              {LANGS.map((l) => (
+                <button key={l.code} type="button" className={styles.curRow} onClick={() => pick(l.code)}>
+                  <span className={styles.langFlag}>{l.flag}</span>
+                  <div className={styles.curMid}>
+                    <span className={styles.catName2}>{l.label}</span>
+                  </div>
+                  {sel === l.code && <span className={styles.curCheck}>✓</span>}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </SheetPortal>
   );
 }

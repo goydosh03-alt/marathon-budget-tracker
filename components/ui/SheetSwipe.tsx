@@ -13,14 +13,49 @@ import { useEffect } from "react";
 function startedInScrollable(target: HTMLElement, sheet: HTMLElement) {
   let el: HTMLElement | null = target;
   while (el && el !== sheet) {
-    const oy = getComputedStyle(el).overflowY;
-    if ((oy === "auto" || oy === "scroll") && el.scrollHeight > el.clientHeight + 2) return true;
+    const st = getComputedStyle(el);
+    if ((st.overflowY === "auto" || st.overflowY === "scroll") && el.scrollHeight > el.clientHeight + 2) return true;
+    // горизонтальні смуги (категорії, рахунки, дати) теж «свої»:
+    // жест по них не має закривати шит
+    if ((st.overflowX === "auto" || st.overflowX === "scroll") && el.scrollWidth > el.clientWidth + 2) return true;
     el = el.parentElement;
   }
   return false;
 }
 
+/**
+ * Після протягування браузер усе одно шле click по елементу, на якому палець
+ * зупинився. На смузі категорій це відкривало чужий попап. Глушимо click,
+ * якщо палець проїхав більше порога — тобто це був драг, а не тап.
+ */
+function useTapGuard() {
+  useEffect(() => {
+    let x = 0, y = 0, moved = false;
+    const down = (e: TouchEvent) => { x = e.touches[0].clientX; y = e.touches[0].clientY; moved = false; };
+    const move = (e: TouchEvent) => {
+      const t = e.touches[0];
+      if (Math.abs(t.clientX - x) > 8 || Math.abs(t.clientY - y) > 8) moved = true;
+    };
+    const click = (e: MouseEvent) => {
+      if (!moved) return;
+      moved = false;
+      e.stopPropagation();
+      e.preventDefault();
+    };
+    document.addEventListener("touchstart", down, { passive: true, capture: true });
+    document.addEventListener("touchmove", move, { passive: true, capture: true });
+    document.addEventListener("click", click, true);
+    return () => {
+      document.removeEventListener("touchstart", down, true);
+      document.removeEventListener("touchmove", move, true);
+      document.removeEventListener("click", click, true);
+    };
+  }, []);
+}
+
 export default function SheetSwipe() {
+  useTapGuard();
+
   useEffect(() => {
     let sheet: HTMLElement | null = null;
     let startY = 0;
@@ -66,6 +101,17 @@ export default function SheetSwipe() {
       raf = requestAnimationFrame(() => {
         root.style.setProperty("--sc-vvh", `${Math.round(vv.height)}px`);
         root.style.setProperty("--sc-vvt", `${Math.round(vv.offsetTop)}px`);
+        // Клавіатура забрала помітну частину вікна. Тоді home indicator нею
+        // перекритий, і нижня safe-area стає зайвою смугою під шитом.
+        const kb = window.innerHeight - vv.height > 120;
+        root.toggleAttribute("data-kb", kb);
+        if (kb) {
+          root.style.setProperty("--sc-safe-b", "0px");
+          root.style.setProperty("--sc-sheet-pad-bottom", "var(--sc-sheet-pad-bottom-kb)");
+        } else {
+          root.style.removeProperty("--sc-safe-b");
+          root.style.removeProperty("--sc-sheet-pad-bottom");
+        }
       });
     };
     sync();
@@ -77,6 +123,9 @@ export default function SheetSwipe() {
       vv.removeEventListener("scroll", sync);
       root.style.removeProperty("--sc-vvh");
       root.style.removeProperty("--sc-vvt");
+      root.style.removeProperty("--sc-safe-b");
+      root.style.removeProperty("--sc-sheet-pad-bottom");
+      root.removeAttribute("data-kb");
     };
   }, []);
 
@@ -121,6 +170,53 @@ export default function SheetSwipe() {
       mo.disconnect();
       ro.disconnect();
     };
+  }, []);
+
+  // Коли клавіатура відкривається, у зоні видимості має лишитись ПОЛЕ,
+  // яке заповнюють, а не те, що вгорі шита. Прокручуємо .sheetBody до нього
+  // після того, як вікно вже перерахувалось.
+  useEffect(() => {
+    let t1 = 0, t2 = 0;
+
+    function bring(el: HTMLElement) {
+      const box = el.closest("[data-vfade]") as HTMLElement | null;
+      if (!box) return;
+      const b = box.getBoundingClientRect();
+      const e = el.getBoundingClientRect();
+      const target = box.scrollTop + (e.bottom - b.bottom) + 24;
+      if (target > box.scrollTop) box.scrollTo({ top: target, behavior: "smooth" });
+    }
+
+    function onFocus(e: FocusEvent) {
+      const el = e.target as HTMLElement | null;
+      if (!el) return;
+      if (!(el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement)) return;
+      if (!el.closest("[data-sheet]")) return;
+      // двічі: одразу і після того, як клавіатура доїхала
+      window.clearTimeout(t1); window.clearTimeout(t2);
+      t1 = window.setTimeout(() => bring(el), 60);
+      t2 = window.setTimeout(() => bring(el), 340);
+    }
+
+    document.addEventListener("focusin", onFocus);
+    return () => {
+      document.removeEventListener("focusin", onFocus);
+      window.clearTimeout(t1); window.clearTimeout(t2);
+    };
+  }, []);
+
+  // У нативній збірці (Capacitor, iPhone) системну панель над клавіатурою
+  // можна прибрати одним викликом. У браузері/PWA вона системна: зі сторінки
+  // не ховається — це не наш елемент.
+  // Звертаємось через глобальний Capacitor.Plugins, щоб не тягнути залежність
+  // у веб-збірку: якщо плагіна немає, просто нічого не станеться.
+  useEffect(() => {
+    type KB = { setAccessoryBarVisible?: (o: { isVisible: boolean }) => Promise<void> };
+    const cap = (window as unknown as {
+      Capacitor?: { isNativePlatform?: () => boolean; Plugins?: { Keyboard?: KB } };
+    }).Capacitor;
+    if (!cap?.isNativePlatform?.()) return;
+    cap.Plugins?.Keyboard?.setAccessoryBarVisible?.({ isVisible: false })?.catch(() => {});
   }, []);
 
   return null;
