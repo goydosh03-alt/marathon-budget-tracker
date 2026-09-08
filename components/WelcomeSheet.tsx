@@ -59,7 +59,7 @@ export default function WelcomeSheet({ txCount }: { txCount: number }) {
         <div data-sheet-back className={styles.sheetBack} onClick={close} />
         <div data-sheet className={styles.sheet}>
           <div data-vfade className={styles.sheetBody}>
-            <div className={styles.sheetTitle}><span>{t("onb.welcome")}</span></div>
+            <div className={styles.sheetTitle}>{t("onb.welcome")}</div>
 
             <div className={styles.onbView} onTouchStart={swipeStart} onTouchEnd={swipeEnd}>
               <div className={styles.onbTrack} style={{ transform: `translateX(-${idx * 100}%)` }}>

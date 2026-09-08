@@ -42,9 +42,9 @@ export default function LangSheet({ open, onClose }: { open: boolean; onClose: (
         <div data-sheet-back className={styles.sheetBack} onClick={onClose} />
         <div data-sheet className={styles.sheet}>
           <div data-vfade className={styles.sheetBody}>
-            <div className={styles.sheetTitle}><span>{t("lang.title")}</span></div>
+            <div className={styles.sheetTitle}>{t("lang.title")}</div>
 
-            <div className={styles.donateHint}>{t("lang.hint")}</div>
+            <div className={styles.sheetSub}>{t("lang.hint")}</div>
 
             <div className={styles.setCard}>
               {LANGS.map((l) => (

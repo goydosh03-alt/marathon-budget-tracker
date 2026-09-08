@@ -61,9 +61,9 @@ export default function DonateSheet({ open, onClose }: { open: boolean; onClose:
         <div data-sheet-back className={styles.sheetBack} onClick={onClose} />
         <div data-sheet className={styles.sheet}>
           <div data-vfade className={styles.sheetBody}>
-            <div className={styles.sheetTitle}><span>{t("don.title")}</span></div>
+            <div className={styles.sheetTitle}>{t("don.title")}</div>
 
-            <div className={styles.donateHint}>
+            <div className={styles.sheetSub}>
               {t("don.text")}
             </div>
 

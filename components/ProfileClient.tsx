@@ -205,7 +205,7 @@ export default function ProfileClient({
             <div data-sheet className={styles.sheet}>
               <div data-vfade className={styles.sheetBody}>
                 <div className={styles.sheetTitle}>{t("prof.delTitle")}</div>
-                <div className={styles.confirmText}>
+                <div className={styles.sheetSub}>
                   {t("prof.delBody")} <b>{t("prof.forever")}</b>. {t("confirm.typeWord")} <b>{t("confirm.deleteWord")}</b>.
                 </div>
                 <input className={styles.confirmInput} placeholder={t("confirm.deleteWord")} value={delWord} onChange={(e) => setDelWord(e.target.value)} autoFocus />

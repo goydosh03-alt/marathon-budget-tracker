@@ -214,7 +214,7 @@ export default function SettingsClient({
             <div data-sheet className={styles.sheet}>
               <div data-vfade className={styles.sheetBody}>
                 <div className={styles.sheetTitle}>{t("set.clearTitle")}</div>
-                <div className={styles.confirmText}>
+                <div className={styles.sheetSub}>
                   {t("set.allWord")} <b>{txCount}</b> {t("set.clearBody")}{" "}
                   {t("confirm.typeWord")} <b>{t("confirm.yes")}</b>.
                 </div>
@@ -293,7 +293,7 @@ export default function SettingsClient({
             <div data-sheet className={styles.sheet}>
               <div data-vfade className={styles.sheetBody}>
                 <div className={styles.sheetTitle}>{t("set.delAccTitle")}</div>
-                <div className={styles.confirmText}>
+                <div className={styles.sheetSub}>
                   {t("set.delAccPre")} «{delTarget.name}» {t("set.delAccPost")}{" "}
                   {t("confirm.typeWord")} <b>{t("confirm.yes")}</b>.
                 </div>

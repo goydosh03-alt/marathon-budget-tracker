@@ -82,9 +82,9 @@ export default function ExportSheet({
         <div data-sheet-back className={styles.sheetBack} onClick={onClose} />
         <div data-sheet className={styles.sheet}>
           <div data-vfade className={styles.sheetBody}>
-            <div className={styles.sheetTitle}><span>{t("common.export")}</span></div>
+            <div className={styles.sheetTitle}>{t("common.export")}</div>
 
-            <div className={styles.donateHint}>
+            <div className={styles.sheetSub}>
               <b>{scope}</b> · <b>{periodText}</b> → {t("exp.hintTail")}
             </div>
 

@@ -78,7 +78,8 @@
   --sc-sheet-pad-bottom: 20px;
   --sc-sheet-pad-bottom-kb: 8px;  /* при відкритій клавіатурі — впритул [ours] */
   --sc-sheet-gap: 20px;
-  --sc-sheet-gap-tight: 10px;
+  --sc-sheet-gap-tight: 12px; /* підзаголовок -> контент */
+  --sc-title-sub-gap: 4px;    /* заголовок -> підзаголовок [ours] */
   --sc-sheet-top-gap: 40px;   /* шит ніколи не підходить до статус-бара [ours] */
   /* нижня safe-area, яку SheetSwipe обнуляє при відкритій клавіатурі [ours] */
   --sc-safe-b: env(safe-area-inset-bottom, 0px);
