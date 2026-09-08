@@ -89,7 +89,7 @@
   background: rgba(255,255,255,.08); color: var(--sc-ink);
   box-shadow: inset 0 0 0 .5px var(--sc-glass-edge);
 }
-.mid { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+.mid { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
 .name { font: var(--sc-type-body-medium); line-height: 1.1; color: var(--sc-ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .sub { font: var(--sc-type-caption); line-height: 1.1; color: var(--sc-ink-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .chev { color: var(--sc-ink-tertiary); display: flex; flex-shrink: 0; }

@@ -70,7 +70,7 @@
 
   /* ПРАВИЛО: один боковий відступ на всю платформу. Сторінка, шит,
      повноширинна полиця — усі міряються від нього. [ours] */
-  --sc-inset: 20px;
+  --sc-inset: 16px;
 
   /* Попапи — єдині відступи для ВСІХ шитів [ours] */
   --sc-sheet-pad-x: var(--sc-inset);
@@ -134,9 +134,9 @@
   --sc-content-bottom: calc(var(--sc-nav-bottom) + 62px + 28px);
   --sc-section-gap: 24px;
   --sc-header-gap: 24px;      /* [ours] заголовок сторінки -> контент. ОДНЕ значення на весь застосунок */
-  --sc-header-arrow-gap: 12px;/* [ours] стрілка «назад» -> заголовок */
+  --sc-header-arrow-gap: 4px; /* [ours] стрілка «назад» -> заголовок */
   --sc-row-inset: 16px;      /* [ours] row padding on all four sides */
-  --sc-row-divider-left: 66px; /* [ours] 16 inset + 40 disc + 10 gap */
+  --sc-row-divider-left: 66px; /* [ours] 16 row-inset + 40 тайл + 10 gap */
 
   /* Radius */
   --sc-radius-sm: 11px;

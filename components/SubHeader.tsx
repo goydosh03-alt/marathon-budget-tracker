@@ -22,7 +22,7 @@ export default function SubHeader({
       <Link href={back} className={styles.iconBtn} aria-label={t("common.back")}>
         <Icon id="i-arrow-left" />
       </Link>
-      <span className={styles.barTitle} style={{ marginLeft: 12, flex: 1 }}>{title}</span>
+      <span className={styles.barTitle} style={{ flex: 1 }}>{title}</span>
       {right}
     </header>
   );

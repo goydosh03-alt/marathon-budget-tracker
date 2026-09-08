@@ -171,7 +171,7 @@ export default function ProfileClient({
 
       <div className={styles.menuGroupLabel}>{t("prof.name")}</div>
       <div className={styles.fcard}>
-        <div className={styles.fcIcon} style={{ background: "rgba(74,222,180,0.16)", color: "#6ee7b7" }}>
+        <div className={styles.fcIcon} style={{ background: "var(--sc-surface-glass)", color: "var(--sc-accent-text)" }}>
           <Icon id="i-person" />
         </div>
         <input value={val} onChange={(e) => setVal(e.target.value)} onBlur={saveName} placeholder={t("prof.namePh")} />
