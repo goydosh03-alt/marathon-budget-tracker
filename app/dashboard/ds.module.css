@@ -259,9 +259,9 @@
 }
 
 /* ---------- сегмент Витрати / Дохід ---------- */
-.repSeg { display: flex; gap: 4px; padding: 4px; border-radius: var(--sc-radius-pill); }
+.repSeg { display: flex; gap: var(--sc-seg-gap); padding: var(--sc-seg-pad); border-radius: var(--sc-radius-pill); }
 .repSegBtn {
-  flex: 1; height: 40px; border: 0; border-radius: var(--sc-radius-pill);
+  flex: 1 1 0; height: var(--sc-seg-h-primary); border: 0; border-radius: var(--sc-radius-pill);
   background: transparent; color: var(--sc-ink-muted);
   font: var(--sc-type-body-medium); cursor: pointer;
   transition: background var(--sc-duration-fast) var(--sc-ease),
@@ -461,3 +461,38 @@
   from { opacity: 0; transform: translateX(var(--rep-from, 16px)); }
   to   { opacity: 1; transform: none; }
 }
+
+
+/* ============================================================
+   СЕГМЕНТ — один компонент, два розміри. DESIGN-SYSTEM.md §7.4
+   .seg            контейнер-пігулка
+   .segPrimary     рівно 2 таби: ділять ширину порівну, вищі
+   .segScroll      багато елементів: по контенту + гортання
+   ============================================================ */
+.seg {
+  display: flex; align-items: center; gap: var(--sc-seg-gap);
+  padding: var(--sc-seg-pad); border-radius: var(--sc-radius-pill);
+  background: var(--sc-surface-glass);
+  box-shadow: inset 0 0 0 .5px var(--sc-glass-edge);
+}
+.segItem {
+  flex: 0 0 auto; height: var(--sc-seg-h-secondary); padding: 0 var(--sc-seg-item-pad);
+  border: 0; cursor: pointer; white-space: nowrap;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  border-radius: var(--sc-radius-pill); background: transparent;
+  color: var(--sc-ink-muted); font: var(--sc-type-caption-medium);
+  transition: background var(--sc-duration-fast) var(--sc-ease),
+              color var(--sc-duration-fast) var(--sc-ease);
+}
+.segOn { background: var(--sc-surface-glass-active); color: var(--sc-ink); }
+.segPrimary .segItem { flex: 1 1 0; height: var(--sc-seg-h-primary); font: var(--sc-type-body-medium); }
+.segScroll { overflow-x: auto; scrollbar-width: none; }
+.segScroll::-webkit-scrollbar { display: none; }
+.segDiv { flex: 0 0 1px; width: 1px; height: 16px; margin: 0 4px; background: var(--sc-glass-edge); }
+.segIcon {
+  flex: 0 0 auto; width: var(--sc-seg-h-secondary); height: var(--sc-seg-h-secondary);
+  border: 0; border-radius: var(--sc-radius-pill); background: transparent;
+  color: var(--sc-ink-muted); cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.segIconOn { color: var(--sc-accent-text); }

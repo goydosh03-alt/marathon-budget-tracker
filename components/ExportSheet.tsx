@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from "react";
 import styles from "@/app/dashboard/dashboard.module.css";
+import ds from "@/app/dashboard/ds.module.css";
 import { Icon } from "@/components/IconSprite";
+import DsIcon from "@/components/ds/Icon";
 import CalendarSheet from "@/components/CalendarSheet";
 import { useT } from "@/components/SettingsProvider";
 import SheetPortal from "@/components/ui/SheetPortal";
@@ -90,23 +92,23 @@ export default function ExportSheet({
 
             {!fixedType && (
               <>
-                <div className={styles.fieldLabel} style={{ marginTop: 14 }}>{t("exp.what")}</div>
-                <div className={styles.pfilter}>
-                  <button className={`${styles.pf} ${type === "all" ? styles.pfOn : ""}`} onClick={() => setType("all")}>{t("exp.all")}</button>
-                  <button className={`${styles.pf} ${type === "expense" ? styles.pfOn : ""}`} onClick={() => setType("expense")}>{t("common.expenses")}</button>
-                  <button className={`${styles.pf} ${type === "income" ? styles.pfOn : ""}`} onClick={() => setType("income")}>{t("common.incomes")}</button>
+                <div className={styles.fieldLabel} style={{ marginTop: 16 }}>{t("exp.what")}</div>
+                <div className={`${ds.seg} ${ds.segScroll}`}>
+                  <button className={`${ds.segItem} ${type === "all" ? ds.segOn : ""}`} onClick={() => setType("all")}>{t("exp.all")}</button>
+                  <button className={`${ds.segItem} ${type === "expense" ? ds.segOn : ""}`} onClick={() => setType("expense")}>{t("common.expenses")}</button>
+                  <button className={`${ds.segItem} ${type === "income" ? ds.segOn : ""}`} onClick={() => setType("income")}>{t("common.incomes")}</button>
                 </div>
               </>
             )}
 
-            <div className={styles.fieldLabel} style={{ marginTop: 14 }}>{t("common.period")}</div>
-            <div className={styles.pfilter}>
-              <button className={`${styles.pf} ${period === "all" ? styles.pfOn : ""}`} onClick={() => setPeriod("all")}>{t("exp.allTime")}</button>
-              <button className={`${styles.pf} ${period === "month" ? styles.pfOn : ""}`} onClick={() => setPeriod("month")}>{t("period.month")}</button>
-              <button className={`${styles.pf} ${period === "year" ? styles.pfOn : ""}`} onClick={() => setPeriod("year")}>{t("period.year")}</button>
-              <span className={styles.vdiv} />
-              <button className={`${styles.cal} ${period === "custom" ? styles.calActive : ""}`} aria-label={t("exp.pickDates")} onClick={() => setCalOpen(true)}>
-                <Icon id="i-cal" />
+            <div className={styles.fieldLabel} style={{ marginTop: 16 }}>{t("common.period")}</div>
+            <div className={`${ds.seg} ${ds.segScroll}`}>
+              <button className={`${ds.segItem} ${period === "all" ? ds.segOn : ""}`} onClick={() => setPeriod("all")}>{t("exp.allTime")}</button>
+              <button className={`${ds.segItem} ${period === "month" ? ds.segOn : ""}`} onClick={() => setPeriod("month")}>{t("period.month")}</button>
+              <button className={`${ds.segItem} ${period === "year" ? ds.segOn : ""}`} onClick={() => setPeriod("year")}>{t("period.year")}</button>
+              <span className={ds.segDiv} />
+              <button className={`${ds.segIcon} ${period === "custom" ? ds.segIconOn : ""}`} aria-label={t("exp.pickDates")} onClick={() => setCalOpen(true)}>
+                <DsIcon name="BoldCalendar" size={18} />
               </button>
             </div>
           </div>

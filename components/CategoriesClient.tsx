@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import styles from "@/app/dashboard/dashboard.module.css";
+import ds from "@/app/dashboard/ds.module.css";
 import { Icon, IconSprite } from "@/components/IconSprite";
 import SubHeader from "@/components/SubHeader";
 import EmptyState from "@/components/EmptyState";
@@ -127,9 +128,9 @@ export default function CategoriesClient({ categories }: { categories: UserCateg
                   autoFocus
                 />
 
-                <div className={styles.tabs}>
-                  <button className={`${styles.tab} ${type === "expense" ? styles.tabOnExp : ""}`} onClick={() => setType("expense")}>{t("common.expense")}</button>
-                  <button className={`${styles.tab} ${type === "income" ? styles.tabOnInc : ""}`} onClick={() => setType("income")}>{t("common.income")}</button>
+                <div className={`${ds.seg} ${ds.segPrimary}`}>
+                  <button className={`${ds.segItem} ${type === "expense" ? ds.segOn : ""}`} onClick={() => setType("expense")}>{t("common.expense")}</button>
+                  <button className={`${ds.segItem} ${type === "income" ? ds.segOn : ""}`} onClick={() => setType("income")}>{t("common.income")}</button>
                 </div>
 
                 <div className={styles.fieldLabel}>{t("cats.icon")}</div>
