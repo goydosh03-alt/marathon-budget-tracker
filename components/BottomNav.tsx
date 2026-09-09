@@ -12,6 +12,7 @@ const TABS = [
   { key: "home", href: "/dashboard", icon: "BoldEssentionalUIHome2", label: "nav.home" },
   { key: "history", href: "/history", icon: "BoldTimeHistory", label: "nav.history" },
   { key: "reports", href: "/reports", icon: "BoldBusinessStatisticChart2", label: "nav.reports" },
+  { key: "budget", href: "/budget", icon: "BoldMoneySafeSquare", label: "nav.budget" },
   { key: "profile", href: "/menu", icon: "BoldEssentionalUIHamburgerMenu", label: "nav.menu" },
 ] as const;
 
@@ -19,7 +20,7 @@ export default function BottomNav({
   active,
   accounts,
 }: {
-  active: "home" | "history" | "reports" | "profile";
+  active: "home" | "history" | "reports" | "budget" | "profile";
   accounts: { id: string; name: string; type: string }[];
 }) {
   const [menuOpen, setMenuOpen] = useState(false);

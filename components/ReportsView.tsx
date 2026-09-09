@@ -763,6 +763,9 @@ export default function ReportsView({
           >
             <DsIcon name="BoldBusinessStatisticChart2" size={23} />
           </Link>
+          <Link href="/budget" className={styles.repNavTab} aria-label={t("nav.budget")}>
+            <DsIcon name="BoldMoneySafeSquare" size={23} />
+          </Link>
           <Link href="/menu" className={styles.repNavTab} aria-label={t("nav.menu")}>
             <DsIcon name="BoldEssentionalUIHamburgerMenu" size={23} />
           </Link>
