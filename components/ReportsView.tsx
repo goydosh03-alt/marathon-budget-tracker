@@ -89,6 +89,9 @@ function rangeLabel(r: { from: string; to: string }): string {
 
 const DAY_HOURS = ["00:00", "06:00", "12:00", "18:00", "23:00"];
 
+/** Довжина кола прогресу навколо диска: r=24 у вʼюпорті 52×52. */
+const RING = 2 * Math.PI * 24;
+
 /* Форма графіка. Підпис осі описує РІВНО свою групу штрихів, тому
    кількість груп підбираємо під період:
    тиждень — 7 груп (одна доба = одна група), місяць — 4 (тиждень),
@@ -434,22 +437,28 @@ export default function ReportsView({
     const share = Math.round(shareRaw);
     return (
       <div key={c.cat}>
-        <div className={`${styles.repRowDiv} ${i === 0 ? styles.repRowDivFirst : ""}`} />
         <Link
           className={styles.repRow}
           href={`/category?cat=${encodeURIComponent(c.cat)}&from=${cur.start}&to=${cur.end}&type=${isExpenses ? "expense" : "income"}`}
         >
-          <span className={styles.repDisc} style={{ background: vis.color }}>
-            <DsIcon name={vis.icon ?? "BoldMoneyMoneyBag"} size={18} />
+          {/* частка — кільцем навколо диска категорії */}
+          <span className={styles.repRing}>
+            <svg className={styles.repRingSvg} viewBox="0 0 52 52" aria-hidden="true">
+              <circle className={styles.repRingTrack} cx="26" cy="26" r="24" />
+              <circle
+                className={styles.repRingFill}
+                cx="26" cy="26" r="24"
+                strokeDasharray={`${(RING * Math.min(Math.max(shareRaw, 2), 100)) / 100} ${RING}`}
+              />
+            </svg>
+            <span className={styles.repDisc} style={{ background: vis.color }}>
+              <DsIcon name={vis.icon ?? "BoldMoneyMoneyBag"} size={18} />
+            </span>
           </span>
           <span className={styles.repRowMid}>
             <span className={styles.repRowHead}>
               <span className={styles.repRowName}>{dataLabel(c.cat, lang)}</span>
               <span className={styles.repRowSum}>{sign}{money(c.sum, dec)}</span>
-            </span>
-            {/* смуга частки — як у категоріях історії */}
-            <span className={styles.repBar}>
-              <span className={styles.repBarFill} style={{ width: `${Math.max(shareRaw, 1.5)}%` }} />
             </span>
             <span className={styles.repRowSub}>
               <span>{c.count} {opsLabel(c.count, lang)} · {share}%</span>

@@ -393,7 +393,7 @@
   /* тягнемо до низу екрана: інакше при кількох категоріях під блоком
      світиться канва, а шит має бути суцільним до самого краю */
   flex: 1;
-  display: flex; flex-direction: column; gap: 6px;
+  display: flex; flex-direction: column; gap: 8px;
   /* вертикальний рух тут тягне шит, а не скролить сторінку */
   touch-action: pan-x;
 }
@@ -407,16 +407,29 @@
   display: inline-flex; align-items: center; gap: 4px;
   border: 0; background: none; padding: 0; cursor: pointer;
 }
-.repRowDiv { height: 1px; margin: 0 4px 0 54px; background: var(--sc-hairline); }
-.repRowDivFirst { background: transparent; }
+/* Кожна категорія — власна картка на шиті, як картки на головній. */
 .repRow {
-  display: flex; align-items: center; gap: 10px; min-height: 50px; padding: 11px 4px;
+  display: flex; align-items: center; gap: 12px; min-height: 64px;
+  /* праворуч на 4px більше: сума не тулиться до краю картки */
+  padding: 12px 18px 12px 14px;
   color: inherit; text-decoration: none;
+  border-radius: 28px;
+  background: var(--sc-surface-card);
+  box-shadow: var(--sc-shadow-card);
   transition: transform var(--sc-duration-fast) var(--sc-ease);
 }
 .repRow:active { transform: scale(var(--sc-press-scale)); }
+/* Частка малюється кільцем навколо диска категорії. */
+.repRing { position: relative; width: 52px; height: 52px; flex-shrink: 0; }
+.repRingSvg { position: absolute; inset: 0; transform: rotate(-90deg); display: block; }
+.repRingTrack { fill: none; stroke: rgba(241, 239, 234, .10); stroke-width: 3.5; }
+.repRingFill {
+  fill: none; stroke: rgba(241, 239, 234, .68); stroke-width: 3.5; stroke-linecap: round;
+  transition: stroke-dasharray var(--sc-duration-base) var(--sc-ease);
+}
 .repDisc {
-  width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+  position: absolute; top: 6px; left: 6px;
+  width: 40px; height: 40px; border-radius: 50%;
   color: #fff; display: flex; align-items: center; justify-content: center;
 }
 .repRowMid { display: flex; flex-direction: column; flex: 1; min-width: 0; }
@@ -431,15 +444,8 @@
 }
 /* смуга частки категорії — та сама механіка, що в категоріях історії.
    Заливка нейтральна: колір категорії живе на диску, не тут. */
-.repBar {
-  height: 4px; margin: 7px 0 5px; border-radius: var(--sc-radius-pill);
-  background: rgba(241, 239, 234, .08); overflow: hidden;
-}
-.repBarFill {
-  display: block; height: 100%; border-radius: var(--sc-radius-pill);
-  background: linear-gradient(90deg, rgba(241, 239, 234, .26) 0%, rgba(241, 239, 234, .60) 100%);
-}
 .repRowSub {
+  margin-top: 3px;
   display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
   font: var(--sc-type-caption); color: var(--sc-ink-secondary);
   font-variant-numeric: tabular-nums;
@@ -596,5 +602,6 @@
 .repFullList {
   flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden;
   overscroll-behavior: contain;
+  display: flex; flex-direction: column; gap: 8px;
   padding-bottom: calc(150px + env(safe-area-inset-bottom, 0px));
 }
