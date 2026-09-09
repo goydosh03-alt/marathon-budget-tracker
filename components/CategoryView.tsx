@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import styles from "@/app/dashboard/dashboard.module.css";
+import ds from "@/app/dashboard/ds.module.css";
 import { useRouter } from "next/navigation";
 import { Icon, IconSprite } from "@/components/IconSprite";
 import DsIcon from "@/components/ds/Icon";
@@ -81,7 +82,7 @@ export default function CategoryView({
         back="/reports"
         right={
           <button className={styles.iconBtn} onClick={() => setShowExport(true)} aria-label={tt("common.export")}>
-            <DsIcon name="BoldArrowsArrowDown" size={20} />
+            <DsIcon name="BoldEssentionalUICopy" size={20} />
           </button>
         }
       />
@@ -169,11 +170,12 @@ export default function CategoryView({
         )}
       </section>
 
-      <button className={`${styles.cam} ${styles.floatAdd}`} onClick={() => setAddOpen(true)} aria-label={tt("common.add")}>
-        <span className={styles.camInner}>
-          <Icon id="i-plus" />
-        </span>
-      </button>
+      <div className={ds.scrimbar} />
+      <div className={ds.fabFloat}>
+        <button className={ds.fab} onClick={() => setAddOpen(true)} aria-label={tt("common.add")}>
+          <DsIcon name="BoldEssentionalUIAddCircle" size={28} />
+        </button>
+      </div>
 
       {viewId && (
         <TransactionViewer id={viewId} accounts={accounts} onClose={() => setViewId(null)} />
