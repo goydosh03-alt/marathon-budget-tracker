@@ -196,12 +196,17 @@ commit/merge/checkout/rebase. Видаляється лише «X N» за на�
 видаляти файли в `.git`, лишає lock після себе. У нас так поводився
 шел Claude, поки йому не дали право на видалення.
 
-Лікування:
+Лікування — вручну:
 
-    rm -f .git/HEAD.lock .git/objects/maintenance.lock
+    rm -f .git/HEAD.lock .git/index.lock .git/objects/maintenance.lock
     find .git/objects -name 'tmp_obj_*' -delete
 
 Після цього `git status` знову ~0.1s, коміт ~0.5s.
+
+**Автоматично:** `scripts/clean-icloud-strays.sh` знімає застряглі locks
+перед кожним комітом і пушем (хуки в `.githooks`). Видаляються лише locks
+**старші за 2 хвилини** — свіжий lock майже напевно належить git-процесу,
+який працює прямо зараз, і його чіпати не можна.
 
 
 ## Нижня навігація
