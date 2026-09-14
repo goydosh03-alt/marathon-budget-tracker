@@ -292,12 +292,14 @@ export default function BudgetsView({
     <div className={ds.screen}>
       <IconSprite />
       <div className={ds.content}>
-        <header className={b.pagehead}>
+        <header className={ds.headerbar}>
           <span className={b.pagetitle}>{t("budget.title")}</span>
           {budgets.length > 0 && (
-            <button className={b.iconbtn} onClick={() => setWizardOpen(true)} aria-label={t("nav.add")}>
-              <svg width="22" height="22" viewBox="0 0 24 24"><path fill="currentColor" d="M10.5 4a1.5 1.5 0 013 0v6.5H20a1.5 1.5 0 010 3h-6.5V20a1.5 1.5 0 01-3 0v-6.5H4a1.5 1.5 0 010-3h6.5z" /></svg>
-            </button>
+            <span className={`${ds.actions} ${ds.glass}`}>
+              <button className={b.iconbtn} onClick={() => setWizardOpen(true)} aria-label={t("nav.add")}>
+                <svg width="22" height="22" viewBox="0 0 24 24"><path fill="currentColor" d="M10.5 4a1.5 1.5 0 013 0v6.5H20a1.5 1.5 0 010 3h-6.5V20a1.5 1.5 0 01-3 0v-6.5H4a1.5 1.5 0 010-3h6.5z" /></svg>
+              </button>
+            </span>
           )}
         </header>
 

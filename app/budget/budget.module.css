@@ -81,8 +81,6 @@
 .demohint { margin: 20px auto 0; max-width: 280px; text-align: center; font: var(--sc-type-caption); color: var(--sc-ink-tertiary); line-height: 1.6; }
 
 /* Add expense — фіксована по центру знизу */
-.floatAdd { position: fixed; left: 0; right: 0; margin: 0 auto; width: max-content; bottom: 96px; z-index: 6; height: 54px; padding: 0 26px 0 22px; border: 0; cursor: pointer; border-radius: var(--sc-radius-pill); background: var(--sc-surface-inverse); color: var(--sc-ink-inverse); font: 600 15px var(--sc-font); display: inline-flex; align-items: center; gap: 8px; box-shadow: var(--sc-shadow-fab); }
-.floatAdd svg { width: 20px; height: 20px; }
 
 /* ============================================================
    Майстер створення бюджету
