@@ -7,6 +7,8 @@ import b from "@/app/budget/budget.module.css";
 import DsIcon from "@/components/ds/Icon";
 import { IconSprite } from "@/components/IconSprite";
 import BottomNav from "@/components/BottomNav";
+import SubHeader from "@/components/SubHeader";
+import styles from "@/app/dashboard/dashboard.module.css";
 import AmountKeypad from "@/components/AmountKeypad";
 import { evalExpr, trimNum } from "@/lib/calc";
 import { useMoney, useConv, useDec, useT, useLang } from "@/components/SettingsProvider";
@@ -190,17 +192,24 @@ export default function BudgetsView({
         <div className={ds.screen}>
           <IconSprite />
           <div className={ds.content}>
-            <header className={`${b.pagehead} ${b.subhead}`}>
-              <button className={b.iconbtn} onClick={() => setDetailId(null)} aria-label={t("common.back")}>
-                <svg width="20" height="20" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" d="M15 5l-7 7 7 7" /></svg>
-              </button>
-              <span className={b.pagetitle} style={{ flex: 1, marginLeft: 12 }}>{titleOf(bud)}</span>
-              <button className={b.iconbtn} style={{ color: "var(--sc-danger)" }} disabled={pending}
-                onClick={() => startTransition(async () => { await deleteBudget(bud.id); setDetailId(null); router.refresh(); })}
-                aria-label={t("common.delete")}>
-                <svg width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M9 3h6l1 2h4v2H4V5h4zm-2 6h10l-.8 11.1A2 2 0 0114.2 22H9.8a2 2 0 01-2-1.9z" /></svg>
-              </button>
-            </header>
+            <SubHeader
+              title={titleOf(bud)}
+              onBack={() => setDetailId(null)}
+              right={
+                <button
+                  className={styles.iconBtn}
+                  style={{ color: "var(--sc-danger)" }}
+                  disabled={pending}
+                  onClick={() => startTransition(async () => { await deleteBudget(bud.id); setDetailId(null); router.refresh(); })}
+                  aria-label={t("common.delete")}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                       strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M4 6.5h16M9.5 6.5V4.8h5v1.7M6.5 6.5l.8 12a1.6 1.6 0 001.6 1.5h6.2a1.6 1.6 0 001.6-1.5l.8-12" />
+                  </svg>
+                </button>
+              }
+            />
 
             <div className={b.dhero}>
               <Ring pct={pct} color={ringColor} over={over} size={84} sw={6}>
@@ -294,13 +303,6 @@ export default function BudgetsView({
       <div className={ds.content}>
         <header className={ds.headerbar}>
           <span className={b.pagetitle}>{t("budget.title")}</span>
-          {budgets.length > 0 && (
-            <span className={`${ds.actions} ${ds.glass}`}>
-              <button className={b.iconbtn} onClick={() => setWizardOpen(true)} aria-label={t("nav.add")}>
-                <svg width="22" height="22" viewBox="0 0 24 24"><path fill="currentColor" d="M10.5 4a1.5 1.5 0 013 0v6.5H20a1.5 1.5 0 010 3h-6.5V20a1.5 1.5 0 01-3 0v-6.5H4a1.5 1.5 0 010-3h6.5z" /></svg>
-              </button>
-            </span>
-          )}
         </header>
 
         {budgets.length === 0 ? (
@@ -350,12 +352,10 @@ export default function BudgetsView({
               </div>
             ) : (
               <>
-                {cats.length >= 2 && (
-                  <button className={b.ctatop} onClick={() => setWizardOpen(true)}>
-                    <svg width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M10.5 4a1.5 1.5 0 013 0v6.5H20a1.5 1.5 0 010 3h-6.5V20a1.5 1.5 0 01-3 0v-6.5H4a1.5 1.5 0 010-3h6.5z" /></svg>
-                    {t("budget.addAnotherCategory")}
-                  </button>
-                )}
+                <button className={b.ctatop} onClick={() => setWizardOpen(true)}>
+                  <svg width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M10.5 4a1.5 1.5 0 013 0v6.5H20a1.5 1.5 0 010 3h-6.5V20a1.5 1.5 0 01-3 0v-6.5H4a1.5 1.5 0 010-3h6.5z" /></svg>
+                  {t("budget.addAnotherCategory")}
+                </button>
                 <div className={b.cgrid}>
                   {cats.map((bud) => {
                     const c = calc[bud.id];
@@ -373,12 +373,7 @@ export default function BudgetsView({
                       </button>
                     );
                   })}
-                  {cats.length === 1 && (
-                    <div className={b.ctacell} onClick={() => setWizardOpen(true)}>
-                      <span className={b.ctacellPlus}><svg width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M10.5 4a1.5 1.5 0 013 0v6.5H20a1.5 1.5 0 010 3h-6.5V20a1.5 1.5 0 01-3 0v-6.5H4a1.5 1.5 0 010-3h6.5z" /></svg></span>
-                      <span className={b.ctacellT}>{t("budget.addCategory")}</span>
-                    </div>
-                  )}
+
                 </div>
               </>
             )}

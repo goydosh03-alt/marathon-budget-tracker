@@ -5,8 +5,7 @@
    ============================================================ */
 
 /* ---------- шапка сторінки ---------- */
-.pagehead { display: flex; align-items: center; gap: 12px; justify-content: space-between; min-height: 56px; margin-bottom: 24px; }
-.subhead { margin-bottom: 24px; }
+.pagehead { display: flex; align-items: center; gap: var(--sc-header-arrow-gap); justify-content: space-between; min-height: 56px; }
 .pagetitle { font: var(--sc-type-page); letter-spacing: var(--sc-tracking-page); }
 .iconbtn { width: var(--sc-hit); height: var(--sc-hit); border-radius: 50%; background: transparent; border: 0; padding: 0; cursor: pointer; color: var(--sc-ink); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform .15s var(--sc-ease); }
 .iconbtn:active { transform: scale(.9); }
@@ -34,11 +33,20 @@
 .opbar i { display: block; height: 100%; border-radius: 2px; transition: width .6s var(--sc-ease); }
 
 /* ---------- CTA-картки ---------- */
-.ctafull { border: 1.5px dashed rgba(255,255,255,.18); border-radius: var(--sc-radius-card); cursor: pointer; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; padding: 36px 22px; }
+.ctafull { border: .5px solid var(--sc-glass-edge); border-radius: var(--sc-radius-card); cursor: pointer; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; padding: 36px 22px; }
 .ctaplus { width: 52px; height: 52px; border-radius: 50%; background: var(--sc-surface-glass); display: flex; align-items: center; justify-content: center; color: var(--sc-ink); margin-bottom: 10px; box-shadow: var(--sc-shadow-glass); }
 .ctafullT { font: var(--sc-type-heading); color: var(--sc-ink); }
 .ctafullS { font: var(--sc-type-caption); color: var(--sc-ink-tertiary); max-width: 260px; margin-top: 2px; }
-.ctatop { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 50px; border: 1.5px dashed rgba(255,255,255,.18); cursor: pointer; border-radius: var(--sc-radius-pill); background: transparent; color: var(--sc-ink-secondary); font: 500 15px var(--sc-font); margin-bottom: 12px; }
+/* Єдина кнопка «додати категорію»: другорядна дія за §7.2.1 —
+   скло + hairline, висота CTA. Пунктирних рамок у системі немає. */
+.ctatop {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; height: var(--sc-cta-h); cursor: pointer;
+  border: .5px solid var(--sc-glass-edge); border-radius: var(--sc-cta-radius);
+  background: var(--sc-surface-glass); color: var(--sc-ink);
+  font: var(--sc-type-body-medium); font-weight: 500;
+  margin-bottom: var(--sc-sheet-gap-tight);
+}
 .ctatop svg { width: 20px; height: 20px; opacity: .85; }
 
 /* ---------- сітка категорій ---------- */
@@ -48,9 +56,6 @@
 .cgname { font: var(--sc-type-body-medium); color: var(--sc-ink); margin-top: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .cgamt { font-size: 22px; font-weight: 600; letter-spacing: -.7px; color: var(--sc-ink); font-variant-numeric: tabular-nums; margin-top: 12px; }
 .cglbl { font: var(--sc-type-caption); color: var(--sc-ink-tertiary); margin-top: 3px; }
-.ctacell { border: 1.5px dashed rgba(255,255,255,.18); border-radius: var(--sc-radius-card); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; padding: 14px; color: var(--sc-ink-secondary); }
-.ctacellPlus { width: 42px; height: 42px; border-radius: 50%; background: var(--sc-surface-glass); display: flex; align-items: center; justify-content: center; color: var(--sc-ink); }
-.ctacellT { font: var(--sc-type-caption-medium); color: var(--sc-ink-secondary); line-height: 1.35; }
 
 /* ---------- прогрес-кільце навколо іконки ---------- */
 .ringwrap { position: relative; display: inline-flex; flex-shrink: 0; }
