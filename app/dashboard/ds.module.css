@@ -314,31 +314,6 @@
 .repPillIconBright { display: inline-flex; opacity: .85; }
 .repPillChev { display: inline-flex; opacity: .55; }
 
-.repMenu {
-  position: absolute; top: calc(100% + 6px); left: 0; z-index: 9;
-  min-width: 170px; display: flex; flex-direction: column; padding: 4px;
-  border-radius: var(--sc-radius-row); background: var(--sc-menu);
-  box-shadow: 0 14px 32px rgba(0,0,0,.5), inset 0 0 0 .5px var(--sc-glass-edge);
-}
-.repMenuRight { left: auto; right: 0; }
-.repMenuItem {
-  display: flex; align-items: center; justify-content: space-between; gap: 10px;
-  height: 34px; padding: 0 10px; border: 0; border-radius: 10px; cursor: pointer;
-  background: transparent; color: var(--sc-ink);
-  font: var(--sc-weight-regular) 14px/1 var(--sc-font); text-align: left;
-}
-.repMenuItemOn { background: rgba(255,255,255,.08); }
-.repMenuItemMuted { color: var(--sc-ink-secondary); }
-.repMenuLeft { display: inline-flex; align-items: center; gap: 8px; }
-.repMenuIco { display: inline-flex; }
-.repMenuDiv { height: 1px; background: rgba(255,255,255,.1); margin: 6px 10px; }
-.repCheck {
-  width: 16px; height: 16px; border-radius: 5px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  background: transparent; box-shadow: inset 0 0 0 1.5px rgba(241,239,234,.3);
-  color: var(--sc-ink-inverse);
-}
-.repCheckOn { background: var(--sc-accent); box-shadow: none; }
 
 /* ---------- пейджер ---------- */
 .repPager { display: flex; align-items: center; gap: 5px; margin-top: 10px; }
@@ -411,10 +386,12 @@
 /* Кожна категорія — власна картка на шиті, як картки на головній. */
 .repRow {
   display: flex; align-items: center; gap: 12px; min-height: 64px;
-  /* праворуч на 4px більше: сума не тулиться до краю картки */
-  padding: 12px 18px 12px 14px;
+  /* Праворуч більше, ніж ліворуч: у пігулці край заокруглюється всередину,
+     і два рядки суми інакше підходили б до дуги надто близько. */
+  padding: 12px 22px 12px 14px;
   color: inherit; text-decoration: none;
-  border-radius: 28px;
+  /* один рядок -> пігулка, як каже граматика карток */
+  border-radius: var(--sc-radius-pill);
   background: var(--sc-surface-card);
   box-shadow: var(--sc-shadow-card);
   transition: transform var(--sc-duration-fast) var(--sc-ease);
@@ -467,34 +444,7 @@
   height: calc(152px + env(safe-area-inset-bottom, 0px));
   background: linear-gradient(rgba(44,45,42,0), rgba(44,45,42,.88) 44%, rgba(44,45,42,1) 74%);
 }
-.repDock {
-  position: absolute; z-index: 4;
-  left: 0; right: 0; bottom: calc(var(--sc-nav-bottom) + env(safe-area-inset-bottom, 0px));
-  max-width: 480px; margin: 0 auto; padding: 0 var(--sc-inset);
-  display: flex; align-items: center; gap: 10px;
-}
-.repNavPill {
-  flex: 1; display: flex; justify-content: space-between; align-items: center;
-  height: 62px; padding: 0 6px; border-radius: var(--sc-radius-pill);
-}
-.repNavTab {
-  height: 48px; padding: 0 4px; flex: 1; min-width: 0; border: 0;
-  border-radius: var(--sc-radius-pill); background: transparent; color: var(--sc-ink-muted);
-  display: flex; align-items: center; justify-content: center; cursor: pointer;
-  transition: background var(--sc-duration-fast) var(--sc-ease),
-              color var(--sc-duration-fast) var(--sc-ease);
-}
-.repNavTabOn { background: var(--sc-surface-glass-active); color: var(--sc-ink); }
-.repFab {
-  width: 62px; height: 62px; flex-shrink: 0; border: 0; border-radius: 50%;
-  background: var(--sc-surface-inverse); color: var(--sc-ink-inverse);
-  display: flex; align-items: center; justify-content: center; cursor: pointer;
-  box-shadow: var(--sc-shadow-fab);
-  transition: transform var(--sc-duration-fast) var(--sc-ease);
-}
-.repFab:active { transform: scale(var(--sc-press-scale)); }
 
-.repBackdrop { position: fixed; inset: 0; z-index: 8; }
 
 /* Перехід між періодами при свайпі. Напрямок задає --rep-from з компонента. */
 .repSlide {

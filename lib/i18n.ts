@@ -134,6 +134,7 @@ export const STRINGS = {
   "rep.donut": { uk: "Кругова", en: "Donut", ru: "Круговая" },
   "rep.bars": { uk: "Стовпчики", en: "Bars", ru: "Столбцы" },
   "rep.allAccounts": { uk: "Всі рахунки", en: "All accounts", ru: "Все счета" },
+  "rep.pickDates": { uk: "Вибрати дати", en: "Pick dates", ru: "Выбрать даты" },
 
   // форма додавання транзакції
   "common.undo": { uk: "Повернути", en: "Undo", ru: "Вернуть" },

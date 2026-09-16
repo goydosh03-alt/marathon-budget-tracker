@@ -1,14 +1,17 @@
 "use client";
 
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef, useMemo, useEffect } from "react";
 import Link from "next/link";
 import styles from "@/app/dashboard/ds.module.css";
+// Ті самі класи шитів, що в CurrencySheet/LangSheet/CalendarSheet:
+// нижнє модальне вікно має виглядати однаково по всьому продукту.
+import sh from "@/app/dashboard/dashboard.module.css";
 import DsIcon from "@/components/ds/Icon";
 import { IconSprite } from "@/components/IconSprite";
 import { useDec, useMoney, useConv, useT, useLang } from "@/components/SettingsProvider";
 import AmountsEyeButton from "@/components/AmountsEyeButton";
 import NotificationsBell from "@/components/NotificationsBell";
-import AddTransactionForm from "@/components/AddTransactionForm";
+import BottomNav from "@/components/BottomNav";
 import CalendarSheet from "@/components/CalendarSheet";
 import { periods } from "@/lib/txui";
 import { catVisual, ACCOUNT_ICON, ACCOUNT_COLOR } from "@/lib/catIcon";
@@ -134,8 +137,15 @@ export default function ReportsView({
   const [calOpen, setCalOpen] = useState(false);
   const [menu, setMenu] = useState<"period" | "accounts" | null>(null);
   const [offAccounts, setOffAccounts] = useState<Record<string, true>>({});
-  const [addOpen, setAddOpen] = useState(false);
   const touch = useRef({ x: 0, y: 0 });
+
+  // Поки відкритий шит — сторінка під ним не прокручується.
+  useEffect(() => {
+    if (!menu) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prev; };
+  }, [menu]);
 
   const isExpenses = kind === "expenses";
   // Знак напрямку перед сумою: витрати — «−», дохід — «+».
@@ -479,8 +489,6 @@ export default function ReportsView({
     <div className={styles.screen}>
       <IconSprite />
 
-      {menu && <div className={styles.repBackdrop} onClick={() => setMenu(null)} />}
-
       <div className={styles.repScroll} onTouchStart={swipeStart} onTouchEnd={swipeEnd}>
         {/* шапка */}
         <header className={styles.repHead}>
@@ -535,29 +543,9 @@ export default function ReportsView({
           {/* фільтри */}
           <div className={styles.repFilters}>
             <span className={styles.repFilterWrap}>
-              {menu === "period" && (
-                <div className={styles.repMenu}>
-                  {periods.map((p) => (
-                    <button
-                      key={p.id}
-                      className={`${styles.repMenuItem} ${!range && period === p.id ? styles.repMenuItemOn : ""}`}
-                      onClick={() => changePeriod(p.id)}
-                    >
-                      <span className={styles.repMenuLeft}>{t(`period.${p.id}` as StringKey)}</span>
-                    </button>
-                  ))}
-                  <div className={styles.repMenuDiv} />
-                  <button
-                    className={`${styles.repMenuItem} ${styles.repMenuItemMuted} ${range ? styles.repMenuItemOn : ""}`}
-                    onClick={() => { setMenu(null); setCalOpen(true); }}
-                  >
-                    <span className={styles.repMenuLeft}>{t("common.period")}</span>
-                  </button>
-                </div>
-              )}
               <button
                 className={`${styles.repPill} ${styles.glass}`}
-                onClick={() => setMenu(menu === "period" ? null : "period")}
+                onClick={() => setMenu("period")}
               >
                 <span className={styles.repPillIcon}><CalGlyph /></span>
                 {range ? rangeLabel(range) : t(`period.${period}` as StringKey)}
@@ -566,44 +554,9 @@ export default function ReportsView({
             </span>
 
             <span className={styles.repFilterWrap}>
-              {menu === "accounts" && (
-                <div className={`${styles.repMenu} ${styles.repMenuRight}`}>
-                  {accounts.map((a) => (
-                    <button
-                      key={a.id}
-                      className={styles.repMenuItem}
-                      onClick={() =>
-                        setOffAccounts((s) => {
-                          const next = { ...s };
-                          if (next[a.id]) delete next[a.id];
-                          else next[a.id] = true;
-                          return next;
-                        })
-                      }
-                    >
-                      <span className={styles.repMenuLeft}>
-                        <span
-                          className={styles.repMenuIco}
-                          style={{ color: ACCOUNT_COLOR[a.type] ?? "var(--sc-cat-teal)" }}
-                        >
-                          <DsIcon name={ACCOUNT_ICON[a.type] ?? "BoldMoneyWallet"} size={16} />
-                        </span>
-                        {dataLabel(a.name, lang)}
-                      </span>
-                      <span className={`${styles.repCheck} ${accountOn(a.id) ? styles.repCheckOn : ""}`}>
-                        {accountOn(a.id) && <CheckGlyph />}
-                      </span>
-                    </button>
-                  ))}
-                  <div className={styles.repMenuDiv} />
-                  <Link href="/settings" className={`${styles.repMenuItem} ${styles.repMenuItemMuted}`}>
-                    <span className={styles.repMenuLeft}>{t("set.addAccount")}</span>
-                  </Link>
-                </div>
-              )}
               <button
                 className={`${styles.repPill} ${styles.repPillWide} ${styles.glass}`}
-                onClick={() => setMenu(menu === "accounts" ? null : "accounts")}
+                onClick={() => setMenu("accounts")}
               >
                 <span className={styles.repPillIconBright}><DsIcon name="BoldMoneyCard" size={16} /></span>
                 {allAccountsOn ? t("rep.allAccounts") : `${accounts.filter((a) => accountOn(a.id)).length}/${accounts.length}`}
@@ -745,39 +698,88 @@ export default function ReportsView({
         </div>
       </section>
 
-      {/* низ */}
+      {/* низ: спільний док — той самий компонент, що на головній,
+          в історії та в меню, разом із меню «+» (дохід / витрата / скан) */}
       <div className={styles.repScrim} />
-      <nav className={styles.repDock}>
-        <div className={`${styles.repNavPill} ${styles.glass}`}>
-          <Link href="/dashboard" className={styles.repNavTab} aria-label={t("nav.home")}>
-            <DsIcon name="BoldEssentionalUIHome2" size={23} />
-          </Link>
-          <Link href="/history" className={styles.repNavTab} aria-label={t("nav.history")}>
-            <DsIcon name="BoldTimeHistory" size={23} />
-          </Link>
-          <Link
-            href="/reports"
-            className={`${styles.repNavTab} ${styles.repNavTabOn}`}
-            aria-current="page"
-            aria-label={t("nav.reports")}
-          >
-            <DsIcon name="BoldBusinessStatisticChart2" size={23} />
-          </Link>
-          <Link href="/menu" className={styles.repNavTab} aria-label={t("nav.menu")}>
-            <DsIcon name="BoldEssentionalUIHamburgerMenu" size={23} />
-          </Link>
-        </div>
-        <button className={styles.repFab} onClick={() => setAddOpen(true)} aria-label={t("nav.add")}>
-          <DsIcon name="BoldEssentionalUIAddCircle" size={28} />
-        </button>
-      </nav>
+      <BottomNav active="reports" accounts={accountsForForm} />
 
-      {addOpen && (
-        <AddTransactionForm
-          initialType={isExpenses ? "expense" : "income"}
-          accounts={accountsForForm}
-          onClose={() => setAddOpen(false)}
-        />
+      {/* Період — нижнє модальне вікно, як усюди в продукті */}
+      {menu === "period" && (
+        <div className={sh.sheetWrap}>
+          <div data-sheet-back className={sh.sheetBack} onClick={() => setMenu(null)} />
+          <div data-sheet className={sh.sheet}>
+            <div className={sh.sheetBody}>
+              <div className={sh.sheetTitle}><span>{t("common.period")}</span></div>
+              <div className={sh.setCard}>
+                {periods.map((p) => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    className={sh.curRow}
+                    onClick={() => { changePeriod(p.id); setMenu(null); }}
+                  >
+                    <div className={sh.curMid}>
+                      <span className={sh.catName2}>{t(`period.${p.id}` as StringKey)}</span>
+                    </div>
+                    {!range && period === p.id && <span className={sh.curCheck}>✓</span>}
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  className={sh.curRow}
+                  onClick={() => { setMenu(null); setCalOpen(true); }}
+                >
+                  <div className={sh.curMid}>
+                    <span className={sh.catName2}>{t("rep.pickDates")}</span>
+                    {range && <span className={sh.catType2}>{rangeLabel(range)}</span>}
+                  </div>
+                  {range && <span className={sh.curCheck}>✓</span>}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Рахунки */}
+      {menu === "accounts" && (
+        <div className={sh.sheetWrap}>
+          <div data-sheet-back className={sh.sheetBack} onClick={() => setMenu(null)} />
+          <div data-sheet className={sh.sheet}>
+            <div className={sh.sheetBody}>
+              <div className={sh.sheetTitle}><span>{t("set.accounts")}</span></div>
+              <div className={sh.setCard}>
+                {accounts.map((a) => (
+                  <button
+                    key={a.id}
+                    type="button"
+                    className={sh.curRow}
+                    onClick={() =>
+                      setOffAccounts((s) => {
+                        const next = { ...s };
+                        if (next[a.id]) delete next[a.id];
+                        else next[a.id] = true;
+                        return next;
+                      })
+                    }
+                  >
+                    <span
+                      className={sh.langFlag}
+                      style={{ color: ACCOUNT_COLOR[a.type] ?? "var(--sc-cat-teal)" }}
+                    >
+                      <DsIcon name={ACCOUNT_ICON[a.type] ?? "BoldMoneyWallet"} size={19} />
+                    </span>
+                    <div className={sh.curMid}>
+                      <span className={sh.catName2}>{dataLabel(a.name, lang)}</span>
+                    </div>
+                    {accountOn(a.id) && <span className={sh.curCheck}>✓</span>}
+                  </button>
+                ))}
+              </div>
+              <Link href="/settings" className={sh.addLineBtn}>{t("set.addAccount")}</Link>
+            </div>
+          </div>
+        </div>
       )}
 
       {calOpen && (
