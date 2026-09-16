@@ -1,0 +1,130 @@
+/* ============================================================
+   Snapcost — фіча «Бюджет». Значення з app/tokens.css.
+   Спільне (hero, стрічка транзакцій, dock, картки) береться з
+   ds.module.css; тут лише бюджет-специфічне.
+   ============================================================ */
+
+/* ---------- шапка сторінки ---------- */
+.pagehead { display: flex; align-items: center; gap: var(--sc-header-arrow-gap); justify-content: space-between; min-height: 56px; }
+.pagetitle { font: var(--sc-type-page); letter-spacing: var(--sc-tracking-page); }
+.iconbtn { width: var(--sc-hit); height: var(--sc-hit); border-radius: 50%; background: transparent; border: 0; padding: 0; cursor: pointer; color: var(--sc-ink); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform .15s var(--sc-ease); }
+.iconbtn:active { transform: scale(.9); }
+.iconbtn:disabled { opacity: .5; }
+
+/* ---------- порожній стан ---------- */
+.empty { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; padding-top: 80px; }
+.emptyDisc { width: 72px; height: 72px; border-radius: 50%; background: var(--sc-surface-glass); box-shadow: var(--sc-shadow-glass); display: flex; align-items: center; justify-content: center; color: var(--sc-ink-secondary); margin-bottom: 8px; }
+.emptyTitle { font: var(--sc-type-page); letter-spacing: var(--sc-tracking-page); }
+.emptyHint { font: var(--sc-type-body); color: var(--sc-ink-tertiary); max-width: 240px; }
+.emptyCta { margin-top: 12px; height: 48px; padding: 0 22px; border: 0; cursor: pointer; border-radius: var(--sc-radius-pill); background: var(--sc-surface-glass); color: var(--sc-ink); font: var(--sc-weight-semibold) 15px var(--sc-font); display: inline-flex; align-items: center; gap: 8px; box-shadow: var(--sc-shadow-glass); -webkit-backdrop-filter: var(--sc-blur-glass); backdrop-filter: var(--sc-blur-glass); }
+.emptyCta svg { width: 20px; height: 20px; }
+
+/* ---------- overall hero (як на головній) ---------- */
+.ohero { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 0 0 24px; width: 100%; background: none; border: 0; cursor: pointer; color: inherit; }
+.oprog { width: 100%; max-width: 340px; margin-top: 4px; }
+.oprogtop { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.oplbl { font: var(--sc-type-caption); color: var(--sc-ink-tertiary); }
+.opspent { font: var(--sc-type-caption); color: var(--sc-ink-tertiary); }
+.oppct { color: var(--sc-ink); font-weight: 600; }
+.oppctOver { color: var(--sc-danger); font-weight: 600; }
+
+/* сегментований прогрес-бар (кольори за категоріями) */
+.opbar { display: flex; gap: 2px; height: 14px; border-radius: var(--sc-radius-pill); background: var(--sc-surface-glass); overflow: hidden; }
+.opbar i { display: block; height: 100%; border-radius: 2px; transition: width .6s var(--sc-ease); }
+
+/* ---------- CTA-картки ---------- */
+.ctafull { border: .5px solid var(--sc-glass-edge); border-radius: var(--sc-radius-card); cursor: pointer; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; padding: 36px 22px; }
+.ctaplus { width: 52px; height: 52px; border-radius: 50%; background: var(--sc-surface-glass); display: flex; align-items: center; justify-content: center; color: var(--sc-ink); margin-bottom: 10px; box-shadow: var(--sc-shadow-glass); }
+.ctafullT { font: var(--sc-type-heading); color: var(--sc-ink); }
+.ctafullS { font: var(--sc-type-caption); color: var(--sc-ink-tertiary); max-width: 260px; margin-top: 2px; }
+/* Єдина кнопка «додати категорію»: другорядна дія за §7.2.1 —
+   скло + hairline, висота CTA. Пунктирних рамок у системі немає. */
+.ctatop {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; height: var(--sc-cta-h); cursor: pointer;
+  border: .5px solid var(--sc-glass-edge); border-radius: var(--sc-cta-radius);
+  background: var(--sc-surface-glass); color: var(--sc-ink);
+  font: var(--sc-type-body-medium); font-weight: 500;
+  margin-bottom: var(--sc-sheet-gap-tight);
+}
+.ctatop svg { width: 20px; height: 20px; opacity: .85; }
+
+/* ---------- сітка категорій ---------- */
+.cgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.cgcard { background: var(--sc-surface-card); border-radius: var(--sc-radius-card); box-shadow: var(--sc-shadow-card); padding: 16px; cursor: pointer; display: flex; flex-direction: column; text-align: left; border: 0; color: inherit; -webkit-backdrop-filter: var(--sc-blur-card); backdrop-filter: var(--sc-blur-card); transition: transform .18s var(--sc-ease); }
+.cgcard:active { transform: scale(.98); }
+.cgname { font: var(--sc-type-body-medium); color: var(--sc-ink); margin-top: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cgamt { font-size: 22px; font-weight: 600; letter-spacing: -.7px; color: var(--sc-ink); font-variant-numeric: tabular-nums; margin-top: 12px; }
+.cglbl { font: var(--sc-type-caption); color: var(--sc-ink-tertiary); margin-top: 3px; }
+
+/* ---------- прогрес-кільце навколо іконки ---------- */
+.ringwrap { position: relative; display: inline-flex; flex-shrink: 0; }
+.rt { stroke: rgba(255,255,255,.12); }
+.rv { stroke-linecap: round; transition: stroke-dashoffset .7s var(--sc-ease); }
+.ringico { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--sc-ink); }
+
+/* ---------- деталі бюджету ---------- */
+.dhero { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-top: 6px; }
+.dbig { font-size: var(--sc-text-display); font-weight: 600; letter-spacing: -1.8px; color: var(--sc-ink); font-variant-numeric: tabular-nums; line-height: 1; margin-top: 2px; }
+.dsub { font: var(--sc-type-body); color: var(--sc-ink-tertiary); margin-top: -4px; }
+.dchip { display: block; width: max-content; font: var(--sc-type-caption-medium); color: var(--sc-ink-secondary); background: var(--sc-surface-glass); padding: 6px 14px; border-radius: var(--sc-radius-pill); }
+.sectlbl { font: var(--sc-type-caption); color: var(--sc-ink-tertiary); margin: var(--sc-section-gap) var(--sc-label-inset) var(--sc-sheet-label-gap); }
+.dends { display: flex; justify-content: space-between; font-size: 12px; color: var(--sc-ink-tertiary); margin: 8px 2px 0; font-variant-numeric: tabular-nums; }
+.statcard { background: var(--sc-surface-card); border-radius: var(--sc-radius-card); box-shadow: var(--sc-shadow-card); padding: 2px 16px; margin-top: 22px; -webkit-backdrop-filter: var(--sc-blur-card); backdrop-filter: var(--sc-blur-card); }
+.strow { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; font-size: var(--sc-text-body); }
+.strow + .strow { border-top: 1px solid var(--sc-hairline); }
+.stl { color: var(--sc-ink-tertiary); }
+.stv { color: var(--sc-ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+.stvOver { color: var(--sc-danger); }
+.stvAccent { color: var(--sc-accent-text); }
+.leg { display: flex; flex-direction: column; gap: 1px; }
+.legrow { display: flex; align-items: center; gap: 11px; padding: 10px 2px; }
+.legrow + .legrow { border-top: 1px solid var(--sc-hairline); }
+.legdot { width: 11px; height: 11px; border-radius: 3px; flex-shrink: 0; }
+.legnm { color: var(--sc-ink); font-size: var(--sc-text-body); }
+.legamt { margin-left: auto; color: var(--sc-ink-secondary); font-weight: 600; font-variant-numeric: tabular-nums; font-size: var(--sc-text-body); }
+.demohint { margin: 20px auto 0; max-width: 280px; text-align: center; font: var(--sc-type-caption); color: var(--sc-ink-tertiary); line-height: 1.6; }
+
+/* Add expense — фіксована по центру знизу */
+
+/* ============================================================
+   Майстер створення бюджету
+   ============================================================ */
+.wiz { position: fixed; inset: 0; z-index: 40; display: flex; flex-direction: column; background: var(--sc-bg); }
+.wiz::before { content: ""; position: absolute; inset: 0; z-index: 0; background: var(--sc-bg-glow), var(--sc-bg-gradient); }
+.wiz::after { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; background-image: var(--sc-bg-dots); background-size: 22px 22px; background-position: 11px 11px; -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,.9) 0%, rgba(0,0,0,.9) 45%, transparent 72%); mask-image: linear-gradient(180deg, rgba(0,0,0,.9) 0%, rgba(0,0,0,.9) 45%, transparent 72%); }
+.wtop { display: flex; align-items: center; justify-content: space-between; padding: calc(var(--sc-safe-top) + 18px) 24px 0; position: relative; z-index: 1; }
+.ringpill { min-width: 62px; height: 34px; padding: 0 6px; border-radius: var(--sc-radius-pill); border: 2px solid var(--sc-glass-highlight); display: flex; align-items: center; justify-content: center; font-size: var(--sc-text-caption); font-weight: 600; transition: .3s var(--sc-ease); }
+.ringpillFull { border-color: var(--sc-accent); color: var(--sc-accent); box-shadow: 0 0 14px rgba(95,179,127,.5); }
+.wbody { flex: 1; padding: 28px 24px 0; position: relative; z-index: 1; display: flex; flex-direction: column; overflow-y: auto; }
+.wbody::-webkit-scrollbar { display: none; }
+.wtitle { font-size: 30px; font-weight: 600; letter-spacing: -.5px; }
+.wdesc { font: var(--sc-type-body); color: var(--sc-ink-tertiary); margin-top: 8px; line-height: 1.45; }
+
+.optlist { margin-top: 44px; border: .5px solid var(--sc-hairline); border-radius: var(--sc-radius-group); background: var(--sc-surface-card); padding: 6px; display: flex; flex-direction: column; gap: 2px; }
+.opt { display: flex; align-items: center; gap: 12px; padding: 13px 16px; cursor: pointer; font-size: var(--sc-text-heading); font-weight: 500; background: transparent; border: 0; width: 100%; color: var(--sc-ink); text-align: left; border-radius: 12px; transition: background .15s var(--sc-ease), color .15s var(--sc-ease); }
+.optOn { background: var(--sc-surface-glass); color: var(--sc-ink); box-shadow: var(--sc-shadow-glass); -webkit-backdrop-filter: var(--sc-blur-glass); backdrop-filter: var(--sc-blur-glass); }
+.optDis { opacity: .38; cursor: default; }
+.optCat { }
+.optcd { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; color: var(--sc-ink); }
+.optAdded { margin-left: auto; font-size: 12px; font-weight: 600; color: var(--sc-ink-tertiary); }
+
+.amtBig { margin-top: 40px; text-align: center; font-size: 50px; font-weight: 600; letter-spacing: -2px; font-variant-numeric: tabular-nums; color: var(--sc-ink); }
+.amtCur { font-size: 26px; color: var(--sc-ink-secondary); margin-left: 8px; letter-spacing: 0; }
+
+.wcta { padding: 14px 24px calc(40px + var(--sc-safe-b)); position: relative; z-index: 1; }
+.wpad { margin-top: auto; padding: 8px 24px calc(24px + var(--sc-safe-b)); position: relative; z-index: 1; display: flex; flex-direction: column; gap: 14px; }
+.cta { width: 100%; height: var(--sc-cta-h); border-radius: var(--sc-radius-pill); border: 0; cursor: pointer; background: var(--sc-surface-inverse); color: var(--sc-ink-inverse); font-size: var(--sc-text-body); font-weight: 600; font-family: var(--sc-font); }
+.cta:active { background: rgba(241,239,234,.82); }
+.cta:disabled { opacity: .4; }
+
+/* ---------- повзунок розподілу ---------- */
+.allocwrap { text-align: center; margin-top: 44px; }
+.allocamt { font-size: 36px; font-weight: 600; letter-spacing: -1.4px; color: var(--sc-ink); font-variant-numeric: tabular-nums; line-height: 1; }
+.allocmeta { font: var(--sc-type-caption); color: var(--sc-ink-tertiary); font-weight: 600; margin-top: 12px; }
+.allocslider { position: relative; width: 132px; height: 300px; margin: 24px auto 0; border: 1.5px dashed rgba(255,255,255,.22); border-radius: 18px; cursor: ns-resize; touch-action: none; overflow: hidden; }
+.allocused { position: absolute; left: 3px; right: 3px; top: 3px; border-radius: 14px 14px 0 0; overflow: hidden; background: repeating-linear-gradient(-45deg, rgba(255,255,255,.05) 0 6px, rgba(255,255,255,.10) 6px 12px); }
+.allocfill { position: absolute; left: 3px; right: 3px; bottom: 3px; min-height: 0; border-radius: 4px 4px 14px 14px; background: linear-gradient(180deg, #79cf95 0%, var(--sc-accent) 52%, #489a67 100%); box-shadow: 0 -10px 30px rgba(95,179,127,.5), inset 0 2px 6px rgba(255,255,255,.7); }
+.allochandle { position: absolute; left: -1.5px; right: -1.5px; height: 3px; border-radius: 2px; background: #fff; box-shadow: 0 0 12px rgba(255,255,255,.6), 0 1px 4px rgba(0,0,0,.3); }
+.allocpct { position: absolute; left: 50%; bottom: 0; transform: translate(-50%,-10px); font-size: 20px; font-weight: 700; color: var(--sc-ink); font-variant-numeric: tabular-nums; white-space: nowrap; pointer-events: none; text-shadow: 0 1px 6px rgba(0,0,0,.45); }
+.allocpctBelow { transform: translate(-50%, calc(100% + 10px)); }

@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 import styles from "@/app/dashboard/dashboard.module.css";
 import { Icon, IconSprite } from "@/components/IconSprite";
 import DsIcon from "@/components/ds/Icon";
-import BottomNav from "@/components/BottomNav";
-import TopBar from "@/components/TopBar";
+import SubHeader from "@/components/SubHeader";
+import AddTransactionForm from "@/components/AddTransactionForm";
+import ds from "@/app/dashboard/ds.module.css";
 import TransactionViewer from "@/components/TransactionViewer";
 import CalendarSheet from "@/components/CalendarSheet";
 import EmptyState from "@/components/EmptyState";
@@ -45,6 +47,8 @@ export default function HistoryList({
   const [viewId, setViewId] = useState<string | null>(null);
   const [range, setRange] = useState<{ from: string; to: string } | null>(null);
   const [calOpen, setCalOpen] = useState(false);
+  const [addOpen, setAddOpen] = useState(false);
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const touch = useRef({ x: 0, y: 0 });
 
@@ -130,7 +134,7 @@ export default function HistoryList({
     <div className={styles.screen}>
       <IconSprite />
 
-      <TopBar><span className={styles.barTitle}>{t("nav.history")}</span></TopBar>
+      <SubHeader title={t("nav.history")} back="/dashboard" />
 
       <div className={styles.tabs}>
         <button className={`${styles.tab} ${isExpenses ? styles.tabOnExp : ""}`} onClick={() => reset(() => setTab("expenses"))}>
@@ -303,7 +307,23 @@ export default function HistoryList({
         )}
       </section>
 
-      <BottomNav active="history" accounts={accounts} />
+      <div className={ds.scrimbar} />
+      <div className={ds.fabFloat}>
+        <button className={ds.fab} onClick={() => setAddOpen(true)} aria-label={t("nav.add")}>
+          <DsIcon name="BoldEssentionalUIAddCircle" size={28} />
+        </button>
+      </div>
+
+      {addOpen && (
+        <AddTransactionForm
+          initialType={isExpenses ? "expense" : "income"}
+          accounts={accounts}
+          onClose={() => {
+            setAddOpen(false);
+            router.refresh();
+          }}
+        />
+      )}
 
       {viewId && (
         <TransactionViewer id={viewId} accounts={accounts} onClose={() => setViewId(null)} />

@@ -1,0 +1,30 @@
+/* Попап валют. Спільне (шит, сегмент, лейбли) — з ds/dashboard модулів.
+   Тут лише те, чого немає в спільному шарі. */
+
+/* Елемент сегмента валют: символ великий, код тихий під ним не потрібен —
+   вони стоять в один рядок, бо варіантів рівно три й вони завжди влазять. */
+.sym { font: var(--sc-weight-semibold) 17px/1 var(--sc-font); }
+.code { font: var(--sc-type-caption); opacity: .62; }
+
+/* Курс — картка, а не рядок між блоками: це довідка, а не контрол. */
+.rate {
+  display: flex; align-items: center; gap: 12px;
+  padding: var(--sc-row-inset); border-radius: var(--sc-radius-group);
+  background: var(--sc-surface-card); box-shadow: var(--sc-shadow-card);
+}
+.rateIco {
+  width: 40px; height: 40px; flex-shrink: 0; border-radius: var(--sc-radius-tile);
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.08); box-shadow: inset 0 0 0 .5px var(--sc-glass-edge);
+  color: var(--sc-accent-text);
+}
+.rateMid { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
+.rateVal {
+  font: var(--sc-type-body-medium); color: var(--sc-ink);
+  font-variant-numeric: tabular-nums;
+}
+.rateSub { font: var(--sc-type-caption); color: var(--sc-ink-secondary); }
+
+/* Коли основна й конвертаційна збігаються — еквівалента не буде.
+   Кажемо це прямо, а не показуємо «1 zł ≈ 1 zł». */
+.same .rateIco { color: var(--sc-ink-tertiary); }

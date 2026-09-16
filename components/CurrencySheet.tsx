@@ -3,10 +3,13 @@
 import { useState, useEffect, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import styles from "@/app/dashboard/dashboard.module.css";
+import ds from "@/app/dashboard/ds.module.css";
+import c from "@/app/currency/currency.module.css";
+import DsIcon from "@/components/ds/Icon";
+import SheetPortal from "@/components/ui/SheetPortal";
 import { CURRENCIES, currencyMeta, convert, formatMoney, type CurrencyCode } from "@/lib/currency";
 import { useCurrency, useConvertCurrency, useRates, useT } from "@/components/SettingsProvider";
 import { setMainCurrency, setConvertCurrency } from "@/app/dashboard/actions";
-import SheetPortal from "@/components/ui/SheetPortal";
 
 export default function CurrencySheet({ open, onClose }: { open: boolean; onClose: () => void }) {
   const router = useRouter();
@@ -32,7 +35,7 @@ export default function CurrencySheet({ open, onClose }: { open: boolean; onClos
   if (!open) return null;
 
   const changed = main !== ctxMain || conv !== ctxConv;
-  const rateText = `1 ${currencyMeta(main).symbol} ≈ ${formatMoney(convert(1, main, conv, rates), conv, 2)}`;
+  const same = main === conv;
 
   function apply() {
     if (!changed) { onClose(); return; }
@@ -44,17 +47,19 @@ export default function CurrencySheet({ open, onClose }: { open: boolean; onClos
     });
   }
 
-  const pick = (active: CurrencyCode, on: (c: CurrencyCode) => void) => (
-    <div className={styles.curPick}>
-      {CURRENCIES.map((c) => (
+  // Рівно три валюти, набір фіксований і завжди влазить -> первинний сегмент
+  // (ділять ширину порівну). Див. DESIGN-SYSTEM.md §7.4.
+  const pick = (active: CurrencyCode, on: (v: CurrencyCode) => void) => (
+    <div className={`${ds.seg} ${ds.segPrimary}`}>
+      {CURRENCIES.map((cur) => (
         <button
-          key={c.code}
+          key={cur.code}
           type="button"
-          className={`${styles.curPickBtn} ${active === c.code ? styles.curPickOn : ""}`}
-          onClick={() => on(c.code)}
+          className={`${ds.segItem} ${active === cur.code ? ds.segOn : ""}`}
+          onClick={() => on(cur.code)}
         >
-          <span className={styles.curPickSym}>{c.symbol}</span>
-          <span className={styles.curPickCode}>{c.code}</span>
+          <span className={c.sym}>{cur.symbol}</span>
+          <span className={c.code}>{cur.code}</span>
         </button>
       ))}
     </div>
@@ -67,17 +72,34 @@ export default function CurrencySheet({ open, onClose }: { open: boolean; onClos
         <div data-sheet className={styles.sheet}>
           <div data-vfade className={styles.sheetBody}>
             <div className={styles.sheetTitle}>{t("menu.currency")}</div>
+            <div className={styles.sheetSub}>{t("cur.sheetSub")}</div>
 
             <div className={styles.fieldLabel}>{t("menu.mainCurrency")}</div>
             {pick(main, setMain)}
 
-            <div className={styles.curSwap}>
-              <span className={styles.curSwapArrow}>↓</span>
-              <span className={styles.curSwapRate}>{rateText}</span>
-            </div>
-
             <div className={styles.fieldLabel}>{t("cur.convTo")}</div>
             {pick(conv, setConv)}
+
+            <div className={`${c.rate} ${same ? c.same : ""}`} style={{ marginTop: "var(--sc-sheet-stack)" }}>
+              <span className={c.rateIco}>
+                <DsIcon name={same ? "BoldEyeClosed" : "BoldArrowsTransferHorizontal"} size={20} />
+              </span>
+              <span className={c.rateMid}>
+                {same ? (
+                  <>
+                    <span className={c.rateVal}>{t("cur.sameTitle")}</span>
+                    <span className={c.rateSub}>{t("cur.sameSub")}</span>
+                  </>
+                ) : (
+                  <>
+                    <span className={c.rateVal}>
+                      1 {currencyMeta(main).symbol} ≈ {formatMoney(convert(1, main, conv, rates), conv, 2)}
+                    </span>
+                    <span className={c.rateSub}>{t("cur.rateSub")}</span>
+                  </>
+                )}
+              </span>
+            </div>
           </div>
 
           <div className={styles.sheetActions}>
