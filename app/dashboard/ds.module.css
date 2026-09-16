@@ -536,7 +536,7 @@
 .segOn { background: var(--sc-surface-glass-active); color: var(--sc-ink); }
 /* Фіксований невеликий набір (2-3 варіанти, які завжди влазять) ділить
    ширину порівну. Змінна кількість — по контенту, див. .segScroll. */
-.segPrimary .segItem { flex: 1 1 0; height: var(--sc-seg-h-primary); font: var(--sc-type-body-medium); }
+.segPrimary .segItem { flex: 1 1 0; height: var(--sc-seg-h-primary); font: var(--sc-type-body-medium); gap: 6px; }
 .segPrimary .segIcon { height: var(--sc-seg-h-primary); width: var(--sc-seg-h-primary); }
 .segScroll { overflow-x: auto; scrollbar-width: none; }
 .segScroll::-webkit-scrollbar { display: none; }

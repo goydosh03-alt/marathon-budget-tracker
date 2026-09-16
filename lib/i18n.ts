@@ -342,6 +342,10 @@ export const STRINGS = {
   "cur.mainSub": { uk: "У ній вводиш і бачиш суми", en: "You enter and see amounts in it", ru: "В ней вводишь и видишь суммы" },
   "cur.convLabel": { uk: "Валюта конвертації · ≈", en: "Conversion currency · ≈", ru: "Валюта конвертации · ≈" },
   "cur.convSub": { uk: "Показується поряд, перерахована з основної", en: "Shown next to it, converted from the main", ru: "Показывается рядом, пересчитанная из основной" },
+  "cur.sheetSub": { uk: "Основна — у ній ти вводиш суми. Друга показується поряд як «≈».", en: "The main one is what you enter amounts in. The second is shown next to it as “≈”.", ru: "Основная — в ней ты вводишь суммы. Вторая показывается рядом как «≈»." },
+  "cur.rateSub": { uk: "Курс оновлюється щогодини", en: "Rate updates every hour", ru: "Курс обновляется каждый час" },
+  "cur.sameTitle": { uk: "Еквівалент не показується", en: "No equivalent is shown", ru: "Эквивалент не показывается" },
+  "cur.sameSub": { uk: "Обери іншу валюту, щоб бачити «≈» поряд із сумою", en: "Pick a different currency to see “≈” next to amounts", ru: "Выбери другую валюту, чтобы видеть «≈» рядом с суммой" },
   "cur.convTo": { uk: "Конвертується в", en: "Converts to", ru: "Конвертируется в" },
 
   // калькулятор
